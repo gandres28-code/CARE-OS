@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="light">
+<html lang="es" data-theme="dark" data-care-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,7 +10,7 @@
       --bg:#f4f4f2;--bg-glow:rgba(36,91,150,.045);--surface:rgba(255,255,255,.96);--surface-solid:#fff;
       --surface-2:#f7f7f5;--surface-3:#ececea;--text:#111;--muted:#70706d;--line:#dededb;
       --line-strong:#c9c9c5;--shadow:0 18px 48px rgba(17,17,17,.08);--shadow-soft:0 8px 24px rgba(17,17,17,.06);
-      --ready:#222;--cleaning:#0b1f3a;--pending:#999995;--stayover:#555;--inspection:#245b96;
+      --ready:#1f9d63;--cleaning:#55aee8;--pending:#687382;--stayover:#394657;
       --room-text:#fff;--accent:#111;--accent-text:#fff;--header:rgba(255,255,255,.90);
       --ring:rgba(36,91,150,.10);--glass:blur(22px) saturate(145%);
     }
@@ -44,12 +44,12 @@
     .legend{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin:16px 0 2px}
     .legend-item{display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--line);background:var(--surface);border-radius:999px;color:var(--muted);font-size:11px;font-weight:800;backdrop-filter:blur(10px)}
     .swatch{width:11px;height:11px;border-radius:4px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.16)}
-    .ready-bg{background:var(--ready)}.cleaning-bg{background:var(--cleaning)}.pending-bg{background:var(--pending)}.stayover-bg{background:var(--stayover)}.inspection-bg{background:var(--inspection)}
+    .ready-bg{background:var(--ready)}.cleaning-bg{background:var(--cleaning)}.pending-bg{background:var(--pending)}.stayover-bg{background:var(--stayover)}
     .view{margin-top:16px}.executive-layout{display:grid;gap:14px}
-    .summary{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+    .summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
     .metric{position:relative;overflow:hidden;padding:16px 17px 15px;background:var(--surface);border:1px solid var(--line);border-radius:19px;box-shadow:var(--shadow-soft);min-width:0;backdrop-filter:blur(14px)}
     .metric::after{content:"";position:absolute;right:-30px;bottom:-36px;width:110px;height:110px;border-radius:50%;background:var(--metric-color,var(--pending));opacity:.055}
-    .metric:nth-child(1){--metric-color:var(--ready)}.metric:nth-child(2){--metric-color:var(--cleaning)}.metric:nth-child(3){--metric-color:var(--inspection)}.metric:nth-child(4){--metric-color:var(--stayover)}.metric:nth-child(5){--metric-color:var(--pending)}
+    .metric:nth-child(1){--metric-color:var(--ready)}.metric:nth-child(2){--metric-color:var(--cleaning)}.metric:nth-child(3){--metric-color:var(--stayover)}.metric:nth-child(4){--metric-color:var(--pending)}
     .metric-label{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.1em}
     .metric-label i{width:10px;height:10px;border-radius:4px;flex:0 0 auto}
     .metric-value{position:relative;z-index:1;margin-top:10px;font-size:clamp(34px,3vw,58px);font-weight:950;line-height:.92;letter-spacing:-3px;font-variant-numeric:tabular-nums}
@@ -72,14 +72,17 @@
     .room::before{content:"";position:absolute;inset:1px;border-radius:12px;background:linear-gradient(145deg,rgba(255,255,255,.13),transparent 50%);pointer-events:none}
     .room:hover{transform:translateY(-3px) scale(1.015);filter:brightness(1.05);box-shadow:0 10px 20px rgba(0,0,0,.16)}
     .room b{position:relative;display:block;font-size:14px;line-height:1.05;letter-spacing:-.15px}.room small{position:relative;display:block;margin-top:6px;font-size:8px;font-weight:900;opacity:.9;text-transform:uppercase;letter-spacing:.055em}
-    .room.ready{background:var(--ready)}.room.cleaning{background:var(--cleaning)}.room.pending{background:var(--pending)}.room.stayover{background:var(--stayover)}.room.inspection{background:var(--inspection)}
-    .room.urgent::after{content:"!";position:absolute;top:5px;right:5px;width:18px;height:18px;display:grid;place-items:center;border-radius:50%;background:#fff;color:#111;font-size:11px;font-weight:950;box-shadow:0 3px 8px rgba(0,0,0,.24)}
+    .room.ready{background:var(--ready)}.room.cleaning{background:var(--cleaning);color:#07111f}.room.pending{background:var(--pending)}.room.stayover{background:var(--stayover);overflow:hidden}
+    .room.stayover::after{content:"";position:absolute;inset:-18px 50%;width:5px;background:rgba(255,255,255,.9);transform:rotate(45deg);box-shadow:0 0 0 1px rgba(0,0,0,.1)}
+    .room.stayover::before{content:"";position:absolute;inset:-18px 50%;width:5px;background:rgba(255,255,255,.9);transform:rotate(-45deg);z-index:2}
+    .room.pager{overflow:hidden}.room.pager .pager-corner{position:absolute;right:0;top:0;width:0;height:0;border-top:27px solid #e33434;border-left:27px solid transparent;z-index:5;animation:pagerBlink .9s steps(2,end) infinite}
+    @keyframes pagerBlink{50%{opacity:.18;filter:brightness(1.6)}}
     .room.changed{animation:roomPulse 1.15s ease}@keyframes roomPulse{0%,100%{transform:scale(1)}40%{transform:scale(1.09);filter:brightness(1.25);box-shadow:0 0 0 8px rgba(255,255,255,.12)}}
     .ranking{position:sticky;top:92px;background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);overflow:hidden;backdrop-filter:blur(14px)}
     .ranking-head{display:flex;align-items:center;justify-content:space-between;padding:15px 16px;border-bottom:1px solid var(--line)}.ranking-head h2{margin:0;font-size:14px;letter-spacing:.01em}.ranking-head button{width:32px;height:32px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);color:var(--text);cursor:pointer}
     .ranking-list{padding:8px}.rank-row{display:grid;grid-template-columns:31px minmax(0,1fr) auto;gap:9px;align-items:center;padding:11px 8px;border-bottom:1px solid var(--line)}.rank-row:last-child{border-bottom:0}.rank-number{width:29px;height:29px;border-radius:9px;display:grid;place-items:center;background:var(--surface-3);font-size:11px;font-weight:950}.rank-row:first-child .rank-number{background:var(--accent);color:var(--accent-text)}.rank-name{font-size:12px;font-weight:850;min-width:0}.rank-note{display:block;color:var(--muted);font-size:9px;margin-top:3px}.rank-score{text-align:right}.rank-score strong{font-size:15px}.rank-score span{display:block;color:var(--muted);font-size:8px;text-transform:uppercase;font-weight:800}
     .map-shell{min-height:calc(100vh - 160px);display:grid;grid-template-rows:auto minmax(0,1fr);gap:14px}
-    .map-summary{display:grid;grid-template-columns:minmax(290px,1.8fr) repeat(5,minmax(105px,.65fr));gap:10px}.map-title-card,.map-stat{background:var(--surface);border:1px solid var(--line);border-radius:17px;box-shadow:var(--shadow-soft);backdrop-filter:blur(14px)}
+    .map-summary{display:grid;grid-template-columns:minmax(290px,1.8fr) repeat(4,minmax(105px,.65fr));gap:10px}.map-title-card,.map-stat{background:var(--surface);border:1px solid var(--line);border-radius:17px;box-shadow:var(--shadow-soft);backdrop-filter:blur(14px)}
     .map-title-card{display:flex;align-items:center;justify-content:space-between;padding:14px 16px}.map-title-card h2{margin:0;font-size:17px}.map-title-card p{margin:5px 0 0;color:var(--muted);font-size:10px;font-weight:650;text-transform:uppercase;letter-spacing:.06em}.map-progress{font-size:29px;font-weight:950;letter-spacing:-1.5px}
     .map-stat{padding:12px 13px;display:flex;flex-direction:column;justify-content:center}.map-stat span{color:var(--muted);font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.map-stat strong{margin-top:5px;font-size:25px;line-height:1;font-weight:950}
     .map-canvas{position:relative;overflow:hidden;min-height:650px;border:1px solid var(--line);border-radius:24px;background:var(--surface);box-shadow:var(--shadow);isolation:isolate}
@@ -109,17 +112,16 @@
         <button class="btn active" id="executiveBtn" type="button">Executive</button>
         <button class="btn" id="mapBtn" type="button">Hotel Map</button>
         <button class="btn" id="rankingBtn" type="button">Top Cleaners</button>
-        <button class="btn" id="themeBtn" type="button" hidden>Theme</button>
         <button class="btn" id="fullscreenBtn" type="button">TV</button>
       </div>
     </header>
 
     <div class="legend" aria-label="Leyenda de estados">
-      <div class="legend-item"><i class="swatch ready-bg"></i>Negro · Ready</div>
-      <div class="legend-item"><i class="swatch cleaning-bg"></i>Vino · Limpiando</div>
-      <div class="legend-item"><i class="swatch pending-bg"></i>Gris · Sin entrar</div>
-      <div class="legend-item"><i class="swatch stayover-bg"></i>Grafito · Stayover</div>
-      <div class="legend-item"><i class="swatch inspection-bg"></i>Vino claro · Inspección</div>
+      <div class="legend-item"><i class="swatch ready-bg"></i>Verde · Terminado</div>
+      <div class="legend-item"><i class="swatch cleaning-bg"></i>Azul claro · Limpiando</div>
+      <div class="legend-item"><i class="swatch stayover-bg"></i>X · Stayover</div>
+      <div class="legend-item"><i class="swatch pending-bg"></i>Gris · Sin empezar</div>
+      <div class="legend-item"><i class="swatch" style="background:#e33434"></i>Esquina roja · Pager</div>
     </div>
 
     <div class="error" id="errorBanner"></div>
@@ -127,11 +129,10 @@
     <section class="view" id="executiveView">
       <div class="executive-layout">
         <section class="summary" aria-label="Resumen ejecutivo">
-          <article class="metric"><div class="metric-label"><i class="ready-bg"></i>Ready</div><div class="metric-value" id="readyCount">0</div><div class="metric-note">Listas para huésped</div></article>
+          <article class="metric"><div class="metric-label"><i class="ready-bg"></i>Terminado</div><div class="metric-value" id="readyCount">0</div><div class="metric-note">Limpieza terminada</div></article>
           <article class="metric"><div class="metric-label"><i class="cleaning-bg"></i>Limpiando</div><div class="metric-value" id="cleaningCount">0</div><div class="metric-note">En progreso</div></article>
-          <article class="metric"><div class="metric-label"><i class="inspection-bg"></i>Inspección</div><div class="metric-value" id="inspectionCount">0</div><div class="metric-note">Esperando revisión</div></article>
-          <article class="metric"><div class="metric-label"><i class="stayover-bg"></i>Stayover</div><div class="metric-value" id="stayoverCount">0</div><div class="metric-note">Servicio de estancia</div></article>
-          <article class="metric"><div class="metric-label"><i class="pending-bg"></i>Sin entrar</div><div class="metric-value" id="pendingCount">0</div><div class="metric-note">Aún no iniciadas</div></article>
+          <article class="metric"><div class="metric-label"><i class="stayover-bg"></i>Stayover</div><div class="metric-value" id="stayoverCount">0</div><div class="metric-note">No se limpia hoy</div></article>
+          <article class="metric"><div class="metric-label"><i class="pending-bg"></i>Sin empezar</div><div class="metric-value" id="pendingCount">0</div><div class="metric-note">Aún no iniciadas</div></article>
         </section>
         <section class="progress-panel"><div class="progress-head"><strong>Progreso general del hotel</strong><span id="progressPercent">0%</span></div><div class="track"><div class="fill" id="progressFill"></div></div></section>
         <section class="workspace" id="workspace"><div class="building-grid" id="buildingGrid"></div><aside class="ranking" id="rankingPanel" hidden><div class="ranking-head"><h2>Top Cleaners</h2><button id="closeRanking" type="button" aria-label="Ocultar">×</button></div><div class="ranking-list" id="rankingList"></div></aside></section>
@@ -142,18 +143,17 @@
       <div class="map-shell">
         <div class="map-summary">
           <article class="map-title-card"><div><h2>Hotel Map View</h2><p>Vista operativa por zonas y edificios</p></div><div class="map-progress" id="mapProgress">0%</div></article>
-          <article class="map-stat"><span>Ready</span><strong id="mapReady">0</strong></article>
+          <article class="map-stat"><span>Terminado</span><strong id="mapReady">0</strong></article>
           <article class="map-stat"><span>Limpiando</span><strong id="mapCleaning">0</strong></article>
-          <article class="map-stat"><span>Inspección</span><strong id="mapInspection">0</strong></article>
           <article class="map-stat"><span>Stayover</span><strong id="mapStayover">0</strong></article>
-          <article class="map-stat"><span>Sin entrar</span><strong id="mapPending">0</strong></article>
+          <article class="map-stat"><span>Sin empezar</span><strong id="mapPending">0</strong></article>
         </div>
         <div class="map-canvas"><div class="map-grid" id="mapGrid"></div></div>
       </div>
     </section>
   </main>
 
-  <aside class="toast" id="roomToast" role="dialog" aria-live="polite"><h3 id="detailUnit">Habitación</h3><div class="detail-grid"><div class="detail"><span>Estado</span><b id="detailStatus">-</b></div><div class="detail"><span>Edificio</span><b id="detailBuilding">-</b></div><div class="detail"><span>Cleaner</span><b id="detailCleaner">Sin asignar</b></div><div class="detail"><span>Inspector</span><b id="detailInspector">Sin asignar</b></div></div></aside>
+  <aside class="toast" id="roomToast" role="dialog" aria-live="polite"><h3 id="detailUnit">Habitación</h3><div class="detail-grid"><div class="detail"><span>Estado</span><b id="detailStatus">-</b></div><div class="detail"><span>Edificio</span><b id="detailBuilding">-</b></div><div class="detail"><span>Cleaner</span><b id="detailCleaner">Sin asignar</b></div><div class="detail"><span>Pager</span><b id="detailPager">No</b></div></div></aside>
   <div class="build-tag">C.A.R.E · LIVE OPERATIONS</div>
 
   <script src="/socket.io/socket.io.js"></script>
@@ -164,7 +164,7 @@
       const state = {
         units: [],
         view: localStorage.getItem("hotelDashboardView") === "map" ? "map" : "executive",
-        theme: "light",
+        theme: "dark",
         ranking: localStorage.getItem("hotelDashboardRanking") === "show",
         previous: new Map(), toastTimer: null, reloadTimer: null, loading: false
       };
@@ -172,24 +172,23 @@
       const safe = (value) => String(value ?? "").replace(/[&<>'"]/g, (char) => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[char]));
       const roomLabel = (unit) => { const text=String(unit||"").trim(); const match=text.match(/\b\d{2,4}\s*[A-Z]?\b/i); return match?match[0].replace(/\s+/g,""):text.replace(/\s*\([^)]*\).*$/,"").slice(0,12); };
       const buildingName = (value) => value && value !== "OTHER" ? `Edificio ${value}` : "Casas / Other";
+      const isPager = (unit) => Boolean(unit.urgent||unit.pager||unit.page||["urgent","urgente","pager","page"].includes(normalize(unit.priority)));
 
       function statusMeta(unit){
         const status=normalize(unit.status);
         const hasStartedAt=Boolean(String(unit.startedAt||"").trim());
 
-        // Ready siempre tiene prioridad sobre cualquier otro indicador.
-        if(status.includes("ready")) return {key:"ready",label:"Ready"};
-
-        // Stayover se muestra azul mientras no haya llegado a Ready.
+        // Stayover no forma parte de la limpieza del día.
         if(unit.stayover) return {key:"stayover",label:"Stayover"};
 
-        // Naranja: terminó limpieza o ya está en proceso de inspección.
+        // La limpieza ya terminó; inspección no se muestra en este wall.
         if(
+          status.includes("ready") ||
           status.includes("awaiting inspection") ||
           status.includes("inspection started") ||
           status === "cleaned" ||
           status.includes("ready for inspection")
-        ) return {key:"inspection",label:"Necesita inspección"};
+        ) return {key:"ready",label:"Terminado"};
 
         // Rojo únicamente cuando existe evidencia real de que la limpieza comenzó.
         // No usamos status.includes("cleaning") porque algunos cuartos pendientes
@@ -201,12 +200,11 @@
           status === "started"
         ) return {key:"cleaning",label:"Limpiando"};
 
-        return {key:"pending",label:"Sin entrar"};
+        return {key:"pending",label:"Sin empezar"};
       }
       function applyTheme(){
         document.documentElement.dataset.theme=state.theme;
-        $("themeBtn").textContent="Contraste";
-        const meta=document.querySelector('meta[name="theme-color"]'); if(meta) meta.content=state.theme==="dark"?"#07090c":"#f4f6f8";
+        const meta=document.querySelector('meta[name="theme-color"]'); if(meta) meta.content="#07090c";
       }
       function applyView(){
         const isExecutive=state.view==="executive";
@@ -232,22 +230,23 @@
       function sortBuildings(keys){return keys.sort((a,b)=>{if(a==="OTHER")return 1;if(b==="OTHER")return-1;return a.localeCompare(b,undefined,{numeric:true});});}
       function roomButton(unit,compact=false){
         const meta=statusMeta(unit); const changed=state.previous.has(unit.id)&&state.previous.get(unit.id)!==meta.key;
-        return `<button type="button" class="room ${meta.key}${unit.urgent?" urgent":""}${changed?" changed":""}" data-unit-id="${safe(unit.id)}" aria-label="${safe(unit.unit)}: ${meta.label}"><b>${safe(roomLabel(unit.unit))}</b>${compact?"":`<small>${meta.label}</small>`}</button>`;
+        const pager=isPager(unit);
+        return `<button type="button" class="room ${meta.key}${pager?" pager":""}${changed?" changed":""}" data-unit-id="${safe(unit.id)}" aria-label="${safe(unit.unit)}: ${meta.label}${pager?", pager":""}"><b>${safe(roomLabel(unit.unit))}</b>${compact?"":`<small>${meta.label}</small>`}${pager?'<i class="pager-corner" aria-hidden="true"></i>':""}</button>`;
       }
-      function totalsFor(units){const t={ready:0,cleaning:0,inspection:0,stayover:0,pending:0};units.forEach(u=>t[statusMeta(u).key]++);return t;}
+      function totalsFor(units){const t={ready:0,cleaning:0,stayover:0,pending:0};units.forEach(u=>t[statusMeta(u).key]++);return t;}
       function renderSummary(units){
-        const t=totalsFor(units); const pct=units.length?Math.round(t.ready/units.length*100):0;
-        $("readyCount").textContent=t.ready;$("cleaningCount").textContent=t.cleaning;$("inspectionCount").textContent=t.inspection;$("stayoverCount").textContent=t.stayover;$("pendingCount").textContent=t.pending;
+        const t=totalsFor(units); const serviceUnits=Math.max(0,units.length-t.stayover); const pct=serviceUnits?Math.round(t.ready/serviceUnits*100):0;
+        $("readyCount").textContent=t.ready;$("cleaningCount").textContent=t.cleaning;$("stayoverCount").textContent=t.stayover;$("pendingCount").textContent=t.pending;
         $("progressPercent").textContent=`${pct}%`;$("progressFill").style.width=`${pct}%`;
-        $("mapReady").textContent=t.ready;$("mapCleaning").textContent=t.cleaning;$("mapInspection").textContent=t.inspection;$("mapStayover").textContent=t.stayover;$("mapPending").textContent=t.pending;$("mapProgress").textContent=`${pct}%`;
+        $("mapReady").textContent=t.ready;$("mapCleaning").textContent=t.cleaning;$("mapStayover").textContent=t.stayover;$("mapPending").textContent=t.pending;$("mapProgress").textContent=`${pct}%`;
       }
       function renderExecutive(groups,keys){
         if(!keys.length){$("buildingGrid").innerHTML='<div class="empty">No hay habitaciones cargadas para hoy.</div>';return;}
-        $("buildingGrid").innerHTML=keys.map(key=>{const units=groups[key].slice().sort((a,b)=>roomLabel(a.unit).localeCompare(roomLabel(b.unit),undefined,{numeric:true}));const ready=units.filter(u=>statusMeta(u).key==="ready").length;const pct=units.length?Math.round(ready/units.length*100):0;const counts=totalsFor(units);return `<article class="building-card"><div class="building-head"><div class="building-letter">${safe(key==="OTHER"?"H":key)}</div><div class="building-title"><strong>${safe(buildingName(key))}</strong><span>${ready} ready de ${units.length} habitaciones</span></div><div class="building-percent">${pct}%</div><div class="mini-track"><div class="mini-fill" style="width:${pct}%"></div></div></div><div class="status-strip"><span class="status-chip"><i class="ready-bg"></i>${counts.ready}</span><span class="status-chip"><i class="cleaning-bg"></i>${counts.cleaning}</span><span class="status-chip"><i class="inspection-bg"></i>${counts.inspection}</span><span class="status-chip"><i class="stayover-bg"></i>${counts.stayover}</span><span class="status-chip"><i class="pending-bg"></i>${counts.pending}</span></div><div class="rooms">${units.map(u=>roomButton(u)).join("")}</div></article>`;}).join("");
+        $("buildingGrid").innerHTML=keys.map(key=>{const units=groups[key].slice().sort((a,b)=>roomLabel(a.unit).localeCompare(roomLabel(b.unit),undefined,{numeric:true}));const counts=totalsFor(units);const serviceUnits=Math.max(0,units.length-counts.stayover);const pct=serviceUnits?Math.round(counts.ready/serviceUnits*100):0;return `<article class="building-card"><div class="building-head"><div class="building-letter">${safe(key==="OTHER"?"H":key)}</div><div class="building-title"><strong>${safe(buildingName(key))}</strong><span>${counts.ready} terminadas de ${serviceUnits} para limpiar</span></div><div class="building-percent">${pct}%</div><div class="mini-track"><div class="mini-fill" style="width:${pct}%"></div></div></div><div class="status-strip"><span class="status-chip"><i class="ready-bg"></i>${counts.ready}</span><span class="status-chip"><i class="cleaning-bg"></i>${counts.cleaning}</span><span class="status-chip"><i class="stayover-bg"></i>${counts.stayover}</span><span class="status-chip"><i class="pending-bg"></i>${counts.pending}</span></div><div class="rooms">${units.map(u=>roomButton(u)).join("")}</div></article>`;}).join("");
       }
       function renderMap(groups,keys){
         if(!keys.length){$("mapGrid").innerHTML='<div class="empty">No hay edificios disponibles.</div>';return;}
-        $("mapGrid").innerHTML=keys.map(key=>{const units=groups[key].slice().sort((a,b)=>roomLabel(a.unit).localeCompare(roomLabel(b.unit),undefined,{numeric:true}));const ready=units.filter(u=>statusMeta(u).key==="ready").length;const pct=units.length?Math.round(ready/units.length*100):0;return `<section class="map-building"><div class="map-building-head"><b>${safe(buildingName(key))}</b><span>${ready}/${units.length} ready · ${pct}%</span></div><div class="map-progress-line"><i style="width:${pct}%"></i></div><div class="map-rooms">${units.map(u=>roomButton(u,true)).join("")}</div></section>`;}).join("");
+        $("mapGrid").innerHTML=keys.map(key=>{const units=groups[key].slice().sort((a,b)=>roomLabel(a.unit).localeCompare(roomLabel(b.unit),undefined,{numeric:true}));const counts=totalsFor(units);const serviceUnits=Math.max(0,units.length-counts.stayover);const pct=serviceUnits?Math.round(counts.ready/serviceUnits*100):0;return `<section class="map-building"><div class="map-building-head"><b>${safe(buildingName(key))}</b><span>${counts.ready}/${serviceUnits} terminadas · ${pct}%</span></div><div class="map-progress-line"><i style="width:${pct}%"></i></div><div class="map-rooms">${units.map(u=>roomButton(u,true)).join("")}</div></section>`;}).join("");
       }
       function renderRanking(units){
         const scores=new Map();units.forEach(unit=>{const cleaner=String(unit.cleaner||"").trim();if(!cleaner)return;const current=scores.get(cleaner)||{total:0,ready:0,working:0};current.total++;const key=statusMeta(unit).key;if(key==="ready")current.ready++;if(key==="cleaning")current.working++;scores.set(cleaner,current);});
@@ -255,7 +254,7 @@
         $("rankingList").innerHTML=rows.length?rows.map(([name,score],index)=>`<div class="rank-row"><div class="rank-number">${index+1}</div><div class="rank-name">${safe(name)}<small>${score.total} asignadas · ${score.working} limpiando</small></div><div class="rank-value">${score.ready}</div></div>`).join(""):'<div class="empty">Aún no hay cleaners asignados.</div>';
       }
       function bindRoomButtons(){document.querySelectorAll("[data-unit-id]").forEach(button=>button.addEventListener("click",()=>showRoom(button.dataset.unitId)));}
-      function showRoom(id){const unit=state.units.find(item=>String(item.id)===String(id));if(!unit)return;const meta=statusMeta(unit);$("detailUnit").textContent=unit.unit||"Habitación";$("detailStatus").textContent=`${meta.label}${unit.urgent?" · URGENTE":""}`;$("detailBuilding").textContent=buildingName(unit.building||"OTHER");$("detailCleaner").textContent=unit.cleaner||"Sin asignar";$("detailInspector").textContent=unit.inspector||"Sin asignar";$("roomToast").classList.add("show");clearTimeout(state.toastTimer);state.toastTimer=setTimeout(()=>$("roomToast").classList.remove("show"),5500);}
+      function showRoom(id){const unit=state.units.find(item=>String(item.id)===String(id));if(!unit)return;const meta=statusMeta(unit);$("detailUnit").textContent=unit.unit||"Habitación";$("detailStatus").textContent=meta.label;$("detailBuilding").textContent=buildingName(unit.building||"OTHER");$("detailCleaner").textContent=unit.cleaner||"Sin asignar";$("detailPager").textContent=isPager(unit)?"Sí · Prioridad alta":"No";$("roomToast").classList.add("show");clearTimeout(state.toastTimer);state.toastTimer=setTimeout(()=>$("roomToast").classList.remove("show"),5500);}
       function render(data){state.previous=new Map(state.units.map(unit=>[unit.id,statusMeta(unit).key]));state.units=Array.isArray(data.units)?data.units:[];const groups=groupUnits(state.units);const keys=sortBuildings(Object.keys(groups));renderSummary(state.units);renderExecutive(groups,keys);renderMap(groups,keys);renderRanking(state.units);bindRoomButtons();}
       function showError(message){const banner=$("errorBanner");banner.textContent=message;banner.style.display="block";}
       async function loadDashboard(force=false){if(state.loading)return;state.loading=true;try{const response=await fetch(`/dashboard-data?t=${Date.now()}${force?"&refresh=1":""}`,{cache:"no-store"});const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.message||"No se pudo cargar el dashboard");$("errorBanner").style.display="none";render(data);}catch(error){showError(`No se pudo cargar la operación: ${error.message}`);}finally{state.loading=false;}}
@@ -265,7 +264,6 @@
       $("mapBtn").addEventListener("click",()=>{state.view="map";localStorage.setItem("hotelDashboardView",state.view);applyView();});
       $("rankingBtn").addEventListener("click",()=>{state.ranking=!state.ranking;localStorage.setItem("hotelDashboardRanking",state.ranking?"show":"hide");applyRanking();});
       $("closeRanking").addEventListener("click",()=>{state.ranking=false;localStorage.setItem("hotelDashboardRanking","hide");applyRanking();});
-      $("themeBtn").addEventListener("click",()=>{state.theme="light";applyTheme();});
       $("fullscreenBtn").addEventListener("click",async()=>{try{if(!document.fullscreenElement)await document.documentElement.requestFullscreen();else await document.exitFullscreen();}catch(_){}});
       $("roomToast").addEventListener("click",()=>$("roomToast").classList.remove("show"));
       applyTheme();applyView();applyRanking();updateClock();setInterval(updateClock,1000);loadDashboard(true);setInterval(()=>loadDashboard(false),15000);connectRealtime();

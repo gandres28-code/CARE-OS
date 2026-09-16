@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es" data-theme="dark">
+<html lang="es" data-theme="light">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Quality & Performance · C.A.R.E</title>
@@ -25,7 +25,7 @@
 <section class="section"><article class="panel"><h2>Habitaciones con datos incompletos o sospechosos</h2><div class="table-wrap"><table><thead><tr><th>Unidad</th><th>Cleaner</th><th>Tiempo</th><th>Esperado</th><th>Inspección</th><th>Calidad</th><th>Estado</th></tr></thead><tbody id="roomsTable"></tbody></table></div></article></section>
 </main>
 <script>
-const $=id=>document.getElementById(id);let data={};const state={theme:localStorage.getItem('qualityTheme')||'dark'};
+const $=id=>document.getElementById(id);let data={};const state={theme:'light'};
 function today(){return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Chicago',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date())}
 function n(v){const x=Number(v);return Number.isFinite(x)?x:0}function pct(v){return v===null||v===undefined||v===''?'—':`${n(v).toFixed(1)}%`}function mins(v){return n(v)>0?`${n(v).toFixed(1)} min`:'Sin datos'}function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function statusPill(row){if(row.data_status==='complete')return'<span class="pill ok">Completo</span>';if(row.data_status==='missing')return'<span class="pill bad">Sin datos</span>';return'<span class="pill warn">Parcial</span>'}

@@ -1,4 +1,6 @@
-# C.A.R.E 2.3
+# C.A.R.E 2.4
+
+The C.A.R.E application remains in light mode. Executive Operations Wall is the only dark screen and uses four operational states: cleaning, completed, stayover and not started. The wall treats the existing Urgent/Priority field as Pager and shows a blinking red corner.
 
 C.A.R.E 2.3 replaces the old module menu with unified Operations, Communications and Performance centers. Master List is removed from navigation and `/master` redirects to the Operations center.
 

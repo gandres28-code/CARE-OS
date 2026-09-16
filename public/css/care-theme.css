@@ -41,8 +41,3 @@ input,select,textarea,.input,.date,.week-field,.search-box{
 .eyebrow,.dashboard-title span,.live.connected,.accent{color:var(--care-blue)!important}
 .dashboard-title button{background:var(--care-surface-2)!important;color:var(--care-navy)!important}
 #themeBtn,#theme{display:none!important}
-.care-theme-toggle{
-  position:fixed;right:16px;bottom:16px;z-index:9999;height:42px;padding:0 15px;border:1px solid var(--care-line);border-radius:12px;
-  background:var(--care-surface);color:var(--care-text);box-shadow:var(--care-shadow);font:800 12px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer
-}
-@media(max-width:680px){.care-theme-toggle{right:10px;bottom:88px;height:38px;padding:0 12px}}
