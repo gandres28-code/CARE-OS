@@ -7,12 +7,12 @@
   <title>C.A.R.E · Executive Operations Wall</title>
   <style>
     :root{
-      --bg:#f4f4f2;--bg-glow:rgba(91,24,38,.045);--surface:rgba(255,255,255,.96);--surface-solid:#fff;
+      --bg:#f4f4f2;--bg-glow:rgba(36,91,150,.045);--surface:rgba(255,255,255,.96);--surface-solid:#fff;
       --surface-2:#f7f7f5;--surface-3:#ececea;--text:#111;--muted:#70706d;--line:#dededb;
       --line-strong:#c9c9c5;--shadow:0 18px 48px rgba(17,17,17,.08);--shadow-soft:0 8px 24px rgba(17,17,17,.06);
-      --ready:#222;--cleaning:#5b1826;--pending:#999995;--stayover:#555;--inspection:#855160;
+      --ready:#222;--cleaning:#0b1f3a;--pending:#999995;--stayover:#555;--inspection:#245b96;
       --room-text:#fff;--accent:#111;--accent-text:#fff;--header:rgba(255,255,255,.90);
-      --ring:rgba(91,24,38,.10);--glass:blur(22px) saturate(145%);
+      --ring:rgba(36,91,150,.10);--glass:blur(22px) saturate(145%);
     }
     html[data-theme="dark"]{
       --bg:#07090d;--bg-glow:rgba(50,115,255,.10);--surface:rgba(15,19,25,.92);--surface-solid:#0f1319;
@@ -97,19 +97,19 @@
     @media(min-width:1800px){.app{padding:26px 30px}.building-grid{grid-template-columns:repeat(4,1fr)}.rooms{grid-template-columns:repeat(auto-fill,minmax(84px,1fr))}.room{min-height:73px}.map-canvas{min-height:790px}.map-grid{gap:19px;padding:30px}.map-building{min-height:175px}.metric{padding:19px}.topbar{padding:16px 19px}}
   </style>
 <link rel="stylesheet" href="/css/responsive-pages.css?v=full-page-v1">
-</head>
+<link rel="stylesheet" href="/css/care-theme.css?v=1"></head>
 <body data-view="executive">
   <!-- BUILD: PREMIUM-V4-SEPARATED-VIEWS -->
   <main class="app">
     <header class="topbar">
-      <div class="brand"><div class="mark">C</div><div><h1>Executive Operations Wall</h1><p id="subtitle">C.A.R.E · Still Waters Resort</p></div></div>
+      <div class="brand"><div class="mark">C</div><div><h1>C.A.R.E</h1><p id="subtitle">Executive Operations Wall</p></div></div>
       <div class="clock"><strong id="clock">--:--</strong><span id="fullDate">Cargando…</span></div>
       <div class="toolbar">
         <span class="live" id="liveBadge"><i></i><span id="liveText">Conectando</span></span>
         <button class="btn active" id="executiveBtn" type="button">Executive</button>
         <button class="btn" id="mapBtn" type="button">Hotel Map</button>
         <button class="btn" id="rankingBtn" type="button">Top Cleaners</button>
-        <button class="btn" id="themeBtn" type="button" hidden>Contraste</button>
+        <button class="btn" id="themeBtn" type="button" hidden>Theme</button>
         <button class="btn" id="fullscreenBtn" type="button">TV</button>
       </div>
     </header>
@@ -258,7 +258,7 @@
       function showRoom(id){const unit=state.units.find(item=>String(item.id)===String(id));if(!unit)return;const meta=statusMeta(unit);$("detailUnit").textContent=unit.unit||"Habitación";$("detailStatus").textContent=`${meta.label}${unit.urgent?" · URGENTE":""}`;$("detailBuilding").textContent=buildingName(unit.building||"OTHER");$("detailCleaner").textContent=unit.cleaner||"Sin asignar";$("detailInspector").textContent=unit.inspector||"Sin asignar";$("roomToast").classList.add("show");clearTimeout(state.toastTimer);state.toastTimer=setTimeout(()=>$("roomToast").classList.remove("show"),5500);}
       function render(data){state.previous=new Map(state.units.map(unit=>[unit.id,statusMeta(unit).key]));state.units=Array.isArray(data.units)?data.units:[];const groups=groupUnits(state.units);const keys=sortBuildings(Object.keys(groups));renderSummary(state.units);renderExecutive(groups,keys);renderMap(groups,keys);renderRanking(state.units);bindRoomButtons();}
       function showError(message){const banner=$("errorBanner");banner.textContent=message;banner.style.display="block";}
-      async function loadDashboard(force=false){if(state.loading)return;state.loading=true;try{const response=await fetch(`/admin-dashboard-data?t=${Date.now()}${force?"&refresh=1":""}`,{cache:"no-store"});const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.message||"No se pudo cargar el dashboard");$("errorBanner").style.display="none";render(data);}catch(error){showError(`No se pudo cargar la operación: ${error.message}`);}finally{state.loading=false;}}
+      async function loadDashboard(force=false){if(state.loading)return;state.loading=true;try{const response=await fetch(`/dashboard-data?t=${Date.now()}${force?"&refresh=1":""}`,{cache:"no-store"});const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.message||"No se pudo cargar el dashboard");$("errorBanner").style.display="none";render(data);}catch(error){showError(`No se pudo cargar la operación: ${error.message}`);}finally{state.loading=false;}}
       function scheduleRefresh(delay=300){clearTimeout(state.reloadTimer);state.reloadTimer=setTimeout(()=>loadDashboard(false),delay);}
       function connectRealtime(){if(typeof io!=="function"){$("liveText").textContent="Cada 15 s";return;}const socket=io({transports:["websocket","polling"]});socket.on("connect",()=>{$("liveBadge").classList.add("connected");$("liveText").textContent="En vivo";});socket.on("disconnect",()=>{$("liveBadge").classList.remove("connected");$("liveText").textContent="Reconectando";});["rooms:updated","room:updated","dashboard:updated","operations:updated","notion:updated","data:updated","employee:updated"].forEach(name=>socket.on(name,scheduleRefresh));socket.onAny(name=>{if(/room|dashboard|operation|notion/i.test(name))scheduleRefresh();});}
       $("executiveBtn").addEventListener("click",()=>{state.view="executive";localStorage.setItem("hotelDashboardView",state.view);applyView();});
@@ -274,5 +274,5 @@
 
 <script src="/js/push-notifications.js"></script>
 <script src="/js/admin-alerts.js"></script>
-</body>
+<script src="/js/care-theme.js?v=1"></script></body>
 </html>

@@ -1,6 +1,6 @@
 {
   "name": "care-os",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "C.A.R.E housekeeping operations, payroll, reporting, voice assistant and HotSOS integration",
   "main": "server.js",
   "scripts": {

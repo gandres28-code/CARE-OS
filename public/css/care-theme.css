@@ -1,0 +1,48 @@
+:root{
+  color-scheme:light;
+  --care-navy:#0b1f3a;
+  --care-navy-2:#15365f;
+  --care-blue:#245b96;
+  --care-bg:#f4f7fb;
+  --care-surface:#ffffff;
+  --care-surface-2:#edf2f7;
+  --care-text:#101828;
+  --care-muted:#667085;
+  --care-line:#d8e0ea;
+  --care-shadow:0 12px 32px rgba(11,31,58,.08);
+  --bg:var(--care-bg);--cream:var(--care-bg);--paper:var(--care-surface);--panel:var(--care-surface);--surface:var(--care-surface);--surface-solid:var(--care-surface);
+  --panel2:var(--care-surface-2);--surface-2:var(--care-surface-2);--surface-3:var(--care-surface-2);--text:var(--care-text);--ink:var(--care-text);
+  --muted:var(--care-muted);--line:var(--care-line);--line-strong:var(--care-line);--accent:var(--care-navy);--accentText:#fff;--accent-text:#fff;
+  --forest:var(--care-navy);--sage:var(--care-blue);--mint:#dce7f3;
+}
+html[data-care-theme="dark"]{
+  color-scheme:dark;
+  --care-bg:#07111f;
+  --care-surface:#0d1b2e;
+  --care-surface-2:#14243a;
+  --care-text:#f7f9fc;
+  --care-muted:#9fb0c5;
+  --care-line:#263b55;
+  --care-shadow:0 16px 38px rgba(0,0,0,.28);
+}
+html,body{background:var(--care-bg)!important;color:var(--care-text)!important}
+body,.shell,.center,.app,.workspace{transition:background-color .2s ease,color .2s ease}
+.panel,.card,.metric,.stat-card,.dashboard-block,.top,.topbar,.shell-head,.modal-card,.building-card,.progress-panel,.ranking,.toast,.employee-card,.room-card,.clock-card,.form-card{
+  background:var(--care-surface)!important;color:var(--care-text)!important;border-color:var(--care-line)!important;box-shadow:var(--care-shadow)!important
+}
+input,select,textarea,.input,.date,.week-field,.search-box{
+  background:var(--care-surface-2)!important;color:var(--care-text)!important;border-color:var(--care-line)!important
+}
+.sub,.muted,small,.stat-note,.metric-note{color:var(--care-muted)!important}
+.btn.primary,.button.primary,.tab.active,.brand-mark,.mark,.logo,.hero,.clock-primary{
+  background:var(--care-navy)!important;color:#fff!important;border-color:var(--care-navy)!important
+}
+.brand-panel{background:var(--care-navy)!important;color:#fff!important}
+.eyebrow,.dashboard-title span,.live.connected,.accent{color:var(--care-blue)!important}
+.dashboard-title button{background:var(--care-surface-2)!important;color:var(--care-navy)!important}
+#themeBtn,#theme{display:none!important}
+.care-theme-toggle{
+  position:fixed;right:16px;bottom:16px;z-index:9999;height:42px;padding:0 15px;border:1px solid var(--care-line);border-radius:12px;
+  background:var(--care-surface);color:var(--care-text);box-shadow:var(--care-shadow);font:800 12px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer
+}
+@media(max-width:680px){.care-theme-toggle{right:10px;bottom:88px;height:38px;padding:0 12px}}
