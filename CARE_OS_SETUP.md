@@ -1,4 +1,6 @@
-# Care OS 2.0
+# C.A.R.E 2.2
+
+C.A.R.E 2.2 replaces the old module menu with unified Operations, Communications and Performance centers. Master List is removed from navigation and `/master` redirects to the Operations center.
 
 ## Deploy
 

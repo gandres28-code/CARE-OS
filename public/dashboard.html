@@ -1,18 +1,18 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="dark">
+<html lang="es" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#07090c" />
-  <title>Still Waters Resort · Command Center</title>
+  <meta name="theme-color" content="#111111" />
+  <title>C.A.R.E · Executive Operations Wall</title>
   <style>
     :root{
-      --bg:#eef1f5;--bg-glow:rgba(21,100,246,.05);--surface:rgba(255,255,255,.94);--surface-solid:#fff;
-      --surface-2:#f7f9fb;--surface-3:#e9edf2;--text:#10141b;--muted:#687281;--line:#dce2e9;
-      --line-strong:#c7d0db;--shadow:0 18px 48px rgba(31,42,55,.09);--shadow-soft:0 8px 24px rgba(31,42,55,.065);
-      --ready:#15965f;--cleaning:#d83b45;--pending:#7c8796;--stayover:#2474d7;--inspection:#e88418;
-      --room-text:#fff;--accent:#111827;--accent-text:#fff;--header:rgba(255,255,255,.82);
-      --ring:rgba(17,24,39,.09);--glass:blur(22px) saturate(145%);
+      --bg:#f4f4f2;--bg-glow:rgba(91,24,38,.045);--surface:rgba(255,255,255,.96);--surface-solid:#fff;
+      --surface-2:#f7f7f5;--surface-3:#ececea;--text:#111;--muted:#70706d;--line:#dededb;
+      --line-strong:#c9c9c5;--shadow:0 18px 48px rgba(17,17,17,.08);--shadow-soft:0 8px 24px rgba(17,17,17,.06);
+      --ready:#222;--cleaning:#5b1826;--pending:#999995;--stayover:#555;--inspection:#855160;
+      --room-text:#fff;--accent:#111;--accent-text:#fff;--header:rgba(255,255,255,.90);
+      --ring:rgba(91,24,38,.10);--glass:blur(22px) saturate(145%);
     }
     html[data-theme="dark"]{
       --bg:#07090d;--bg-glow:rgba(50,115,255,.10);--surface:rgba(15,19,25,.92);--surface-solid:#0f1319;
@@ -102,24 +102,24 @@
   <!-- BUILD: PREMIUM-V4-SEPARATED-VIEWS -->
   <main class="app">
     <header class="topbar">
-      <div class="brand"><div class="mark">417</div><div><h1>Still Waters Resort</h1><p id="subtitle">Executive Operations Wall</p></div></div>
+      <div class="brand"><div class="mark">C</div><div><h1>Executive Operations Wall</h1><p id="subtitle">C.A.R.E · Still Waters Resort</p></div></div>
       <div class="clock"><strong id="clock">--:--</strong><span id="fullDate">Cargando…</span></div>
       <div class="toolbar">
         <span class="live" id="liveBadge"><i></i><span id="liveText">Conectando</span></span>
         <button class="btn active" id="executiveBtn" type="button">Executive</button>
         <button class="btn" id="mapBtn" type="button">Hotel Map</button>
         <button class="btn" id="rankingBtn" type="button">Top Cleaners</button>
-        <button class="btn" id="themeBtn" type="button">Light</button>
+        <button class="btn" id="themeBtn" type="button" hidden>Contraste</button>
         <button class="btn" id="fullscreenBtn" type="button">TV</button>
       </div>
     </header>
 
     <div class="legend" aria-label="Leyenda de estados">
-      <div class="legend-item"><i class="swatch ready-bg"></i>Verde · Ready</div>
-      <div class="legend-item"><i class="swatch cleaning-bg"></i>Rojo · Limpiando</div>
+      <div class="legend-item"><i class="swatch ready-bg"></i>Negro · Ready</div>
+      <div class="legend-item"><i class="swatch cleaning-bg"></i>Vino · Limpiando</div>
       <div class="legend-item"><i class="swatch pending-bg"></i>Gris · Sin entrar</div>
-      <div class="legend-item"><i class="swatch stayover-bg"></i>Azul · Stayover</div>
-      <div class="legend-item"><i class="swatch inspection-bg"></i>Naranja · Inspección</div>
+      <div class="legend-item"><i class="swatch stayover-bg"></i>Grafito · Stayover</div>
+      <div class="legend-item"><i class="swatch inspection-bg"></i>Vino claro · Inspección</div>
     </div>
 
     <div class="error" id="errorBanner"></div>
@@ -154,7 +154,7 @@
   </main>
 
   <aside class="toast" id="roomToast" role="dialog" aria-live="polite"><h3 id="detailUnit">Habitación</h3><div class="detail-grid"><div class="detail"><span>Estado</span><b id="detailStatus">-</b></div><div class="detail"><span>Edificio</span><b id="detailBuilding">-</b></div><div class="detail"><span>Cleaner</span><b id="detailCleaner">Sin asignar</b></div><div class="detail"><span>Inspector</span><b id="detailInspector">Sin asignar</b></div></div></aside>
-  <div class="build-tag">COMMAND CENTER V6 · PROFESSIONAL</div>
+  <div class="build-tag">C.A.R.E · LIVE OPERATIONS</div>
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
@@ -164,7 +164,7 @@
       const state = {
         units: [],
         view: localStorage.getItem("hotelDashboardView") === "map" ? "map" : "executive",
-        theme: localStorage.getItem("hotelDashboardTheme") === "light" ? "light" : "dark",
+        theme: "light",
         ranking: localStorage.getItem("hotelDashboardRanking") === "show",
         previous: new Map(), toastTimer: null, reloadTimer: null, loading: false
       };
@@ -205,7 +205,7 @@
       }
       function applyTheme(){
         document.documentElement.dataset.theme=state.theme;
-        $("themeBtn").textContent=state.theme==="dark"?"Light":"Dark";
+        $("themeBtn").textContent="Contraste";
         const meta=document.querySelector('meta[name="theme-color"]'); if(meta) meta.content=state.theme==="dark"?"#07090c":"#f4f6f8";
       }
       function applyView(){
@@ -243,7 +243,7 @@
       }
       function renderExecutive(groups,keys){
         if(!keys.length){$("buildingGrid").innerHTML='<div class="empty">No hay habitaciones cargadas para hoy.</div>';return;}
-        $("buildingGrid").innerHTML=keys.map(key=>{const units=groups[key].slice().sort((a,b)=>roomLabel(a.unit).localeCompare(roomLabel(b.unit),undefined,{numeric:true}));const ready=units.filter(u=>statusMeta(u).key==="ready").length;const pct=units.length?Math.round(ready/units.length*100):0;const counts=totalsFor(units);return `<article class="building-card"><div class="building-head"><div class="building-letter">${safe(key==="OTHER"?"⌂":key)}</div><div class="building-title"><strong>${safe(buildingName(key))}</strong><span>${ready} ready de ${units.length} habitaciones</span></div><div class="building-percent">${pct}%</div><div class="mini-track"><div class="mini-fill" style="width:${pct}%"></div></div></div><div class="status-strip"><span class="status-chip"><i class="ready-bg"></i>${counts.ready}</span><span class="status-chip"><i class="cleaning-bg"></i>${counts.cleaning}</span><span class="status-chip"><i class="inspection-bg"></i>${counts.inspection}</span><span class="status-chip"><i class="stayover-bg"></i>${counts.stayover}</span><span class="status-chip"><i class="pending-bg"></i>${counts.pending}</span></div><div class="rooms">${units.map(u=>roomButton(u)).join("")}</div></article>`;}).join("");
+        $("buildingGrid").innerHTML=keys.map(key=>{const units=groups[key].slice().sort((a,b)=>roomLabel(a.unit).localeCompare(roomLabel(b.unit),undefined,{numeric:true}));const ready=units.filter(u=>statusMeta(u).key==="ready").length;const pct=units.length?Math.round(ready/units.length*100):0;const counts=totalsFor(units);return `<article class="building-card"><div class="building-head"><div class="building-letter">${safe(key==="OTHER"?"H":key)}</div><div class="building-title"><strong>${safe(buildingName(key))}</strong><span>${ready} ready de ${units.length} habitaciones</span></div><div class="building-percent">${pct}%</div><div class="mini-track"><div class="mini-fill" style="width:${pct}%"></div></div></div><div class="status-strip"><span class="status-chip"><i class="ready-bg"></i>${counts.ready}</span><span class="status-chip"><i class="cleaning-bg"></i>${counts.cleaning}</span><span class="status-chip"><i class="inspection-bg"></i>${counts.inspection}</span><span class="status-chip"><i class="stayover-bg"></i>${counts.stayover}</span><span class="status-chip"><i class="pending-bg"></i>${counts.pending}</span></div><div class="rooms">${units.map(u=>roomButton(u)).join("")}</div></article>`;}).join("");
       }
       function renderMap(groups,keys){
         if(!keys.length){$("mapGrid").innerHTML='<div class="empty">No hay edificios disponibles.</div>';return;}
@@ -265,7 +265,7 @@
       $("mapBtn").addEventListener("click",()=>{state.view="map";localStorage.setItem("hotelDashboardView",state.view);applyView();});
       $("rankingBtn").addEventListener("click",()=>{state.ranking=!state.ranking;localStorage.setItem("hotelDashboardRanking",state.ranking?"show":"hide");applyRanking();});
       $("closeRanking").addEventListener("click",()=>{state.ranking=false;localStorage.setItem("hotelDashboardRanking","hide");applyRanking();});
-      $("themeBtn").addEventListener("click",()=>{state.theme=state.theme==="dark"?"light":"dark";localStorage.setItem("hotelDashboardTheme",state.theme);applyTheme();});
+      $("themeBtn").addEventListener("click",()=>{state.theme="light";applyTheme();});
       $("fullscreenBtn").addEventListener("click",async()=>{try{if(!document.fullscreenElement)await document.documentElement.requestFullscreen();else await document.exitFullscreen();}catch(_){}});
       $("roomToast").addEventListener("click",()=>$("roomToast").classList.remove("show"));
       applyTheme();applyView();applyRanking();updateClock();setInterval(updateClock,1000);loadDashboard(true);setInterval(()=>loadDashboard(false),15000);connectRealtime();

@@ -292,7 +292,7 @@ window.OS = {
         });
 
         this.socket.on("connect", () => {
-          console.log("Care OS Socket connected");
+          console.log("C.A.R.E Socket connected");
         });
 
         this.socket.on("connect_error", (error) => {
@@ -300,7 +300,7 @@ window.OS = {
         });
 
         this.socket.on("disconnect", (reason) => {
-          console.log("Care OS Socket disconnected:", reason);
+          console.log("C.A.R.E Socket disconnected:", reason);
         });
       }
     } catch (error) {
@@ -461,7 +461,7 @@ window.OS = {
         await this.loadBootstrap(false);
       }
 
-      console.log("Care OS Core loaded", {
+      console.log("C.A.R.E Core loaded", {
         user: this.user,
       });
 

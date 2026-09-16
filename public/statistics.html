@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#f5f7fb">
-  <title>Care OS · Estadísticas</title>
+  <title>C.A.R.E · Estadísticas</title>
   <style>
     :root{
       --bg:#f5f7fb;--card:#fff;--text:#172033;--muted:#6f7a8d;--line:#e7ebf2;
@@ -69,7 +69,7 @@
 <body>
   <main class="shell">
     <header class="topbar">
-      <div class="brand"><div class="logo">417</div><div><strong>Estadísticas</strong><span>Rendimiento, calidad y costos</span></div></div>
+      <div class="brand"><div class="logo">C</div><div><strong>Estadísticas</strong><span>Rendimiento, calidad y costos</span></div></div>
       <div class="actions">
         <input id="dateInput" class="date" type="date">
         <button id="refreshBtn" class="button" onclick="refreshAllStatistics()">↻ Actualizar</button>
@@ -80,20 +80,20 @@
 
     <section class="hero">
       <div class="hero-row">
-        <div><div class="eyebrow">Care OS · Analytics</div><h1>Rendimiento de la operación</h1><p id="heroText">Cargando quién avanzó más, dónde se perdió tiempo y cómo se comportó la calidad.</p></div>
+        <div><div class="eyebrow">C.A.R.E · Analytics</div><h1>Rendimiento de la operación</h1><p id="heroText">Cargando quién avanzó más, dónde se perdió tiempo y cómo se comportó la calidad.</p></div>
         <div class="hero-score"><span>Quality Score estimado</span><strong id="heroQuality">0%</strong></div>
       </div>
     </section>
 
     <section class="kpis">
-      <article class="kpi"><div class="icon">🏨</div><strong id="totalUnits">0</strong><span>Habitaciones</span></article>
+      <article class="kpi"><div class="icon">RM</div><strong id="totalUnits">0</strong><span>Habitaciones</span></article>
       <article class="kpi"><div class="icon">✓</div><strong id="ready">0</strong><span>Completadas</span></article>
-      <article class="kpi"><div class="icon">📈</div><strong id="completionRate">0%</strong><span>Avance</span></article>
-      <article class="kpi"><div class="icon">⏱️</div><strong id="avgCleaning">0m</strong><span>Promedio limpieza</span></article>
-      <article class="kpi"><div class="icon">🔎</div><strong id="avgInspection">0m</strong><span>Promedio inspección</span></article>
-      <article class="kpi"><div class="icon">💵</div><strong id="payroll">$0</strong><span>Payroll</span></article>
-      <article class="kpi"><div class="icon">👥</div><strong id="activeEmployees">0</strong><span>Activos</span></article>
-      <article class="kpi"><div class="icon">⚠️</div><strong id="problems">0</strong><span>Problemas</span></article>
+      <article class="kpi"><div class="icon">RP</div><strong id="completionRate">0%</strong><span>Avance</span></article>
+      <article class="kpi"><div class="icon">TM</div><strong id="avgCleaning">0m</strong><span>Promedio limpieza</span></article>
+      <article class="kpi"><div class="icon">QA</div><strong id="avgInspection">0m</strong><span>Promedio inspección</span></article>
+      <article class="kpi"><div class="icon">PY</div><strong id="payroll">$0</strong><span>Payroll</span></article>
+      <article class="kpi"><div class="icon">EM</div><strong id="activeEmployees">0</strong><span>Activos</span></article>
+      <article class="kpi"><div class="icon">AL</div><strong id="problems">0</strong><span>Problemas</span></article>
     </section>
 
     <section class="grid">
@@ -245,7 +245,7 @@
       rankingCard("⚡","Más rápido",r.fastestCleaner?.name,r.fastestCleaner?`${r.fastestCleaner.averageMinutes} min promedio`:""),
       rankingCard("🏆","Más habitaciones",r.mostRoomsCleaner?.name,r.mostRoomsCleaner?`${r.mostRoomsCleaner.completed} completadas`:""),
       rankingCard("✨","Mejor calidad",r.bestQualityCleaner?.name,r.bestQualityCleaner?`${r.bestQualityCleaner.qualityScore}%`:""),
-      rankingCard("🔎","Inspector más activo",r.topInspector?.name,r.topInspector?`${r.topInspector.readyCompleted} ready`:""),
+      rankingCard("QA","Inspector más activo",r.topInspector?.name,r.topInspector?`${r.topInspector.readyCompleted} ready`:""),
       rankingCard("🏢","Edificio eficiente",r.mostEfficientBuilding?`Building ${r.mostEfficientBuilding.building}`:"",r.mostEfficientBuilding?`${r.mostEfficientBuilding.averageCleaningMinutes} min promedio`:""),
       rankingCard("⏳","Mayor atraso",r.mostDelayedBuilding?`Building ${r.mostDelayedBuilding.building}`:"",r.mostDelayedBuilding?`${r.mostDelayedBuilding.pending} pendientes`:"")
     ].join("");

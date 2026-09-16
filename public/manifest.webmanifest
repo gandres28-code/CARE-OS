@@ -1,12 +1,12 @@
 {
-  "name": "Care OS",
-  "short_name": "Care",
+  "name": "C.A.R.E",
+  "short_name": "C.A.R.E",
   "start_url": "/launch",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#f8fafc",
-  "theme_color": "#111827",
-  "description": "Housekeeping operations for Care",
+  "background_color": "#f4f4f2",
+  "theme_color": "#111111",
+  "description": "Professional housekeeping operations by C.A.R.E",
   "icons": [
     {
       "src": "/icons/icon-192.png",

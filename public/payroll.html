@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Payroll 2.0 | Care OS</title>
+  <title>Payroll 2.0 | C.A.R.E</title>
   <meta name="theme-color" content="#0f172a" />
   <style>
     :root {
@@ -475,7 +475,7 @@
   </style>
 <link rel="stylesheet" href="/css/responsive-pages.css?v=full-page-v1">
 <style>
-  body{background:#f7f5ed!important;color:#17211b!important}.shell{max-width:1280px!important}.hero{background:linear-gradient(130deg,#12372a,#244d3c)!important;border-radius:26px!important}.eyebrow{color:#d2e3c8!important}.stat-card,.panel{border-color:#dfe5dc!important;border-radius:18px!important;box-shadow:0 8px 24px rgba(25,55,40,.05)!important}.btn.success,.btn.primary{background:#12372a!important;border-color:#12372a!important}.system-grid{display:none!important}.actions{gap:8px!important}.employee-card.selected{border-color:#4f6f52!important;background:#edf2e9!important}
+  body{background:#f6f6f4!important;color:#111111!important}.shell{max-width:1280px!important}.hero{background:linear-gradient(130deg,#111111,#2a2a2a)!important;border-radius:26px!important}.eyebrow{color:#f1e8ea!important}.stat-card,.panel{border-color:#dededb!important;border-radius:18px!important;box-shadow:0 8px 24px rgba(17,17,17,.05)!important}.btn.success,.btn.primary{background:#111111!important;border-color:#111111!important}.system-grid{display:none!important}.actions{gap:8px!important}.employee-card.selected{border-color:#5b1826!important;background:#f1e8ea!important}
 </style>
 </head>
 <body>
@@ -483,7 +483,7 @@
     <section class="hero">
       <div class="hero-top">
         <div>
-          <p class="eyebrow">Care OS</p>
+          <p class="eyebrow">C.A.R.E</p>
           <h1>Payroll 2.0</h1>
           <p>Revisa la semana, compara PostgreSQL con Notion y descarga la nómina sin editar enlaces manualmente.</p>
         </div>
@@ -515,19 +515,19 @@
 
     <section class="section stats-grid">
       <article class="stat-card">
-        <div class="stat-top"><span class="stat-label">Total payroll</span><span class="stat-icon">💵</span></div>
+        <div class="stat-top"><span class="stat-label">Total payroll</span><span class="stat-icon">PY</span></div>
         <div><div class="stat-value" id="totalPayroll">$0.00</div><div class="stat-note">Limpieza + pagos por hora</div></div>
       </article>
       <article class="stat-card">
-        <div class="stat-top"><span class="stat-label">Empleados</span><span class="stat-icon">👥</span></div>
+        <div class="stat-top"><span class="stat-label">Empleados</span><span class="stat-icon">EM</span></div>
         <div><div class="stat-value" id="totalEmployees">0</div><div class="stat-note">Con actividad esta semana</div></div>
       </article>
       <article class="stat-card">
-        <div class="stat-top"><span class="stat-label">Unidades</span><span class="stat-icon">🏠</span></div>
+        <div class="stat-top"><span class="stat-label">Unidades</span><span class="stat-icon">RM</span></div>
         <div><div class="stat-value" id="totalUnits">0</div><div class="stat-note">Registros pagados por unidad</div></div>
       </article>
       <article class="stat-card">
-        <div class="stat-top"><span class="stat-label">Advertencias</span><span class="stat-icon">⚠️</span></div>
+        <div class="stat-top"><span class="stat-label">Advertencias</span><span class="stat-icon">AL</span></div>
         <div><div class="stat-value" id="totalWarnings">0</div><div class="stat-note">Requieren revisión</div></div>
       </article>
     </section>
@@ -542,13 +542,13 @@
       </div>
       <div class="actions">
         <button class="btn" id="syncButton" hidden disabled>🔄 Sincronizar</button>
-        <button class="btn secondary" id="compareButton" hidden disabled>⚖️ Comparar</button>
-        <button class="btn violet" id="ratesButton" hidden disabled>⚙️ Tarifas</button>
+        <button class="btn secondary" id="compareButton" hidden disabled>Comparar</button>
+        <button class="btn violet" id="ratesButton" hidden disabled>Tarifas</button>
         <button class="btn amber" id="weekLockButton" hidden disabled>🔒 Cerrar semana</button>
         <button class="btn ghost" id="auditButton" hidden disabled>🧾 Historial</button>
         <button class="btn violet" id="manualHoursButton">➕ Agregar horas</button>
         <button class="btn secondary" id="manualEntryButton">＋ Unidad / bono / descuento</button>
-        <button class="btn success" id="excelButton">⬇️ Descargar Excel</button>
+        <button class="btn success" id="excelButton">Descargar Excel</button>
         <button class="btn ghost" id="refreshButton">↻ Actualizar vista</button>
       </div>
     </section>
@@ -655,7 +655,7 @@
 
   <div class="modal-backdrop" id="manualHoursModal">
     <div class="modal">
-      <div class="modal-head"><h3>⏱️ Agregar horas manuales</h3><button class="mini-btn" data-close-modal="manualHoursModal">✕</button></div>
+      <div class="modal-head"><h3>Agregar horas manuales</h3><button class="mini-btn" data-close-modal="manualHoursModal">Cerrar</button></div>
       <div class="modal-body">
         <p class="panel-subtitle">Este registro se guardará en Time Clock de Notion y se sumará automáticamente a la nómina semanal.</p>
         <div class="modal-grid">
@@ -674,7 +674,7 @@
 
   <div class="modal-backdrop" id="manualEntryModal">
     <div class="modal">
-      <div class="modal-head"><h3>Agregar movimiento de nómina</h3><button class="mini-btn" data-close-modal="manualEntryModal">✕</button></div>
+      <div class="modal-head"><h3>Agregar movimiento de nómina</h3><button class="mini-btn" data-close-modal="manualEntryModal">Cerrar</button></div>
       <div class="modal-body">
         <p class="panel-subtitle">Se guardará directamente en Payroll Records de Notion y aparecerá en el total y en el Excel.</p>
         <div class="modal-grid">
@@ -692,7 +692,7 @@
 
   <div class="modal-backdrop" id="rateModal">
     <div class="modal">
-      <div class="modal-head"><h3>⚙️ Centro de tarifas</h3><button class="mini-btn" data-close-modal="rateModal">✕</button></div>
+      <div class="modal-head"><h3>Centro de tarifas</h3><button class="mini-btn" data-close-modal="rateModal">Cerrar</button></div>
       <div class="modal-body">
         <div class="modal-grid">
           <div class="field"><label>Propiedad</label><input id="rateProperty" value="ALL" placeholder="ALL o nombre del hotel"></div>
@@ -710,7 +710,7 @@
 
   <div class="modal-backdrop" id="adjustModal">
     <div class="modal">
-      <div class="modal-head"><h3>✏️ Ajustar pago</h3><button class="mini-btn" data-close-modal="adjustModal">✕</button></div>
+      <div class="modal-head"><h3>Ajustar pago</h3><button class="mini-btn" data-close-modal="adjustModal">Cerrar</button></div>
       <div class="modal-body">
         <p id="adjustDescription"></p>
         <div class="modal-grid">
@@ -724,7 +724,7 @@
 
   <div class="modal-backdrop" id="weekModal">
     <div class="modal">
-      <div class="modal-head"><h3 id="weekModalTitle">Cerrar semana</h3><button class="mini-btn" data-close-modal="weekModal">✕</button></div>
+      <div class="modal-head"><h3 id="weekModalTitle">Cerrar semana</h3><button class="mini-btn" data-close-modal="weekModal">Cerrar</button></div>
       <div class="modal-body">
         <p id="weekModalDescription"></p>
         <div class="field"><label>Motivo / nota de autorización</label><textarea id="weekReason"></textarea></div>
@@ -735,7 +735,7 @@
 
   <div class="modal-backdrop" id="auditModal">
     <div class="modal">
-      <div class="modal-head"><h3>🧾 Historial de cambios</h3><button class="mini-btn" data-close-modal="auditModal">✕</button></div>
+      <div class="modal-head"><h3>🧾 Historial de cambios</h3><button class="mini-btn" data-close-modal="auditModal">Cerrar</button></div>
       <div class="modal-body"><div class="audit-list" id="auditList"><div class="empty">Cargando historial…</div></div></div>
     </div>
   </div>
