@@ -986,7 +986,7 @@ app.get("/quality-performance", (req, res) => {
 });
 
 app.get("/master", (req, res) => {
-  res.sendFile(__dirname + "/public/master.html");
+  res.redirect(302, "/operations-center.html");
 });
 // ■ Diagnóstico seguro
 app.get("/debug-env", (req, res) => {
@@ -10397,6 +10397,91 @@ app.post("/api/sync-queue/retry", async (req, res) => {
 // =========================================================
 // SERVICE ORDERS · HOTSOS-STYLE ROOM REQUESTS
 // =========================================================
+// =========================================================
+// CARE COMMUNICATIONS · CHAT + ANNOUNCEMENTS
+// =========================================================
+app.get("/api/communications", async (req, res) => {
+  try {
+    if (!postgresStatus.connected) return res.status(503).json({ ok:false, message:"PostgreSQL no está conectado" });
+    const [messages, announcements] = await Promise.all([
+      postgresQuery(`SELECT id,sender,sender_role AS "senderRole",message,channel,created_at AS "createdAt" FROM team_messages WHERE channel=$1 ORDER BY created_at DESC LIMIT 100`, [String(req.query.channel || "general")]),
+      postgresQuery(`SELECT id,title,body,priority,author,active,expires_at AS "expiresAt",created_at AS "createdAt" FROM announcements WHERE active=TRUE AND (expires_at IS NULL OR expires_at > NOW()) ORDER BY CASE priority WHEN 'urgent' THEN 1 WHEN 'important' THEN 2 ELSE 3 END, created_at DESC LIMIT 50`),
+    ]);
+    return res.json({ ok:true, messages:messages.rows.reverse(), announcements:announcements.rows });
+  } catch (error) {
+    console.error("COMMUNICATIONS LIST ERROR:", error.message);
+    return res.status(500).json({ ok:false, message:error.message });
+  }
+});
+
+app.post("/api/communications/messages", async (req, res) => {
+  try {
+    const sender=String(req.body.sender || "").trim();
+    const message=String(req.body.message || "").trim().slice(0,2000);
+    if(!sender || !message) return res.status(400).json({ok:false,message:"Nombre y mensaje son requeridos"});
+    const result=await postgresQuery(`INSERT INTO team_messages(sender,sender_role,message,channel) VALUES($1,$2,$3,$4) RETURNING id,sender,sender_role AS "senderRole",message,channel,created_at AS "createdAt"`,[sender,String(req.body.senderRole||""),message,String(req.body.channel||"general")]);
+    io.emit("communications:message",result.rows[0]);
+    return res.json({ok:true,message:result.rows[0]});
+  } catch(error){return res.status(500).json({ok:false,message:error.message});}
+});
+
+app.post("/api/communications/announcements", async (req, res) => {
+  try {
+    const title=String(req.body.title||"").trim().slice(0,160), body=String(req.body.body||"").trim().slice(0,4000);
+    if(!title||!body)return res.status(400).json({ok:false,message:"Título y anuncio son requeridos"});
+    const priority=["normal","important","urgent"].includes(req.body.priority)?req.body.priority:"normal";
+    const result=await postgresQuery(`INSERT INTO announcements(title,body,priority,author,expires_at) VALUES($1,$2,$3,$4,$5) RETURNING id,title,body,priority,author,active,expires_at AS "expiresAt",created_at AS "createdAt"`,[title,body,priority,String(req.body.author||""),req.body.expiresAt||null]);
+    io.emit("communications:announcement",result.rows[0]);
+    return res.json({ok:true,announcement:result.rows[0]});
+  }catch(error){return res.status(500).json({ok:false,message:error.message});}
+});
+
+app.patch("/api/communications/announcements/:id", async (req,res)=>{
+  try{
+    const result=await postgresQuery(`UPDATE announcements SET active=$2,updated_at=NOW() WHERE id=$1 RETURNING *`,[Number(req.params.id),req.body.active!==false]);
+    io.emit("communications:updated",{type:"announcement",id:Number(req.params.id)});
+    return res.json({ok:true,announcement:result.rows[0]||null});
+  }catch(error){return res.status(500).json({ok:false,message:error.message});}
+});
+
+// =========================================================
+// ROOM CATALOG · REFERENCE PHOTOS + INVENTORY
+// =========================================================
+app.get("/api/rooms/:roomNumber/catalog", async (req,res)=>{
+  try{
+    const roomNumber=String(req.params.roomNumber||"").trim();
+    const [room,photos,inventory,history]=await Promise.all([
+      postgresQuery(`SELECT * FROM rooms WHERE normalized_room=$1 OR room_number=$2 ORDER BY work_date DESC LIMIT 1`,[normalizeRoom(roomNumber),roomNumber]),
+      postgresQuery(`SELECT id,room_number AS "roomNumber",category,photo_url AS "photoUrl",caption,uploaded_by AS "uploadedBy",created_at AS "createdAt" FROM room_photos WHERE room_number=$1 ORDER BY created_at DESC`,[roomNumber]),
+      postgresQuery(`SELECT id,room_number AS "roomNumber",item_name AS "itemName",expected_quantity AS "expectedQuantity",location,notes,active,updated_by AS "updatedBy",updated_at AS "updatedAt" FROM room_inventory WHERE room_number=$1 AND active=TRUE ORDER BY item_name`,[roomNumber]),
+      postgresQuery(`SELECT id,event_time AS "eventTime",action,employee,note,photo_url AS "photoUrl" FROM operations_logs WHERE normalized_room=$1 ORDER BY event_time DESC LIMIT 100`,[normalizeRoom(roomNumber)]),
+    ]);
+    return res.json({ok:true,room:room.rows[0]||null,photos:photos.rows,inventory:inventory.rows,history:history.rows});
+  }catch(error){return res.status(500).json({ok:false,message:error.message});}
+});
+
+app.post("/api/rooms/:roomNumber/catalog/photos", upload.single("photo"), async (req,res)=>{
+  try{
+    if(!req.file)return res.status(400).json({ok:false,message:"Selecciona una fotografía"});
+    const roomNumber=String(req.params.roomNumber||"").trim();
+    const dataUri=`data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
+    const uploaded=await cloudinary.uploader.upload(dataUri,{folder:`care-os/room-catalog/${normalizeRoom(roomNumber)}`,resource_type:"image",quality:"auto:good"});
+    const result=await postgresQuery(`INSERT INTO room_photos(room_number,category,photo_url,caption,uploaded_by) VALUES($1,$2,$3,$4,$5) RETURNING *`,[roomNumber,String(req.body.category||"reference"),uploaded.secure_url,String(req.body.caption||""),String(req.body.uploadedBy||"")]);
+    io.emit("room-catalog:updated",{roomNumber,type:"photo"});
+    return res.json({ok:true,photo:result.rows[0]});
+  }catch(error){return res.status(500).json({ok:false,message:error.message});}
+});
+
+app.post("/api/rooms/:roomNumber/catalog/inventory", async (req,res)=>{
+  try{
+    const roomNumber=String(req.params.roomNumber||"").trim(), itemName=String(req.body.itemName||"").trim();
+    if(!itemName)return res.status(400).json({ok:false,message:"Escribe el artículo"});
+    const result=await postgresQuery(`INSERT INTO room_inventory(room_number,item_name,expected_quantity,location,notes,updated_by) VALUES($1,$2,$3,$4,$5,$6) RETURNING *`,[roomNumber,itemName,Math.max(0,Number(req.body.expectedQuantity)||0),String(req.body.location||""),String(req.body.notes||""),String(req.body.updatedBy||"")]);
+    io.emit("room-catalog:updated",{roomNumber,type:"inventory"});
+    return res.json({ok:true,item:result.rows[0]});
+  }catch(error){return res.status(500).json({ok:false,message:error.message});}
+});
+
 app.get("/service-orders", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "service-orders.html"));
 });
