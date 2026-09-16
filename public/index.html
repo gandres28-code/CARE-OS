@@ -1589,6 +1589,27 @@
   <link rel="manifest" href="/manifest.webmanifest">
   <meta name="theme-color" content="#111827">
 <link rel="stylesheet" href="/css/responsive-pages.css?v=full-page-v1">
+<style>
+  :root{--care-forest:#12372a;--care-sage:#4f6f52;--care-mint:#d2e3c8;--care-cream:#f7f5ed;--care-paper:#fffef9}
+  body{background:var(--care-cream)!important;color:#17211b;padding-bottom:24px!important}
+  .app-shell{max-width:760px!important;padding:0 14px 30px!important}
+  .topbar{background:rgba(247,245,237,.94)!important;border-bottom:1px solid #dfe5dc!important;backdrop-filter:blur(18px)}
+  .brand-mark{background:var(--care-forest)!important;color:white!important;border-radius:13px!important}
+  .brand-title strong{color:#17211b!important}.brand-title span{color:#748078!important}
+  .hero-card{background:linear-gradient(130deg,var(--care-forest),#244d3c)!important;border-radius:25px!important;box-shadow:0 16px 38px rgba(18,55,42,.17)!important}
+  .stats-grid{grid-template-columns:repeat(5,1fr)!important;gap:7px!important}
+  .stat-card{border-color:#dfe5dc!important;background:var(--care-paper)!important;border-radius:16px!important;box-shadow:none!important}
+  .stat-card strong{color:var(--care-forest)!important}
+  .section-bar h2{font-family:Georgia,serif!important;font-size:22px!important}
+  .work-filter.active{background:var(--care-forest)!important;border-color:var(--care-forest)!important}
+  .work-filter,.work-sort{background:var(--care-paper)!important;border-color:#dfe5dc!important}
+  .assignment-card{background:var(--care-paper)!important;border:1px solid #dfe5dc!important;border-left:7px solid #93a49a!important;border-radius:18px!important;box-shadow:0 7px 20px rgba(25,55,40,.05)!important;margin-bottom:9px!important}
+  .assignment-card.started{border-left-color:#d49a46!important}.assignment-card.done{border-left-color:#4f8a62!important}.assignment-card.arrival{border-left-color:#b84b4b!important}.assignment-card.guest-out{border-left-color:#376d7d!important}
+  .room-title{font-size:25px!important;color:#17211b!important}.meta-block label{color:#8b958e!important}.state-panel{background:#edf2e9!important;border-radius:15px!important}.tap-label{color:var(--care-forest)!important}
+  .action-circle .ring-value{stroke:var(--care-forest)!important}.assistant-button{background:#d8a25e!important;color:#1d261f!important}
+  .inline-voice{background:var(--care-mint)!important;color:var(--care-forest)!important}
+  @media(max-width:600px){.stats-grid{grid-template-columns:repeat(5,minmax(58px,1fr))!important;overflow-x:auto}.stat-card{padding:10px 5px!important}.stat-card span{font-size:9px!important}.hero-subtitle{display:none}.room-meta-grid{grid-template-columns:1fr 1fr!important}}
+</style>
 </head>
 
 <body>
@@ -1768,28 +1789,6 @@
   </section>
 
 </div>
-
-<nav class="bottom-nav">
-  <a class="nav-item active" href="/">
-    <span style="font-size:18px;">🧹</span>
-    Limpieza
-  </a>
-  <button class="nav-item" type="button" onclick="openSettingsMenu()">
-    <span style="font-size:18px;">⚙️</span>
-    Settings
-  </button>
-</nav>
-
-<section id="settingsSheet" class="settings-sheet hidden">
-  <div class="settings-head">
-    <strong>Settings</strong>
-    <button onclick="closeSettingsMenu()">Cerrar</button>
-  </div>
-
-  <button class="settings-option" onclick="window.OS?.clearSession ? OS.clearSession() : localStorage.clear(); window.location.replace('/launch');">
-    Cambiar usuario
-  </button>
-</section>
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/maid-core.js"></script>
@@ -3241,20 +3240,6 @@ async function loadMyReports(forceRefresh = false){
   })();
 
   return reportsRequest;
-}
-
-function openSettingsMenu(){
-  const sheet = document.getElementById("settingsSheet");
-  if(sheet){
-    sheet.classList.remove("hidden");
-  }
-}
-
-function closeSettingsMenu(){
-  const sheet = document.getElementById("settingsSheet");
-  if(sheet){
-    sheet.classList.add("hidden");
-  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
