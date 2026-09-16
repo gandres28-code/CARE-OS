@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Care OS</title>
+  <meta name="theme-color" content="#0f172a">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <main class="os-shell">
+    <button
+      id="sidebarToggle"
+      class="sidebar-toggle"
+      type="button"
+      aria-label="Ocultar menú lateral"
+      aria-expanded="true"
+      onclick="toggleSidebar()"
+    >
+      ☰
+    </button>
+
+    <section id="dashboardPage" class="os-page active module-page">
+      <iframe id="dashboardFrame" title="Dashboard Ejecutivo" src="/dashboard.html?v=command-center-v6"></iframe>
+    </section>
+
+    <section id="operationsPage" class="os-page">
+      <section class="mini-hero">
+        <h1>Operaciones</h1>
+        <p>Cleaning, inspections, master list, activity feed y clock.</p>
+      </section>
+
+      <div class="list-menu">
+        <button onclick="openOSModule('cleaning')">🧹 Limpieza</button>
+        <button onclick="openOSModule('inspection')">🔍 Inspecciones</button>
+        <button onclick="openDirectModule('Still Waters Quality','/still-waters-quality')">🎮 Still Waters Quality</button>
+        <button onclick="openDirectModule('Operations Intelligence','/operations-intelligence')">🧠 Operations Intelligence</button>
+        <button onclick="openDirectModule('Quality & Performance','/quality-performance')">📊 Quality & Performance</button>
+        <button onclick="openOSModule('operations')">📡 Operations Feed</button>
+        <button onclick="openDirectModule('Service Orders','/service-orders')">📦 Service Orders</button>
+        <button onclick="openOSModule('master')">🏨 Master List</button>
+        <button onclick="openOSModule('clock')">⏱ Clock In/Out</button>
+      </div>
+    </section>
+
+    <section id="communicationsPage" class="os-page">
+      <section class="mini-hero">
+        <h1>Comunicación</h1>
+        <p>Notificaciones, chat interno y anuncios del equipo.</p>
+      </section>
+
+      <div class="list-menu">
+        <button onclick="openDirectModule('Notificaciones','/notifications')">🔔 Notificaciones</button>
+        <button onclick="showComingSoon('Chat interno')">💬 Chat interno</button>
+        <button onclick="showComingSoon('Anuncios')">📣 Anuncios</button>
+      </div>
+    </section>
+
+    <section id="reportsPage" class="os-page">
+      <section class="mini-hero">
+        <h1>Reportes y estadísticas</h1>
+        <p>Rendimiento, calidad, tendencias, daily report y nómina.</p>
+      </section>
+
+      <div class="list-menu">
+        <button onclick="openDirectModule('Estadísticas','/statistics')">📈 Estadísticas</button>
+        <button onclick="openOSModule('operations')">📄 Daily Report</button>
+        <button onclick="openDirectModule('Payroll','/payroll.html')">💵 Payroll</button>
+        <button onclick="openOSModule('operations')">🤖 Reportes IA</button>
+      </div>
+    </section>
+
+    <section id="morePage" class="os-page">
+      <section class="mini-hero">
+        <h1>Más</h1>
+        <p>Administración, empleados, integraciones y herramientas del sistema.</p>
+      </section>
+
+      <div class="list-menu">
+        <button onclick="openDirectModule('Habitaciones','/rooms-manager')">🏨 Habitaciones</button>
+        <button onclick="openDirectModule('Employee Center','/employee-center')">
+  👥 Empleados
+</button>
+        <button onclick="openDirectModule('Service Orders','/service-orders')">📦 Service Orders</button>
+        <button onclick="showComingSoon('Configuración')">⚙️ Configuración</button>
+        <button onclick="localStorage.clear(); OS.open('launch')">🚪 Cambiar usuario</button>
+      </div>
+    </section>
+
+  </main>
+
+  <nav class="os-nav">
+    <button class="active" onclick="showPage('dashboardPage','Dashboard',this)">
+      🏠
+      <span>Dashboard</span>
+    </button>
+
+    <button onclick="showPage('operationsPage','Operaciones',this)">
+      🧹
+      <span>Ops</span>
+    </button>
+
+    <button onclick="showPage('communicationsPage','Comunicación',this)">
+      💬
+      <span>Comms</span>
+    </button>
+
+    <button onclick="showPage('reportsPage','Estadísticas',this)">
+      📈
+      <span>Stats</span>
+    </button>
+
+    <button onclick="showPage('morePage','Más',this)">
+      ⚙️
+      <span>Más</span>
+    </button>
+  </nav>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/maid-core.js"></script>
+  <script src="/js/app.js"></script>
+
+<script src="/js/push-notifications.js"></script>
+<script src="/js/admin-alerts.js"></script>
+</body>
+</html>

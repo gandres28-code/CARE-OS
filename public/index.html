@@ -1,0 +1,3374 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <title>Care OS | Limpieza</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f8fafc">
+
+  <style>
+    :root{
+      --bg:#f6f8fb;
+      --surface:#ffffff;
+      --ink:#101828;
+      --muted:#667085;
+      --soft:#f8fafc;
+      --line:#e4e7ec;
+
+      --blue:#2563eb;
+      --blue-soft:#eff6ff;
+
+      --gray:#98a2b3;
+      --gray-soft:#f2f4f7;
+
+      --red:#dc2626;
+      --red-soft:#fef2f2;
+
+      --amber:#d97706;
+      --amber-soft:#fff7ed;
+
+      --green:#16a34a;
+      --green-soft:#ecfdf3;
+
+      --purple:#7c3aed;
+      --purple-soft:#f5f3ff;
+
+      --shadow:0 18px 45px rgba(15,23,42,.08);
+      --shadow-soft:0 8px 22px rgba(15,23,42,.055);
+      --radius:28px;
+    }
+
+    *{
+      box-sizing:border-box;
+      -webkit-tap-highlight-color:transparent;
+    }
+
+    html,body{
+      margin:0;
+      min-height:100%;
+    }
+
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Arial,sans-serif;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(37,99,235,.10), transparent 35%),
+        radial-gradient(circle at 100% 4%, rgba(124,58,237,.08), transparent 30%),
+        linear-gradient(180deg,#ffffff 0%, var(--bg) 100%);
+      color:var(--ink);
+    }
+
+    .app-shell{
+      width:100%;
+      max-width:640px;
+      min-height:100vh;
+      margin:0 auto;
+      padding:0 16px 110px;
+    }
+
+    .topbar{
+      display:none;
+      position:sticky;
+      top:0;
+      z-index:80;
+      margin:0 -16px;
+      padding:calc(env(safe-area-inset-top) + 14px) 16px 12px;
+      background:rgba(255,255,255,.86);
+      backdrop-filter:blur(22px);
+      border-bottom:1px solid rgba(228,231,236,.8);
+    }
+
+    .topbar-inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      max-width:640px;
+      margin:0 auto;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:0;
+    }
+
+    .brand-mark{
+      width:46px;
+      height:46px;
+      border-radius:16px;
+      display:grid;
+      place-items:center;
+      color:#fff;
+      font-size:17px;
+      font-weight:1000;
+      letter-spacing:-.06em;
+      background:linear-gradient(135deg,#111827,#1d4ed8);
+      box-shadow:0 12px 26px rgba(29,78,216,.22);
+      flex:0 0 auto;
+    }
+
+    .brand-title{
+      min-width:0;
+    }
+
+    .brand-title strong{
+      display:block;
+      font-size:17px;
+      letter-spacing:-.04em;
+      line-height:1.1;
+    }
+
+    .brand-title span{
+      display:block;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:850;
+      margin-top:2px;
+    }
+
+    .switch-user{
+      text-decoration:none;
+      color:#344054;
+      background:#fff;
+      border:1px solid var(--line);
+      box-shadow:var(--shadow-soft);
+      border-radius:999px;
+      padding:10px 13px;
+      font-size:12px;
+      font-weight:1000;
+    }
+
+    .hero{
+      padding:24px 0 16px;
+    }
+
+    .hero-line{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+    }
+
+    .hero h1{
+      margin:0;
+      font-size:34px;
+      line-height:1.02;
+      letter-spacing:-.065em;
+      color:#101828;
+    }
+
+    .hero-name{
+      margin-top:7px;
+      color:#2563eb;
+      font-size:20px;
+      line-height:1.1;
+      font-weight:950;
+      letter-spacing:-.035em;
+    }
+
+    .refresh-button{
+      width:auto;
+      margin:0;
+      padding:11px 13px;
+      border-radius:999px;
+      background:#ffffff;
+      color:#344054;
+      border:1px solid var(--line);
+      box-shadow:var(--shadow-soft);
+      font-size:12px;
+      font-weight:1000;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      white-space:nowrap;
+    }
+
+    .refresh-symbol{
+      font-size:18px;
+      line-height:1;
+    }
+
+    .date-pill{
+      width:max-content;
+      max-width:100%;
+      margin-top:16px;
+      display:flex;
+      align-items:center;
+      gap:9px;
+      color:#344054;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:9px 12px;
+      box-shadow:var(--shadow-soft);
+      font-size:13px;
+      font-weight:950;
+    }
+
+    .date-box{
+      width:28px;
+      height:28px;
+      border-radius:10px;
+      background:linear-gradient(135deg,#eef2ff,#ede9fe);
+      color:#2563eb;
+      display:grid;
+      place-items:center;
+      font-size:13px;
+      font-weight:1000;
+    }
+
+    .stats-grid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:8px;
+      margin:10px 0 18px;
+    }
+
+    .stat-card{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:20px;
+      padding:12px 8px;
+      box-shadow:var(--shadow-soft);
+      text-align:center;
+    }
+
+    .stat-card strong{
+      display:block;
+      font-size:24px;
+      line-height:1;
+      letter-spacing:-.06em;
+      color:#101828;
+    }
+
+    .stat-card span{
+      display:block;
+      margin-top:6px;
+      color:var(--muted);
+      font-size:10px;
+      font-weight:950;
+      text-transform:uppercase;
+      letter-spacing:.045em;
+    }
+
+    .section-bar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin:4px 0 12px;
+    }
+
+    .section-bar h2{
+      margin:0;
+      font-size:17px;
+      letter-spacing:-.035em;
+    }
+
+    .section-bar small{
+      color:var(--muted);
+      font-weight:850;
+      font-size:12px;
+    }
+
+    .assignment-list{
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+
+    .assignment-card{
+      position:relative;
+      overflow:hidden;
+      min-height:166px;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:26px;
+      box-shadow:var(--shadow);
+      cursor:pointer;
+      transition:transform .14s ease, box-shadow .14s ease, border-color .14s ease;
+    }
+
+    .assignment-card:active{
+      transform:scale(.99);
+    }
+
+    .assignment-card.selected{
+      border:2px solid #101828;
+      box-shadow:0 20px 44px rgba(16,24,40,.15);
+    }
+
+    .assignment-card:before{
+      content:"";
+      position:absolute;
+      inset:0 auto 0 0;
+      width:5px;
+      background:#98a2b3;
+    }
+
+    .assignment-card.not-started:before{ background:var(--gray); }
+    .assignment-card.not-started.arrival:before{ background:var(--red); }
+    .assignment-card.guest-out:before{ background:var(--amber); }
+    .assignment-card.pre-inspected:before{ background:var(--amber); }
+    .assignment-card.started:before{ background:var(--purple); }
+    .assignment-card.done:before{ background:var(--green); }
+
+    .room-layout{
+      display:grid;
+      grid-template-columns:1fr 118px;
+      min-height:126px;
+    }
+
+    .room-content{
+      padding:18px 15px 14px 19px;
+      min-width:0;
+    }
+
+    .room-title{
+      font-size:26px;
+      line-height:1.02;
+      font-weight:1000;
+      letter-spacing:-.06em;
+      color:#101828;
+      margin-bottom:16px;
+    }
+
+    .room-meta-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .meta-block label{
+      display:block;
+      margin:0 0 7px;
+      color:#667085;
+      font-size:10px;
+      font-weight:950;
+      text-transform:uppercase;
+      letter-spacing:.055em;
+    }
+
+    .meta-value{
+      display:inline-flex;
+      min-height:32px;
+      align-items:center;
+      justify-content:center;
+      border-radius:999px;
+      padding:8px 11px;
+      font-size:11px;
+      line-height:1;
+      font-weight:1000;
+      text-transform:uppercase;
+      letter-spacing:.03em;
+      background:#f2f4f7;
+      color:#475467;
+      max-width:100%;
+      white-space:nowrap;
+    }
+
+    .meta-value.guest-out{
+      background:#fff3d6;
+      color:#92400e;
+    }
+
+    .meta-value.pre-inspected{
+      background:#dcfce7;
+      color:#166534;
+    }
+
+    .state-panel{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:14px 11px;
+      font-size:13px;
+      font-weight:1000;
+      line-height:1.32;
+      letter-spacing:.015em;
+      text-transform:uppercase;
+      border-left:1px solid rgba(228,231,236,.78);
+    }
+
+    .assignment-card.not-started .state-panel{
+      background:#f8fafc;
+      color:#667085;
+    }
+
+    .assignment-card.not-started.arrival .state-panel{
+      background:#fef2f2;
+      color:#b42318;
+    }
+
+    .assignment-card.guest-out .state-panel{
+      background:#fff7ed;
+      color:#b45309;
+    }
+
+    .assignment-card.pre-inspected .state-panel{
+      background:#ecfdf3;
+      color:#166534;
+    }
+
+    .assignment-card.started .state-panel{
+      background:#f5f3ff;
+      color:#5b21b6;
+    }
+
+    .assignment-card.done .state-panel{
+      background:#f0fdf4;
+      color:#166534;
+    }
+
+    .room-footer{
+      border-top:1px solid #edf0f4;
+      padding:12px 16px 13px 19px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      color:#667085;
+      font-size:12px;
+      font-weight:850;
+    }
+
+    .room-footer strong{
+      color:#101828;
+      font-size:17px;
+      font-weight:1000;
+    }
+
+    .easy-tag{
+      color:#166534;
+      font-weight:1000;
+      text-transform:uppercase;
+      font-size:11px;
+      letter-spacing:.045em;
+    }
+
+    .arrival-tag{
+      color:#b42318;
+      font-weight:1000;
+      text-transform:uppercase;
+      font-size:11px;
+      letter-spacing:.045em;
+    }
+
+
+    .quick-actions{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px;
+      padding:0 16px 14px 19px;
+    }
+
+    .quick-action{
+      margin:0;
+      padding:12px 10px;
+      border-radius:15px;
+      font-size:12px;
+      font-weight:1000;
+      box-shadow:none;
+      letter-spacing:.02em;
+      text-transform:uppercase;
+    }
+
+    .quick-action.finish{
+      background:#111827;
+      color:#fff;
+    }
+
+    .quick-action.report{
+      background:#f8fafc;
+      color:#344054;
+      border:1px solid #e4e7ec;
+    }
+
+    .quick-action.start{
+      background:#7c3aed;
+      color:#fff;
+    }
+
+    .assignment-card.done .quick-action.finish{
+      background:#dcfce7;
+      color:#166534;
+      border:1px solid #bbf7d0;
+    }
+
+    .state-panel{
+      cursor:pointer;
+    }
+
+    .state-panel small{
+      display:block;
+      margin-top:7px;
+      font-size:10px;
+      line-height:1.15;
+      font-weight:950;
+      opacity:.76;
+      letter-spacing:.035em;
+    }
+
+
+    .card{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:18px;
+      box-shadow:var(--shadow-soft);
+      margin-bottom:16px;
+    }
+
+    .hidden{ display:none !important; }
+
+    .access-card{
+      margin-top:14px;
+    }
+
+    .section-title{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:12px;
+    }
+
+    .section-title h2{
+      margin:0;
+      font-size:17px;
+      letter-spacing:-.035em;
+    }
+
+    .section-title span,
+    .section-title small{
+      color:var(--muted);
+      font-size:12px;
+      font-weight:850;
+    }
+
+    label{
+      display:block;
+      margin:10px 0 7px;
+      font-size:13px;
+      font-weight:950;
+      color:#344054;
+    }
+
+    input, textarea{
+      width:100%;
+      border:1px solid var(--line);
+      background:#f8fafc;
+      color:#101828;
+      border-radius:18px;
+      outline:none;
+      font-size:16px;
+      transition:.16s ease;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.75);
+    }
+
+    input{
+      padding:16px;
+    }
+
+    textarea{
+      min-height:108px;
+      padding:15px;
+      resize:vertical;
+      line-height:1.38;
+    }
+
+    input:focus, textarea:focus{
+      background:#fff;
+      border-color:#93c5fd;
+      box-shadow:0 0 0 4px rgba(59,130,246,.12);
+    }
+
+    button{
+      width:100%;
+      border:none;
+      border-radius:18px;
+      padding:16px 17px;
+      margin:8px 0;
+      font-size:16px;
+      font-weight:950;
+      color:white;
+      cursor:pointer;
+      transition:transform .12s ease, opacity .12s ease, box-shadow .12s ease;
+      box-shadow:0 11px 22px rgba(15,23,42,.13);
+    }
+
+    button:active{ transform:scale(.986); }
+    button:disabled{ opacity:.58; cursor:not-allowed; transform:none; }
+
+    .btn-primary{ background:linear-gradient(135deg,#2563eb,#1d4ed8); }
+    .start{ background:linear-gradient(135deg,#7c3aed,#5b21b6); }
+    .done{ background:linear-gradient(135deg,#16a34a,#15803d); }
+    .report{ background:linear-gradient(135deg,#111827,#344054); }
+    .neutral{ background:#475467; }
+
+    .btn-row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .small-link{
+      width:auto;
+      margin:0;
+      padding:10px 13px;
+      border-radius:999px;
+      background:#eef2ff;
+      color:#3730a3;
+      box-shadow:none;
+      font-size:12px;
+      border:1px solid #e0e7ff;
+    }
+
+    .cleaner-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      color:#1f2937;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:9px 12px;
+      font-size:13px;
+      font-weight:950;
+      margin-bottom:12px;
+      box-shadow:var(--shadow-soft);
+    }
+
+    .selected-unit{
+      display:none;
+      border-radius:22px;
+      padding:16px;
+      background:linear-gradient(135deg,#f8fafc,#ffffff);
+      border:1px solid var(--line);
+      margin-bottom:12px;
+    }
+
+    .selected-unit strong{
+      display:block;
+      font-size:28px;
+      letter-spacing:-.055em;
+      line-height:1;
+    }
+
+    .selected-unit span{
+      color:var(--muted);
+      font-size:13px;
+      display:block;
+      margin-top:6px;
+      font-weight:750;
+    }
+
+    .photo-box{
+      border:1.5px dashed #cbd5e1;
+      background:#f8fafc;
+      padding:14px;
+      border-radius:20px;
+      margin-top:8px;
+    }
+
+    .photo-meta{
+      margin-top:7px;
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.35;
+      font-weight:750;
+    }
+
+    .history-list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top:8px;
+    }
+
+    .history-item{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:13px;
+      box-shadow:0 6px 14px rgba(15,23,42,.04);
+    }
+
+    .history-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10px;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:850;
+      margin-bottom:7px;
+    }
+
+    .history-action{
+      color:#111827;
+      font-size:14px;
+      font-weight:1000;
+    }
+
+    .history-note{
+      margin-top:6px;
+      color:#344054;
+      font-size:14px;
+      line-height:1.38;
+      white-space:pre-wrap;
+    }
+
+    .photo-preview img{
+      width:82px !important;
+      height:82px !important;
+      border-radius:15px !important;
+      border:1px solid var(--line);
+      box-shadow:0 6px 12px rgba(15,23,42,.08);
+    }
+
+    .empty{
+      text-align:center;
+      color:var(--muted);
+      padding:26px 10px;
+      font-size:14px;
+      font-weight:750;
+      line-height:1.35;
+    }
+
+    #status{
+      min-height:20px;
+      text-align:center;
+      color:#344054;
+      font-weight:950;
+      margin:10px 0 0;
+      font-size:14px;
+    }
+
+    #bigStatus{
+      display:none;
+      position:fixed;
+      top:0;
+      left:0;
+      width:100%;
+      padding:calc(env(safe-area-inset-top) + 15px) 16px 15px;
+      color:white;
+      font-size:16px;
+      font-weight:1000;
+      text-align:center;
+      z-index:9999;
+      box-shadow:0 8px 25px rgba(0,0,0,.25);
+    }
+
+    #bigStatus.success{ background:var(--green); }
+    #bigStatus.error{ background:var(--red); }
+    #bigStatus.loading{ background:var(--blue); }
+
+    .bottom-nav{
+      position:fixed;
+      left:0;
+      right:0;
+      bottom:0;
+      z-index:90;
+      padding:8px 12px calc(env(safe-area-inset-bottom) + 8px);
+      background:rgba(255,255,255,.88);
+      backdrop-filter:blur(20px);
+      border-top:1px solid rgba(228,231,236,.86);
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:8px;
+    }
+
+    .nav-item{
+      text-decoration:none;
+      color:#667085;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:4px;
+      min-height:54px;
+      border-radius:18px;
+      font-size:11px;
+      font-weight:950;
+    }
+
+    .nav-item.active{
+      color:#4f46e5;
+      background:#eff6ff;
+    }
+
+    .nav-dot{
+      width:6px;
+      height:6px;
+      border-radius:999px;
+      background:currentColor;
+      opacity:.55;
+    }
+
+    @media(max-width:390px){
+      .room-layout{
+        grid-template-columns:1fr 108px;
+      }
+
+      .room-title{
+        font-size:24px;
+      }
+
+      .state-panel{
+        font-size:12px;
+      }
+
+      .stats-grid{
+        grid-template-columns:repeat(2,1fr);
+      }
+    }
+  
+    /* Cleaner Panel V2.1 refinements */
+    .assignment-card{
+      background:#ffffff !important;
+      border:1px solid #e4e7ec;
+      box-shadow:0 16px 36px rgba(15,23,42,.075);
+    }
+
+    .assignment-card.done,
+    .assignment-card.started,
+    .assignment-card.guest-out,
+    .assignment-card.pre-inspected,
+    .assignment-card.not-started{
+      background:#ffffff !important;
+    }
+
+    .assignment-card.done{
+      border-color:#bbf7d0;
+      box-shadow:0 16px 36px rgba(22,163,74,.10);
+    }
+
+    .assignment-card.done:after{
+      content:"";
+      position:absolute;
+      inset:0;
+      border-radius:26px;
+      border:1px solid rgba(22,163,74,.22);
+      pointer-events:none;
+    }
+
+    .assignment-card.pre-inspected{
+      border-color:#fde68a;
+      box-shadow:0 16px 36px rgba(217,119,6,.10);
+    }
+
+    .room-layout{
+      grid-template-columns:1fr 112px;
+      background:#fff;
+    }
+
+    .state-panel{
+      background:#f8fafc !important;
+      border-left:1px solid #edf0f4;
+      color:#344054 !important;
+      font-size:13px;
+      padding:12px 10px;
+    }
+
+    .assignment-card.not-started.arrival .state-panel{
+      background:#fef2f2 !important;
+      color:#b42318 !important;
+    }
+
+    .assignment-card.guest-out .state-panel,
+    .assignment-card.pre-inspected .state-panel{
+      background:#fff7ed !important;
+      color:#92400e !important;
+    }
+
+    .assignment-card.started .state-panel{
+      background:#f5f3ff !important;
+      color:#5b21b6 !important;
+    }
+
+    .assignment-card.done .state-panel{
+      background:#f0fdf4 !important;
+      color:#166534 !important;
+    }
+
+    .meta-block label{
+      display:none;
+    }
+
+    .room-meta-grid{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:8px;
+    }
+
+    .meta-value{
+      min-height:34px;
+      padding:9px 13px;
+      font-size:11px;
+    }
+
+    .meta-value.pre-inspected{
+      background:#fef3c7;
+      color:#92400e;
+      border:1px solid #fde68a;
+    }
+
+    .meta-value.pending-pre{
+      display:none;
+    }
+
+    .room-footer{
+      background:#fff;
+      border-top:1px solid #edf0f4;
+    }
+
+    .quick-actions{
+      grid-template-columns:1fr 52px;
+      background:#fff;
+      border-top:0;
+    }
+
+    .quick-action.report{
+      width:52px;
+      min-width:52px;
+      height:48px;
+      padding:0;
+      display:grid;
+      place-items:center;
+      font-size:20px;
+      border-radius:16px;
+      background:#f8fafc;
+      color:#344054;
+      border:1px solid #e4e7ec;
+    }
+
+    .quick-action.report span{
+      display:none;
+    }
+
+    .quick-action.finish{
+      height:48px;
+      border-radius:16px;
+    }
+
+    .assignment-card.done .quick-action.finish{
+      background:#f0fdf4;
+      color:#166534;
+      border:1px solid #bbf7d0;
+    }
+
+    .tap-label{
+      display:block;
+      font-size:12px;
+      font-weight:1000;
+      text-transform:uppercase;
+      letter-spacing:.045em;
+    }
+
+  
+    /* Cleaner cards V2.2 - premium mobile layout */
+    .assignment-card{
+      background:#ffffff !important;
+      border:1px solid #e4e7ec !important;
+      border-radius:26px !important;
+      box-shadow:0 18px 40px rgba(15,23,42,.075) !important;
+      min-height:166px !important;
+    }
+
+    .assignment-card.done,
+    .assignment-card.started,
+    .assignment-card.guest-out,
+    .assignment-card.pre-inspected,
+    .assignment-card.not-started{
+      background:#ffffff !important;
+    }
+
+    .room-layout{
+      grid-template-columns:1fr 128px !important;
+      min-height:118px !important;
+      background:#fff;
+    }
+
+    .room-content{
+      padding:18px 16px 12px 20px !important;
+    }
+
+    .room-title{
+      text-align:left !important;
+      font-size:27px !important;
+      margin-bottom:16px !important;
+    }
+
+    .room-meta-grid{
+      display:flex !important;
+      flex-wrap:wrap !important;
+      gap:9px !important;
+      margin-top:4px !important;
+    }
+
+    .meta-block label{
+      display:none !important;
+    }
+
+    .meta-value{
+      min-height:34px !important;
+      border-radius:999px !important;
+      padding:9px 14px !important;
+      font-size:11px !important;
+      font-weight:1000 !important;
+      background:#f2f4f7 !important;
+      color:#475467 !important;
+      border:1px solid transparent !important;
+    }
+
+    .meta-value.guest-out{
+      background:#fff3d6 !important;
+      color:#92400e !important;
+      border-color:#fde68a !important;
+    }
+
+    .meta-value.pre-inspected{
+      background:#fff3d6 !important;
+      color:#92400e !important;
+      border-color:#fde68a !important;
+    }
+
+    .meta-value.pending-pre{
+      display:none !important;
+    }
+
+    .state-panel{
+      border-left:1px solid #edf0f4 !important;
+      gap:8px;
+      flex-direction:column;
+      background:#f8fafc !important;
+      color:#344054 !important;
+    }
+
+    .state-panel .action-circle{
+      width:52px;
+      height:52px;
+      border-radius:999px;
+      display:grid;
+      place-items:center;
+      border:2px dashed currentColor;
+      opacity:.88;
+      font-size:20px;
+      line-height:1;
+      margin-bottom:3px;
+    }
+
+    .state-panel .tap-label{
+      font-size:12px !important;
+      line-height:1.18 !important;
+      letter-spacing:.04em !important;
+      font-weight:1000 !important;
+    }
+
+    .assignment-card.not-started.arrival .state-panel{
+      background:#fef2f2 !important;
+      color:#b42318 !important;
+    }
+
+    .assignment-card.guest-out .state-panel{
+      background:#fff7ed !important;
+      color:#b45309 !important;
+    }
+
+    .assignment-card.pre-inspected .state-panel{
+      background:#fff7ed !important;
+      color:#b45309 !important;
+    }
+
+    .assignment-card.started .state-panel{
+      background:#f5f3ff !important;
+      color:#5b21b6 !important;
+    }
+
+    .assignment-card.done .state-panel{
+      background:#ecfdf3 !important;
+      color:#166534 !important;
+    }
+
+    .room-footer{
+      padding:12px 16px 13px 20px !important;
+      background:#fff !important;
+      border-top:1px solid #edf0f4 !important;
+    }
+
+    .room-footer span{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      color:#667085;
+      font-weight:850;
+    }
+
+    .room-footer strong{
+      font-size:13px !important;
+      letter-spacing:.04em !important;
+    }
+
+    .quick-actions{
+      display:none !important;
+    }
+
+    .inline-report{
+      width:46px;
+      height:46px;
+      min-width:46px;
+      margin:0;
+      padding:0;
+      border-radius:16px;
+      display:grid;
+      place-items:center;
+      background:#f8fafc;
+      color:#344054;
+      border:1px solid #e4e7ec;
+      box-shadow:none;
+      font-size:22px;
+      line-height:1;
+    }
+
+    .inline-voice{width:46px;height:46px;min-width:46px;margin:0;padding:0;border-radius:16px;display:grid;place-items:center;background:#eef2ff;color:#4338ca;border:1px solid #c7d2fe;box-shadow:none;font-size:20px;line-height:1;}
+    .voice-sheet{z-index:160;}
+    .voice-help{margin:0 0 14px;color:#667085;font-size:14px;line-height:1.45;font-weight:750;}
+    .voice-recorder{display:grid;place-items:center;gap:10px;padding:16px 8px 18px;}
+    .voice-record-button{width:92px;height:92px;border:0;border-radius:999px;background:#4f46e5;color:#fff;font-size:34px;box-shadow:0 14px 30px rgba(79,70,229,.28);}
+    .voice-record-button.recording{background:#dc2626;animation:voicePulse 1.2s infinite;}
+    .voice-record-status{font-size:14px;font-weight:950;color:#344054;text-align:center;}
+    .voice-timer{font-variant-numeric:tabular-nums;color:#667085;font-weight:900;}
+    .voice-review{display:grid;gap:12px;}
+    .voice-transcript{background:#f8fafc;border:1px solid #e4e7ec;border-radius:16px;padding:12px;color:#475467;font-size:13px;line-height:1.4;}
+    .voice-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .voice-field label{display:block;margin:0 0 5px;color:#667085;font-size:11px;font-weight:950;text-transform:uppercase;}
+    .voice-field input,.voice-field select,.voice-item input{width:100%;border:1px solid #d0d5dd;border-radius:12px;padding:11px;background:#fff;color:#101828;font:inherit;}
+    .voice-items{display:grid;gap:8px;}
+    .voice-item{display:grid;grid-template-columns:74px 1fr 42px;gap:8px;align-items:center;}
+    .voice-remove{height:42px;border:0;border-radius:12px;background:#fee2e2;color:#b91c1c;font-weight:1000;}
+    .voice-add{border:1px dashed #a5b4fc;background:#eef2ff;color:#4338ca;border-radius:13px;padding:10px;font-weight:950;}
+    .voice-warning{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:11px;font-size:13px;font-weight:850;}
+    .voice-actions{display:grid;grid-template-columns:1fr 1.5fr;gap:9px;margin-top:4px;}
+    .voice-actions button{min-height:50px;border:0;border-radius:14px;font-weight:1000;}
+    .voice-cancel{background:#f2f4f7;color:#344054;}
+    .voice-confirm{background:#0f766e;color:#fff;}
+    @keyframes voicePulse{50%{transform:scale(1.06);box-shadow:0 0 0 13px rgba(220,38,38,.12)}}
+
+    .footer-right{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .assignment-card.done{
+      border-color:#bbf7d0 !important;
+      box-shadow:0 18px 40px rgba(22,163,74,.08) !important;
+    }
+
+    .assignment-card.started{
+      border-color:#ddd6fe !important;
+      box-shadow:0 18px 40px rgba(124,58,237,.08) !important;
+    }
+
+    .assignment-card.pre-inspected{
+      border-color:#fed7aa !important;
+      box-shadow:0 18px 40px rgba(217,119,6,.08) !important;
+    }
+
+    @media(max-width:430px){
+      .room-layout{
+        grid-template-columns:1fr 116px !important;
+      }
+
+      .room-title{
+        font-size:25px !important;
+      }
+
+      .state-panel .action-circle{
+        width:46px;
+        height:46px;
+        font-size:18px;
+      }
+
+      .state-panel .tap-label{
+        font-size:11px !important;
+      }
+    }
+
+  
+    /* Professional inline report sheet */
+    .report-sheet{
+      position:fixed;
+      left:14px;
+      right:14px;
+      bottom:calc(env(safe-area-inset-bottom) + 16px);
+      z-index:120;
+      max-width:610px;
+      margin:0 auto;
+      background:rgba(255,255,255,.96);
+      backdrop-filter:blur(22px);
+      border:1px solid rgba(228,231,236,.95);
+      border-radius:28px;
+      padding:16px;
+      box-shadow:0 28px 70px rgba(15,23,42,.24);
+    }
+
+    .report-sheet-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:12px;
+    }
+
+    .report-sheet-head span{
+      display:block;
+      color:#667085;
+      font-size:11px;
+      font-weight:1000;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+      margin-bottom:4px;
+    }
+
+    .report-sheet-head strong{
+      display:block;
+      color:#101828;
+      font-size:24px;
+      font-weight:1000;
+      letter-spacing:-.055em;
+      line-height:1;
+    }
+
+    .sheet-close{
+      width:auto;
+      margin:0;
+      padding:10px 13px;
+      border-radius:999px;
+      background:#f8fafc;
+      color:#344054;
+      border:1px solid #e4e7ec;
+      box-shadow:none;
+      font-size:12px;
+      font-weight:1000;
+    }
+
+    .report-sheet textarea{
+      min-height:118px;
+      background:#f8fafc;
+      border-radius:20px;
+      font-size:15px;
+    }
+
+    .photo-box.compact{
+      margin-top:10px;
+      padding:12px;
+      border-radius:18px;
+    }
+
+    .send-report{
+      margin-top:12px;
+      background:linear-gradient(135deg,#111827,#344054);
+    }
+
+    body.report-open:before{
+      content:"";
+      position:fixed;
+      inset:0;
+      z-index:110;
+      background:rgba(15,23,42,.18);
+      backdrop-filter:blur(2px);
+    }
+
+  
+    /* Header and home polish */
+    .topbar-inner{
+      justify-content:flex-start;
+    }
+
+    .hero{
+      padding:18px 0 18px;
+    }
+
+    .hero-card{
+      background:linear-gradient(135deg,#ffffff,#f7f9ff);
+      border:1px solid rgba(228,231,236,.88);
+      border-radius:30px;
+      padding:20px;
+      box-shadow:0 22px 50px rgba(37,99,235,.08);
+    }
+
+    .hero h1{
+      font-size:38px;
+      letter-spacing:-.075em;
+    }
+
+    .hero-name{
+      font-size:22px;
+      color:#1d4ed8;
+    }
+
+    .hero-subtitle{
+      margin-top:10px;
+      color:#667085;
+      font-size:13px;
+      font-weight:800;
+      line-height:1.35;
+    }
+
+    .refresh-button{
+      background:#101828;
+      color:#fff;
+      border-color:#101828;
+      box-shadow:0 14px 28px rgba(16,24,40,.16);
+    }
+
+    .date-pill{
+      box-shadow:none;
+      background:#f8fafc;
+    }
+
+    .stats-grid{
+      margin-top:14px;
+      gap:10px;
+    }
+
+    .stat-card{
+      border-radius:22px;
+      padding:14px 8px;
+      box-shadow:0 12px 26px rgba(15,23,42,.055);
+    }
+
+    .stat-card strong{
+      font-size:25px;
+    }
+
+    .stat-card span{
+      font-size:9px;
+      letter-spacing:.06em;
+    }
+
+    .section-bar{
+      margin-top:18px;
+      margin-bottom:14px;
+    }
+
+    .section-bar h2{
+      font-size:19px;
+    }
+
+    .settings-sheet{
+      position:fixed;
+      left:14px;
+      right:14px;
+      bottom:calc(env(safe-area-inset-bottom) + 86px);
+      z-index:130;
+      max-width:610px;
+      margin:0 auto;
+      background:rgba(255,255,255,.96);
+      backdrop-filter:blur(22px);
+      border:1px solid rgba(228,231,236,.95);
+      border-radius:28px;
+      padding:16px;
+      box-shadow:0 28px 70px rgba(15,23,42,.22);
+    }
+
+    .settings-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:12px;
+    }
+
+    .settings-head strong{
+      font-size:20px;
+      letter-spacing:-.04em;
+    }
+
+    .settings-head button{
+      width:auto;
+      margin:0;
+      padding:9px 12px;
+      border-radius:999px;
+      background:#f8fafc;
+      color:#344054;
+      border:1px solid #e4e7ec;
+      box-shadow:none;
+      font-size:12px;
+    }
+
+    .settings-option{
+      width:100%;
+      border:1px solid #e4e7ec;
+      background:#f8fafc;
+      color:#101828;
+      box-shadow:none;
+      border-radius:18px;
+      padding:15px;
+      text-align:left;
+      font-size:15px;
+      font-weight:1000;
+    }
+
+    .bottom-nav{
+      grid-template-columns:repeat(2,1fr) !important;
+      max-width:610px;
+      margin:0 auto;
+      left:14px !important;
+      right:14px !important;
+      bottom:calc(env(safe-area-inset-bottom) + 10px) !important;
+      border:1px solid rgba(228,231,236,.95);
+      border-radius:28px;
+      box-shadow:0 18px 46px rgba(15,23,42,.12);
+    }
+
+    .nav-item{
+      min-height:58px;
+      font-size:12px;
+    }
+
+    .nav-item.active{
+      color:#1d4ed8;
+      background:#eff6ff;
+    }
+
+  
+    .bottom-nav button.nav-item{
+      width:auto;
+      margin:0;
+      padding:0;
+      border:none;
+      box-shadow:none;
+      background:transparent;
+      color:#667085;
+      cursor:pointer;
+    }
+
+    .bottom-nav button.nav-item.active,
+    .bottom-nav button.nav-item:focus{
+      color:#1d4ed8;
+      background:#eff6ff;
+      outline:none;
+    }
+
+  
+    /* SVG progress ring for cleaner cards */
+    .state-panel .action-circle{
+      width:48px!important;
+      height:48px!important;
+      min-width:48px!important;
+      flex:0 0 48px!important;
+      display:grid!important;
+      place-items:center!important;
+      margin:0 auto!important;
+      padding:0!important;
+      border:0!important;
+      outline:0!important;
+      box-shadow:none!important;
+      background:transparent!important;
+      border-radius:50%!important;
+      overflow:visible!important;
+      line-height:0!important;
+    }
+
+    .state-panel .action-circle::before,
+    .state-panel .action-circle::after{
+      content:none!important;
+      display:none!important;
+    }
+
+    .state-panel .action-circle svg{
+      width:48px!important;
+      height:48px!important;
+      display:block!important;
+      transform:rotate(-90deg);
+      transform-origin:24px 24px!important;
+      overflow:visible!important;
+    }
+
+    .state-panel .ring-track{
+      fill:none;
+      stroke:rgba(148,163,184,.25);
+      stroke-width:5;
+    }
+
+    .state-panel .ring-value{
+      fill:none;
+      stroke:currentColor;
+      stroke-width:5;
+      stroke-linecap:round;
+      stroke-dasharray:100;
+      stroke-dashoffset:100;
+      transition:stroke-dashoffset .35s ease;
+      vector-effect:non-scaling-stroke;
+    }
+
+    .state-panel .action-circle.empty .ring-value{stroke-dashoffset:100}
+    .state-panel .action-circle.half .ring-value{stroke-dashoffset:50}
+    .state-panel .action-circle.full .ring-value{stroke-dashoffset:0}
+
+    .state-panel .action-circle.loading svg{
+      animation:cleanerRingSpin .72s linear infinite!important;
+      transform-origin:24px 24px!important;
+    }
+
+    .state-panel .action-circle.loading .ring-value{
+      stroke-dasharray:28 72;
+      stroke-dashoffset:0;
+      transition:none;
+    }
+
+    @keyframes cleanerRingSpin{
+      from{transform:rotate(-90deg)}
+      to{transform:rotate(270deg)}
+    }
+
+    .assignment-card.card-loading{
+      pointer-events:none;
+      opacity:.78;
+    }
+
+  
+    .hero-actions{
+      display:flex;
+      flex-direction:column;
+      align-items:flex-end;
+      gap:8px;
+      flex:0 0 auto;
+    }
+
+    .push-bell-button{
+      width:42px !important;
+      height:42px !important;
+      min-width:42px !important;
+      margin:0 !important;
+      padding:0 !important;
+      border-radius:999px !important;
+      display:grid !important;
+      place-items:center !important;
+      align-self:flex-end;
+      background:#111827;
+      color:#fff;
+      border:1px solid rgba(255,255,255,.16);
+      box-shadow:0 10px 24px rgba(15,23,42,.20);
+      font-size:18px !important;
+      line-height:1 !important;
+      cursor:pointer;
+    }
+
+    .push-bell-button:active{
+      transform:scale(.94);
+    }
+
+    .push-bell-button:disabled{
+      background:#166534 !important;
+      opacity:.78 !important;
+      cursor:default;
+    }
+
+    .brand-mark{font-size:11px!important;letter-spacing:.04em}
+    .assistant-button{background:linear-gradient(135deg,#0f766e,#14b8a6)!important;color:#fff!important;border-color:transparent!important}
+    .work-controls{display:flex;gap:8px;overflow-x:auto;padding:0 0 14px;align-items:center;scrollbar-width:none}
+    .work-controls::-webkit-scrollbar{display:none}
+    .work-filter,.work-sort{min-height:38px;border:1px solid #dbe3ec;border-radius:999px;background:#fff;color:#475569;font-weight:800;padding:0 14px;white-space:nowrap}
+    .work-filter.active{background:#111827;color:#fff;border-color:#111827}
+    .work-sort{margin-left:auto;border-radius:12px}
+    .building-group{margin:4px 0 18px}
+    .building-group-title{display:flex;align-items:center;justify-content:space-between;margin:0 2px 9px;color:#475569;font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+    .building-group-title span{background:#e2e8f0;border-radius:999px;padding:3px 8px;color:#334155}
+    .stayover-tag{color:#1d4ed8;background:#dbeafe;padding:4px 8px;border-radius:999px}
+    .voice-command{background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;border-radius:14px;padding:14px;font-weight:850}
+    @media(max-width:620px){.hero-actions{flex-wrap:wrap}.assistant-button{order:3;width:100%!important}.work-sort{margin-left:0}}
+
+  </style>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#111827">
+<link rel="stylesheet" href="/css/responsive-pages.css?v=full-page-v1">
+</head>
+
+<body>
+<div id="bigStatus"></div>
+
+<div class="app-shell">
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark">CARE</div>
+        <div class="brand-title">
+          <strong>Care OS</strong>
+          <span>Limpieza</span>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-card">
+      <div class="hero-line">
+        <div>
+          <h1>Mis unidades</h1>
+          <div id="heroCleanerName" class="hero-name">Cargando...</div>
+          <div class="hero-subtitle">Tu lista de trabajo en vivo para el día de hoy.</div>
+        </div>
+
+        <div class="hero-actions">
+          <button class="refresh-button" onclick="loadCleanerAssignments(true)">
+            <span class="refresh-symbol">↻</span>
+            Actualizar
+          </button>
+          <button class="refresh-button assistant-button" type="button" onclick="openCareAssistant()">
+            <span>✦</span> Asistente
+          </button>
+          <button
+            id="enablePushNotifications417"
+            class="push-bell-button"
+            type="button"
+            title="Activar notificaciones"
+            aria-label="Activar notificaciones"
+            onclick="window.enable417PushNotifications?.()"
+          >🔔</button>
+        </div>
+      </div>
+
+      <div class="date-pill">
+        <span class="date-box" id="dateDay">--</span>
+        <span id="dateText">Hoy</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats-grid">
+    <div class="stat-card">
+      <strong id="statTotal">0</strong>
+      <span>Total</span>
+    </div>
+    <div class="stat-card">
+      <strong id="statProgress">0</strong>
+      <span>Progreso</span>
+    </div>
+    <div class="stat-card">
+      <strong id="statDone">0</strong>
+      <span>Finished</span>
+    </div>
+    <div class="stat-card">
+      <strong id="statArrivals">0</strong>
+      <span>Arrival</span>
+    </div>
+    <div class="stat-card">
+      <strong id="statStayovers">0</strong>
+      <span>Stayover</span>
+    </div>
+  </section>
+
+  <section id="cleanerAccessCard" class="card access-card">
+    <div class="section-title">
+      <h2>Acceso del limpiador</h2>
+      <small>Nombre exacto</small>
+    </div>
+
+    <label for="name">Nombre del limpiador</label>
+    <input id="name" placeholder="Ejemplo: Maria" autocomplete="name">
+
+    <button class="btn-primary action-btn" onclick="loadCleanerAssignments(true)">
+      Ver mis unidades
+    </button>
+
+    <p id="status"></p>
+  </section>
+
+  <section>
+    <div class="section-bar">
+      <div>
+        <h2>Lista de trabajo</h2>
+        <small id="cleanerName">Sin limpiador cargado</small>
+      </div>
+    </div>
+
+    <div class="work-controls" aria-label="Ordenar y filtrar unidades">
+      <button class="work-filter active" data-filter="all" onclick="setWorkFilter('all',this)">Todas</button>
+      <button class="work-filter" data-filter="arrival" onclick="setWorkFilter('arrival',this)">Arrivals</button>
+      <button class="work-filter" data-filter="stayover" onclick="setWorkFilter('stayover',this)">Stayovers</button>
+      <button class="work-filter" data-filter="ready" onclick="setWorkFilter('ready',this)">Guest Out</button>
+      <select id="workSort" class="work-sort" onchange="setWorkSort(this.value)" aria-label="Orden de unidades">
+        <option value="priority">Prioridad</option>
+        <option value="building">Por edificio</option>
+        <option value="unit">Por número</option>
+      </select>
+    </div>
+
+    <div id="assignments" class="empty">Cargando tus unidades...</div>
+  </section>
+
+  <section id="cleaningPanel" class="report-sheet hidden">
+    <div class="report-sheet-head">
+      <div>
+        <span>Reporte de unidad</span>
+        <strong id="selectedUnitLabel"></strong>
+      </div>
+
+      <button class="sheet-close" onclick="closeReportPanel()">Cerrar</button>
+    </div>
+
+    <input id="unit" class="hidden" placeholder="Unidad">
+    <span id="unitStatusText" class="hidden"></span>
+
+    <textarea id="note" placeholder="Escribe el reporte aquí. Ejemplo: faltan towels, toilet tapado, puerta dañada, basura extra, etc."></textarea>
+
+    <div class="photo-box compact">
+      <label for="photoInput" style="margin-top:0;">Fotos</label>
+      <input type="file" id="photoInput" accept="image/*" capture="environment" multiple onchange="addSelectedPhotos()">
+      <div id="photoCount" class="photo-meta">Puedes agregar fotos si es necesario.</div>
+    </div>
+
+    <button class="report send-report action-btn" onclick="sendSmartReport()">
+      Enviar reporte
+    </button>
+  </section>
+
+  <section id="voiceRequestPanel" class="report-sheet voice-sheet hidden">
+    <div class="report-sheet-head">
+      <div><span>Asistente Care</span><strong id="voiceUnitLabel">Dime la unidad y la acción</strong></div>
+      <button class="sheet-close" onclick="closeVoiceRequest()">Cerrar</button>
+    </div>
+    <p class="voice-help">Puedes decir “inicia 334B”, “terminé 334B” o pedir supplies. Habla en español, inglés o mezcla ambos.</p>
+    <div id="voiceRecorder" class="voice-recorder">
+      <button id="voiceRecordButton" class="voice-record-button" type="button" onclick="toggleVoiceRecording()">🎙</button>
+      <div id="voiceRecordStatus" class="voice-record-status">Toca para comenzar a grabar</div>
+      <div id="voiceTimer" class="voice-timer">00:00</div>
+    </div>
+    <div id="voiceReview" class="voice-review hidden">
+      <div id="voiceTranscript" class="voice-transcript"></div>
+      <div id="voiceWarning" class="voice-warning hidden"></div>
+      <div id="voiceCommand" class="voice-command hidden"></div>
+      <div class="voice-fields">
+        <div class="voice-field"><label>Categoría</label><select id="voiceCategory"><option>Linen</option><option>Amenities</option><option>Cleaning Supplies</option><option>Maintenance</option><option>Safety</option><option>Lost and Found</option><option>Other</option></select></div>
+        <div class="voice-field"><label>Prioridad</label><select id="voicePriority"><option value="normal">Normal</option><option value="high">High</option><option value="urgent">Urgent</option></select></div>
+      </div>
+      <div class="voice-field"><label>Artículos y cantidades</label><div id="voiceItems" class="voice-items"></div></div>
+      <button class="voice-add" type="button" onclick="addVoiceItem()">+ Agregar artículo</button>
+      <div class="voice-field"><label>Notas</label><input id="voiceNotes" placeholder="Detalles opcionales"></div>
+      <div class="voice-actions"><button class="voice-cancel" type="button" onclick="resetVoiceRecorder()">Grabar otra vez</button><button id="voiceConfirmButton" class="voice-confirm" type="button" onclick="confirmVoiceRequest()">Enviar solicitud</button></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="section-title">
+      <h2>Historial de hoy</h2>
+      <button class="small-link" onclick="loadMyReports()">Actualizar</button>
+    </div>
+
+    <div id="history" class="empty">Tu historial aparecerá aquí después de cargar tus unidades.</div>
+  </section>
+
+</div>
+
+<nav class="bottom-nav">
+  <a class="nav-item active" href="/">
+    <span style="font-size:18px;">🧹</span>
+    Limpieza
+  </a>
+  <button class="nav-item" type="button" onclick="openSettingsMenu()">
+    <span style="font-size:18px;">⚙️</span>
+    Settings
+  </button>
+</nav>
+
+<section id="settingsSheet" class="settings-sheet hidden">
+  <div class="settings-head">
+    <strong>Settings</strong>
+    <button onclick="closeSettingsMenu()">Cerrar</button>
+  </div>
+
+  <button class="settings-option" onclick="window.OS?.clearSession ? OS.clearSession() : localStorage.clear(); window.location.replace('/launch');">
+    Cambiar usuario
+  </button>
+</section>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/maid-core.js"></script>
+<script src="/js/resilience.js?v=stable-20260719-1"></script>
+
+<script>
+let currentCleanerName = "";
+let assignmentsRequest = null;
+let reportsRequest = null;
+let lastAssignmentsLoadedAt = 0;
+let lastReportsLoadedAt = 0;
+let cachedCleanerUnits = [];
+let isSending = false;
+let lastSendKey = "";
+let lastSendTime = 0;
+let selectedReportFiles = [];
+let selectedUnit = "";
+let selectedUnitStatus = "";
+let selectedUnitArrival = false;
+let cleanerDataSource = "postgres";
+let voiceMediaRecorder = null;
+let voiceMediaStream = null;
+let voiceAudioChunks = [];
+let voiceTimerHandle = null;
+let voiceStartedAt = 0;
+let voiceRequestUnit = "";
+let interpretedVoiceRequest = null;
+let workFilter = localStorage.getItem("careWorkFilter") || "all";
+let workSort = localStorage.getItem("careWorkSort") || "priority";
+
+function todayChicagoISO(){
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone:"America/Chicago",
+    year:"numeric",
+    month:"2-digit",
+    day:"2-digit"
+  }).format(new Date());
+}
+
+function normalizePostgresCleanerRooms(data, cleanerName){
+  const rooms = Array.isArray(data?.rooms) ? data.rooms : [];
+
+  return {
+    ok:true,
+    source:"postgres",
+    cleaner:cleanerName,
+    units:rooms.map(room => ({
+      id:room.id,
+      notionId:room.notionId || "",
+      unit:room.unit || room.roomNumber || "",
+      normalizedRoom:room.normalizedRoom || "",
+      roomType:room.roomType || "",
+      building:room.building || "OTHER",
+      status:room.status || "Pending",
+      statusGroup:room.statusGroup || "pending",
+      guestOut:Boolean(room.guestOut),
+      guestOutAt:room.guestOutAt || null,
+      urgent:Boolean(room.urgent),
+      arrival:Boolean(room.arrival),
+      stayover:Boolean(room.stayover),
+      assignedCleaner:room.assignedCleaner || "",
+      assignedCleaners:Array.isArray(room.assignedCleaners)
+        ? room.assignedCleaners
+        : [],
+      assignedInspector:room.assignedInspector || "",
+      assignedInspectors:Array.isArray(room.assignedInspectors)
+        ? room.assignedInspectors
+        : [],
+      startedAt:room.startedAt || null,
+      finishedAt:room.finishedAt || null,
+      inspectionStartedAt:room.inspectionStartedAt || null,
+      readyAt:room.readyAt || null,
+      preInspection:Boolean(room.preInspection),
+      preInspectionStarted:Boolean(room.preInspectionStarted)
+    }))
+  };
+}
+
+async function fetchCleanerAssignmentsPostgres(name){
+  const params = new URLSearchParams({
+    date:todayChicagoISO(),
+    employee:name,
+    role:"cleaner",
+    t:String(Date.now())
+  });
+
+  const url = `/api/v2/rooms?${params.toString()}`;
+
+  const data = window.OSResilience
+    ? await OSResilience.fetchJson(url, { cache:"no-store" }, { timeoutMs:7000, retries:1 })
+    : await fetch(url, { cache:"no-store", headers:{"Accept":"application/json"} }).then(async response => {
+        const body = await response.json().catch(() => ({}));
+        if(!response.ok) throw new Error(body.message || `HTTP ${response.status}`);
+        return body;
+      });
+
+  if(!data.ok) throw new Error(data.message || "No se pudieron cargar tus unidades");
+  return normalizePostgresCleanerRooms(data, name);
+}
+
+async function fetchCleanerAssignmentsFallback(name){
+  const url = `/cleaner-assignments?name=${encodeURIComponent(name)}&t=${Date.now()}`;
+
+  const data = window.OS?.api
+    ? await OS.api.get(url)
+    : await fetch(url, { cache:"no-store" }).then(response => response.json());
+
+  if(!data.ok){
+    throw new Error(data.message || "No se pudieron cargar tus unidades");
+  }
+
+  return {
+    ...data,
+    source:"notion"
+  };
+}
+
+function normalizeRole(role){
+  return String(role || "").trim().toLowerCase();
+}
+
+function shouldHideBottomNav(role){
+  const cleanRole = normalizeRole(role);
+
+  return [
+    "cleaner",
+    "inspector",
+    "cleaner / inspector",
+    "inspector / cleaner"
+  ].includes(cleanRole);
+}
+
+function updateBottomNavVisibility(role){
+  document.body.classList.remove("hide-bottom-nav");
+}
+
+function canClean(role){
+  const cleanRole = normalizeRole(role);
+
+  return [
+    "cleaner",
+    "cleaner / inspector",
+    "inspector / cleaner",
+    "admin",
+    "manager",
+    "owner",
+    "company owner"
+  ].includes(cleanRole);
+}
+
+function waitForOSUser(){
+  return new Promise(resolve => {
+    let tries = 0;
+
+    const timer = setInterval(() => {
+      tries++;
+
+      if(window.OS && OS.user){
+        clearInterval(timer);
+        resolve(OS.user);
+        return;
+      }
+
+      if(tries > 30){
+        clearInterval(timer);
+        resolve(null);
+      }
+    }, 100);
+  });
+}
+
+async function bootCleanerPanel(){
+  setupDate();
+
+  const user = await waitForOSUser();
+  const savedName =
+    localStorage.getItem("employeeName") ||
+    localStorage.getItem("cleanerName") ||
+    "";
+
+  if(!user && !savedName){
+    window.location.href = "/launch";
+    return;
+  }
+
+  const role = user?.role || localStorage.getItem("employeeRole") || "";
+
+  updateBottomNavVisibility(role);
+
+  if(user && !canClean(role)){
+    window.location.href = "/launch";
+    return;
+  }
+
+  const name = user?.name || savedName;
+  const input = document.getElementById("name");
+
+  if(input && name){
+    input.value = name;
+    currentCleanerName = name;
+    localStorage.setItem("cleanerName", name);
+    localStorage.setItem("employeeName", name);
+  }
+
+  setCleanerDisplayName(name);
+
+  const accessCard = document.getElementById("cleanerAccessCard");
+  if(accessCard){
+    accessCard.style.display = "none";
+  }
+
+  if(name){
+    loadCleanerAssignments(false);
+  }
+}
+
+function setupDate(){
+  const now = new Date();
+  const day = String(now.getDate()).padStart(2, "0");
+
+  const text = now.toLocaleDateString("es-US", {
+    month:"short",
+    day:"numeric",
+    year:"numeric"
+  });
+
+  const dayBox = document.getElementById("dateDay");
+  const dateText = document.getElementById("dateText");
+
+  if(dayBox) dayBox.innerText = day;
+  if(dateText) dateText.innerText = text;
+}
+
+function setCleanerDisplayName(name){
+  const safeName = name || "Cleaner";
+
+  const hero = document.getElementById("heroCleanerName");
+  const chip = document.getElementById("cleanerName");
+
+  if(hero) hero.innerText = safeName;
+  if(chip) chip.innerText = `Cleaner: ${safeName}`;
+}
+
+function setButtonsDisabled(disabled){
+  document.querySelectorAll(".action-btn").forEach(button => {
+    button.disabled = disabled;
+  });
+}
+
+function showBigStatus(message, type){
+  const box = document.getElementById("bigStatus");
+
+  box.className = "";
+  box.classList.add(type);
+  box.innerText = message;
+  box.style.display = "block";
+
+  if(type !== "loading"){
+    setTimeout(() => {
+      box.style.display = "none";
+    }, 3300);
+  }
+}
+
+function setStatus(message){
+  const el = document.getElementById("status");
+  if(el) el.innerText = message || "";
+}
+
+function playBeep(type){
+  try{
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    const audioCtx = new AudioContext();
+    const oscillator = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+
+    oscillator.type = "sine";
+    oscillator.frequency.value = type === "success" ? 880 : 220;
+
+    gainNode.gain.setValueAtTime(0.12, audioCtx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
+
+    oscillator.start(audioCtx.currentTime);
+    oscillator.stop(audioCtx.currentTime + 0.25);
+  }catch(error){}
+}
+
+function vibratePhone(type){
+  if(navigator.vibrate){
+    navigator.vibrate(type === "success" ? [90, 40, 90] : [240, 80, 240]);
+  }
+}
+
+function escapeHtml(value){
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function safeJsString(value){
+  return String(value || "").replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+}
+
+function truthy(value){
+  if(value === true) return true;
+
+  const text = String(value || "").trim().toLowerCase();
+
+  return [
+    "true",
+    "yes",
+    "si",
+    "sí",
+    "done",
+    "complete",
+    "completed",
+    "checked",
+    "out"
+  ].includes(text);
+}
+
+function getItemValue(item, names){
+  for(const name of names){
+    if(item && item[name] !== undefined && item[name] !== null){
+      return item[name];
+    }
+  }
+
+  return "";
+}
+
+function isGuestOut(item){
+  return truthy(getItemValue(item, [
+    "guestOut",
+    "Guest Out",
+    "guest_out",
+    "guestout",
+    "isGuestOut"
+  ]));
+}
+
+function isPreInspected(item){
+  return truthy(getItemValue(item, [
+    "preInspection",
+    "Pre Inspection",
+    "preInspected",
+    "Pre Inspected",
+    "pre_inspection",
+    "preInspectionComplete",
+    "preInspectionCompleted"
+  ]));
+}
+
+function getCleanerState(item){
+  const cleanStatus = String(item?.status || "").toLowerCase();
+
+  if(cleanStatus.includes("cleaned") || cleanStatus.includes("awaiting") || cleanStatus.includes("ready")){
+    return {
+      key:"done",
+      title:"Finished",
+      detail:"Cleaning complete",
+      cardClass:"done",
+      circle:"full"
+    };
+  }
+
+  if(cleanStatus.includes("progress")){
+    return {
+      key:"started",
+      title:"In Progress",
+      detail:"Started cleaning",
+      cardClass:"started",
+      circle:"half"
+    };
+  }
+
+  if(isGuestOut(item)){
+    if(isPreInspected(item)){
+      return {
+        key:"pre-inspected",
+        title:"Ready to Start",
+        detail:"Guest out • Pre-inspection complete",
+        cardClass:"guest-out pre-inspected",
+        circle:"empty"
+      };
+    }
+
+    return {
+      key:"guest-out",
+      title:"Ready to Start",
+      detail:"Guest out",
+      cardClass:"guest-out",
+      circle:"empty"
+    };
+  }
+
+  return {
+    key:"not-started",
+    title:item?.arrival ? "Waiting Guest" : (item?.stayover ? "Stayover" : "Not Started"),
+    detail:item?.arrival ? "Arrival room" : (item?.stayover ? "Stayover service" : "Assigned room"),
+    cardClass:item?.arrival ? "not-started arrival" : "not-started",
+    circle:"empty"
+  };
+}
+
+function getStatusLabel(status, arrival){
+  const cleanStatus = String(status || "").trim();
+
+  if(cleanStatus){
+    return cleanStatus;
+  }
+
+  return arrival ? "ARRIVAL" : "Not Started";
+}
+
+function updateCleanerDashboard(units){
+  const total = Array.isArray(units) ? units.length : 0;
+  const started = (units || []).filter(item => String(item.status || "").toLowerCase().includes("progress")).length;
+  const done = (units || []).filter(item => {
+    const s = String(item.status || "").toLowerCase();
+    return s.includes("cleaned") || s.includes("awaiting") || s.includes("ready");
+  }).length;
+  const arrivals = (units || []).filter(item => item.arrival).length;
+  const stayovers = (units || []).filter(item => item.stayover).length;
+
+  const totalBox = document.getElementById("statTotal");
+  const progressBox = document.getElementById("statProgress");
+  const doneBox = document.getElementById("statDone");
+  const arrivalBox = document.getElementById("statArrivals");
+  const stayoverBox = document.getElementById("statStayovers");
+
+  if(totalBox) totalBox.innerText = total;
+  if(progressBox) progressBox.innerText = started;
+  if(doneBox) doneBox.innerText = done;
+  if(arrivalBox) arrivalBox.innerText = arrivals;
+  if(stayoverBox) stayoverBox.innerText = stayovers;
+}
+
+function restoreCleanerName(){
+  const savedName =
+    localStorage.getItem("employeeName") ||
+    localStorage.getItem("cleanerName") ||
+    "";
+
+  const input = document.getElementById("name");
+
+  if(savedName && input){
+    input.value = savedName;
+    currentCleanerName = savedName;
+    localStorage.setItem("cleanerName", savedName);
+    setCleanerDisplayName(savedName);
+  }
+}
+
+async function loadCleanerAssignments(forceRefresh = false){
+  const input = document.getElementById("name");
+  const assignmentsBox = document.getElementById("assignments");
+  const name = String(input?.value || "").trim();
+
+  currentCleanerName = name;
+
+  if(name){
+    localStorage.setItem("cleanerName", name);
+    setCleanerDisplayName(name);
+  }
+
+  if(!name){
+    showBigStatus("No se encontró tu sesión. Vuelve a entrar desde Launch.", "error");
+    setTimeout(() => window.location.replace("/launch"), 700);
+    return null;
+  }
+
+  // Evita solicitudes duplicadas desde focus, Socket.IO y visibilitychange.
+  if(assignmentsRequest){
+    return assignmentsRequest;
+  }
+
+  // Conserva una ventana pequeña de caché para no golpear el servidor
+  // varias veces durante el mismo movimiento de la interfaz.
+  const cacheAge = Date.now() - lastAssignmentsLoadedAt;
+
+  if(!forceRefresh && cachedCleanerUnits.length && cacheAge < 12000){
+    return {
+      ok:true,
+      cleaner:name,
+      units:cachedCleanerUnits,
+      cached:true,
+      source:cleanerDataSource
+    };
+  }
+
+  if(forceRefresh || !cachedCleanerUnits.length){
+    assignmentsBox.innerHTML =
+      "<div class='empty'>Cargando tus unidades desde PostgreSQL...</div>";
+  }
+
+  assignmentsRequest = (async () => {
+    let data = null;
+    let postgresError = null;
+
+    try{
+      // FUENTE PRINCIPAL: Assignment Engine en PostgreSQL.
+      data = await fetchCleanerAssignmentsPostgres(name);
+      cleanerDataSource = "postgres";
+    }catch(error){
+      postgresError = error;
+
+      console.warn(
+        "Assignment Engine PostgreSQL no disponible. Usando fallback:",
+        error.message
+      );
+
+      try{
+        // SALVAVIDAS TEMPORAL: endpoint anterior basado en Notion.
+        data = await fetchCleanerAssignmentsFallback(name);
+        cleanerDataSource = "notion";
+      }catch(fallbackError){
+        throw new Error(
+          `PostgreSQL: ${postgresError.message}. ` +
+          `Fallback: ${fallbackError.message}`
+        );
+      }
+    }
+
+    try{
+      const units = Array.isArray(data.units) ? data.units : [];
+
+      cachedCleanerUnits = units;
+      lastAssignmentsLoadedAt = Date.now();
+      const cleanerCacheKey = String(name || '').trim().toLowerCase();
+      window.OSResilience?.saveSnapshot(`cleaner:${cleanerCacheKey}`, {
+        ...data, units, cleaner:data.cleaner || name
+      });
+
+      setCleanerDisplayName(data.cleaner || name);
+      updateCleanerDashboard(units);
+      renderCleanerAssignments(units);
+
+      const cleanerLabel = document.getElementById("cleanerName");
+
+      if(cleanerLabel){
+        cleanerLabel.innerText =
+          `Cleaner: ${data.cleaner || name} · ` +
+          `${cleanerDataSource === "postgres" ? "PostgreSQL" : "Fallback Notion"}`;
+      }
+
+      if(cleanerDataSource === "notion"){
+        showBigStatus(
+          "PostgreSQL no respondió. Unidades cargadas temporalmente desde Notion.",
+          "error"
+        );
+      }
+
+      // El historial todavía usa su endpoint actual.
+      if(!lastReportsLoadedAt){
+        loadMyReports(false);
+      }
+
+      return data;
+    }catch(error){
+      console.error("Error procesando unidades:", error);
+      throw error;
+    }
+  })()
+    .catch(error => {
+      console.error("Error cargando unidades:", error);
+
+      const cleanerCacheKey = String(name || '').trim().toLowerCase();
+      const snapshot = window.OSResilience?.loadSnapshot(`cleaner:${cleanerCacheKey}`);
+      if(snapshot?.units?.length){
+        cachedCleanerUnits = snapshot.units;
+        renderCleanerAssignments(cachedCleanerUnits);
+        updateCleanerDashboard(cachedCleanerUnits);
+        showBigStatus("Mostrando la última información guardada.", "error");
+        return {...snapshot, cached:true, offline:true};
+      }
+      if(!cachedCleanerUnits.length){
+        assignmentsBox.innerHTML = "<div class='empty'>Reconectando… Tus unidades aparecerán automáticamente.</div>";
+      }
+      showBigStatus("No pudimos actualizar en este momento. Intentaremos de nuevo.", "error");
+      return null;
+    })
+    .finally(() => {
+      assignmentsRequest = null;
+    });
+
+  return assignmentsRequest;
+}
+
+function setWorkFilter(filter,button){
+  workFilter=filter;
+  localStorage.setItem("careWorkFilter",filter);
+  document.querySelectorAll(".work-filter").forEach(item=>item.classList.toggle("active",item.dataset.filter===filter));
+  renderCleanerAssignments(cachedCleanerUnits);
+}
+
+function setWorkSort(sort){
+  workSort=sort;
+  localStorage.setItem("careWorkSort",sort);
+  renderCleanerAssignments(cachedCleanerUnits);
+}
+
+function unitNumber(value){return Number(String(value||"").match(/\d{2,4}/)?.[0]||99999)}
+function cleanerBuilding(item){return String(item?.building||String(item?.unit||"").match(/\b([A-Z])\s*$/)?.[1]||"OTHER").toUpperCase()}
+function visibleCleanerUnits(units){
+  const filtered=(units||[]).filter(item=>{
+    if(workFilter==="arrival")return !!item.arrival;
+    if(workFilter==="stayover")return !!item.stayover;
+    if(workFilter==="ready")return isGuestOut(item);
+    return true;
+  });
+  return filtered.sort((a,b)=>{
+    if(workSort==="building")return cleanerBuilding(a).localeCompare(cleanerBuilding(b))||unitNumber(a.unit)-unitNumber(b.unit);
+    if(workSort==="unit")return unitNumber(a.unit)-unitNumber(b.unit)||String(a.unit).localeCompare(String(b.unit));
+    const score=x=>(x.urgent?0:x.arrival&&isGuestOut(x)?1:isGuestOut(x)?2:x.stayover?3:4);
+    return score(a)-score(b)||cleanerBuilding(a).localeCompare(cleanerBuilding(b))||unitNumber(a.unit)-unitNumber(b.unit);
+  });
+}
+
+function renderCleanerAssignments(units){
+  const assignmentsBox = document.getElementById("assignments");
+  const visible=visibleCleanerUnits(units);
+  document.querySelectorAll(".work-filter").forEach(item=>item.classList.toggle("active",item.dataset.filter===workFilter));
+  const sortBox=document.getElementById("workSort");if(sortBox)sortBox.value=workSort;
+
+  if(!visible.length){
+    assignmentsBox.innerHTML = `<div class='empty'>${(units||[]).length?'No hay unidades en este filtro.':'No tienes unidades asignadas hoy.'}</div>`;
+    return;
+  }
+  const grouped=workSort==="building"?visible.reduce((map,item)=>{const key=cleanerBuilding(item);(map[key]??=[]).push(item);return map},{}):{ALL:visible};
+  let html = "";
+  Object.entries(grouped).forEach(([building,items])=>{
+    html += workSort==="building"?`<section class="building-group"><div class="building-group-title">${escapeHtml(building==="OTHER"?"Casas / Other":`Edificio ${building}`)}<span>${items.length}</span></div>`:"";
+    html += `<div class="assignment-list">`;
+    items.forEach(item => {
+    const state = getCleanerState(item);
+    const selectedClass = item.unit === selectedUnit ? "selected" : "";
+    const cardId = "card-" + String(item.unit || "").replace(/[^a-zA-Z0-9]/g, "");
+    const guestOut = isGuestOut(item);
+    const preInspected = isPreInspected(item);
+
+    const guestText = guestOut ? "Guest Out" : "Guest In";
+    const preText = preInspected ? "Pre-Inspected" : "";
+    const footerRight = preInspected ? "Pre-Inspected" : (item.arrival ? "Arrival" : (item.stayover ? "Stayover" : ""));
+
+    const panelAction = state.key === "done"
+      ? ""
+      : (state.key === "not-started" || state.key === "guest-out" || state.key === "pre-inspected")
+        ? `quickStartUnit(event, '${safeJsString(item.unit)}')`
+        : `quickFinishUnit(event, '${safeJsString(item.unit)}')`;
+
+    html += `
+      <div
+        class="assignment-card ${state.cardClass} ${selectedClass}"
+        onclick="selectCleanerAssignment('${safeJsString(item.unit)}','${safeJsString(item.status)}',${item.arrival ? "true" : "false"})"
+        id="${cardId}"
+      >
+        <div class="room-layout">
+          <div class="room-content">
+            <div class="room-title">${escapeHtml(item.unit)}</div>
+
+            <div class="room-meta-grid">
+              <div class="meta-block">
+                <label>Guest Status</label>
+                <span class="meta-value ${guestOut ? "guest-out" : ""}">
+                  ${escapeHtml(guestText)}
+                </span>
+              </div>
+
+              <div class="meta-block">
+                <label>Pre Inspection</label>
+                <span class="meta-value ${preInspected ? "pre-inspected" : "pending-pre"}">
+                  ${escapeHtml(preText)}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="state-panel" onclick="${panelAction}">
+            <span class="action-circle ${state.circle}">
+              <svg viewBox="0 0 48 48" aria-hidden="true">
+                <circle class="ring-track" cx="24" cy="24" r="18" pathLength="100"></circle>
+                <circle class="ring-value" cx="24" cy="24" r="18" pathLength="100"></circle>
+              </svg>
+            </span>
+            <span class="tap-label">
+              ${state.key === "done" ? "Finished" : (state.key === "started" ? "Tap to Finish" : "Tap to Start")}
+            </span>
+          </div>
+        </div>
+
+        <div class="room-footer">
+          <span>${escapeHtml(state.detail)}</span>
+
+          <div class="footer-right">
+            <strong class="${preInspected ? "easy-tag" : (item.arrival ? "arrival-tag" : (item.stayover ? "stayover-tag" : ""))}">
+              ${escapeHtml(footerRight)}
+            </strong>
+
+            <button class="inline-voice" title="Solicitar supplies por voz" aria-label="Solicitar supplies por voz" onclick="openVoiceRequest(event, '${safeJsString(item.unit)}')">🎙</button>
+
+            <button
+              class="inline-report"
+              title="Reporte"
+              onclick="openReportForUnit(event, '${safeJsString(item.unit)}','${safeJsString(item.status)}',${item.arrival ? "true" : "false"})"
+            >
+              ✎
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    });
+    html += `</div>${workSort==="building"?"</section>":""}`;
+  });
+  assignmentsBox.innerHTML = html;
+}
+
+
+function setCleanerCardLoading(unit,loading){
+  const cardId="card-"+String(unit||"").replace(/[^a-zA-Z0-9]/g,"");
+  const card=document.getElementById(cardId);
+  if(!card)return;
+
+  card.classList.toggle("card-loading",!!loading);
+  const circle=card.querySelector(".action-circle");
+  if(!circle)return;
+
+  if(loading){
+    circle.dataset.previousState=
+      circle.classList.contains("full") ? "full" :
+      circle.classList.contains("half") ? "half" :
+      "empty";
+
+    circle.classList.remove("empty","half","full");
+    circle.classList.add("loading");
+  }else{
+    const previousState=circle.dataset.previousState||"empty";
+    circle.classList.remove("loading","empty","half","full");
+    circle.classList.add(previousState);
+    delete circle.dataset.previousState;
+  }
+}
+
+function updateCleanerCardState(unit,state,label){
+  const cardId="card-"+String(unit||"").replace(/[^a-zA-Z0-9]/g,"");
+  const card=document.getElementById(cardId);
+  if(!card)return;
+
+  const circle=card.querySelector(".action-circle");
+  const tapLabel=card.querySelector(".tap-label");
+
+  if(circle){
+    circle.classList.remove("loading","empty","half","full");
+    void circle.offsetWidth;
+    circle.classList.add(state);
+    delete circle.dataset.previousState;
+  }
+
+  if(tapLabel && label){
+    tapLabel.innerText=label;
+  }
+}
+
+function updateCachedCleanerUnit(unit, changes = {}){
+  const target = String(unit || "").trim().toUpperCase();
+  const index = cachedCleanerUnits.findIndex(item =>
+    String(item?.unit || "").trim().toUpperCase() === target
+  );
+
+  if(index >= 0){
+    cachedCleanerUnits[index] = {
+      ...cachedCleanerUnits[index],
+      ...changes
+    };
+    updateCleanerDashboard(cachedCleanerUnits);
+  }
+}
+
+function mergeCleanerRoomUpdate(update){
+  if(!update || !update.unit)return false;
+
+  const cardId="card-"+String(update.unit||"").replace(/[^a-zA-Z0-9]/g,"");
+  const card=document.getElementById(cardId);
+  if(!card)return false;
+
+  const status=String(update.status||"").toLowerCase();
+  const flagChanged=["arrival","stayover","guestOut","urgent","building","assignedCleaner","assignedCleaners"].some(key=>Object.prototype.hasOwnProperty.call(update,key));
+
+  if(status.includes("progress")){
+    card.classList.remove("not-started","guest-out","pre-inspected","done");
+    card.classList.add("started");
+    updateCleanerCardState(update.unit,"half","Tap to Finish");
+    updateCachedCleanerUnit(update.unit, { status:update.status || "In Progress" });
+  }
+
+  if(status.includes("cleaned") || status.includes("awaiting") || status.includes("ready")){
+    card.classList.remove("not-started","guest-out","pre-inspected","started");
+    card.classList.add("done");
+    updateCleanerCardState(update.unit,"full","Finished");
+    updateCachedCleanerUnit(update.unit, { status:update.status || "Cleaned - Awaiting Inspection" });
+  }
+
+  updateCachedCleanerUnit(update.unit,update);
+  if(flagChanged)renderCleanerAssignments(cachedCleanerUnits);
+
+  return true;
+}
+
+async function quickStartUnit(event, unit){
+  if(event){
+    event.stopPropagation();
+    event.preventDefault();
+  }
+
+  if(!unit || isSending){
+    return;
+  }
+
+  selectCleanerAssignment(unit, "", false);
+  await sendAction("START");
+}
+
+async function quickFinishUnit(event, unit){
+  if(event){
+    event.stopPropagation();
+    event.preventDefault();
+  }
+
+  if(!unit || isSending){
+    return;
+  }
+
+  selectCleanerAssignment(unit, "", false);
+  await sendAction("DONE");
+}
+
+function openReportForUnit(event, unit, status, arrival){
+  if(event){
+    event.stopPropagation();
+    event.preventDefault();
+  }
+
+  selectCleanerAssignment(unit, status, arrival);
+
+  const panel = document.getElementById("cleaningPanel");
+  const note = document.getElementById("note");
+
+  if(panel){
+    panel.classList.remove("hidden");
+    document.body.classList.add("report-open");
+  }
+
+  if(note){
+    setTimeout(() => {
+      note.focus();
+    }, 160);
+  }
+}
+
+function openVoiceRequest(event, unit){
+  event?.stopPropagation();
+  event?.preventDefault();
+  voiceRequestUnit = String(unit || "").trim().toUpperCase();
+  document.getElementById("voiceUnitLabel").textContent = voiceRequestUnit;
+  resetVoiceRecorder();
+  document.getElementById("voiceRequestPanel").classList.remove("hidden");
+  document.body.classList.add("report-open");
+}
+
+function openCareAssistant(){
+  voiceRequestUnit="";
+  document.getElementById("voiceUnitLabel").textContent="Dime la unidad y la acción";
+  resetVoiceRecorder();
+  document.getElementById("voiceRequestPanel").classList.remove("hidden");
+  document.body.classList.add("report-open");
+}
+
+function careSpeak(message){
+  try{
+    if(!("speechSynthesis" in window))return;
+    speechSynthesis.cancel();
+    const speech=new SpeechSynthesisUtterance(message);
+    speech.lang="es-MX";speech.rate=1.02;
+    speechSynthesis.speak(speech);
+  }catch(error){}
+}
+
+function closeVoiceRequest(){
+  stopVoiceTracks();
+  clearInterval(voiceTimerHandle);
+  document.getElementById("voiceRequestPanel").classList.add("hidden");
+  document.body.classList.remove("report-open");
+}
+
+function stopVoiceTracks(){
+  if(voiceMediaStream) voiceMediaStream.getTracks().forEach(track => track.stop());
+  voiceMediaStream = null;
+}
+
+function resetVoiceRecorder(){
+  if(voiceMediaRecorder?.state === "recording") voiceMediaRecorder.stop();
+  stopVoiceTracks();
+  clearInterval(voiceTimerHandle);
+  voiceMediaRecorder = null;
+  voiceAudioChunks = [];
+  interpretedVoiceRequest = null;
+  document.getElementById("voiceReview").classList.add("hidden");
+  document.getElementById("voiceRecorder").classList.remove("hidden");
+  document.getElementById("voiceRecordButton").classList.remove("recording");
+  document.getElementById("voiceRecordButton").textContent = "🎙";
+  document.getElementById("voiceRecordStatus").textContent = "Toca para comenzar a grabar";
+  document.getElementById("voiceTimer").textContent = "00:00";
+  document.getElementById("voiceCommand")?.classList.add("hidden");
+}
+
+async function toggleVoiceRecording(){
+  if(voiceMediaRecorder?.state === "recording") return voiceMediaRecorder.stop();
+  if(!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder){
+    alert("Este dispositivo no permite grabar audio desde el navegador.");
+    return;
+  }
+  try{
+    voiceMediaStream = await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});
+    const preferred = ["audio/webm;codecs=opus","audio/mp4","audio/webm"].find(type => MediaRecorder.isTypeSupported(type));
+    voiceMediaRecorder = preferred ? new MediaRecorder(voiceMediaStream,{mimeType:preferred}) : new MediaRecorder(voiceMediaStream);
+    voiceAudioChunks = [];
+    voiceMediaRecorder.ondataavailable = event => { if(event.data?.size) voiceAudioChunks.push(event.data); };
+    voiceMediaRecorder.onstop = interpretVoiceRecording;
+    voiceMediaRecorder.start(250);
+    voiceStartedAt = Date.now();
+    const button = document.getElementById("voiceRecordButton");
+    button.classList.add("recording");
+    button.textContent = "■";
+    document.getElementById("voiceRecordStatus").textContent = "Grabando… toca para terminar";
+    voiceTimerHandle = setInterval(() => {
+      const seconds = Math.floor((Date.now()-voiceStartedAt)/1000);
+      document.getElementById("voiceTimer").textContent = `${String(Math.floor(seconds/60)).padStart(2,"0")}:${String(seconds%60).padStart(2,"0")}`;
+      if(seconds >= 45 && voiceMediaRecorder?.state === "recording") voiceMediaRecorder.stop();
+    },250);
+  }catch(error){
+    alert("Necesitas permitir acceso al micrófono para enviar una solicitud por voz.");
+  }
+}
+
+async function interpretVoiceRecording(){
+  clearInterval(voiceTimerHandle);
+  stopVoiceTracks();
+  document.getElementById("voiceRecordButton").classList.remove("recording");
+  document.getElementById("voiceRecordButton").textContent = "🎙";
+  document.getElementById("voiceRecordStatus").textContent = "Interpretando solicitud…";
+  try{
+    if(!voiceAudioChunks.length) throw new Error("No se grabó audio.");
+    const blob = new Blob(voiceAudioChunks,{type:voiceAudioChunks[0].type || "audio/webm"});
+    const form = new FormData();
+    form.append("audio",blob,blob.type.includes("mp4") ? "request.m4a" : "request.webm");
+    form.append("room",voiceRequestUnit);
+    form.append("requestedBy",document.getElementById("name").value.trim());
+    const response = await fetch("/api/voice-supply-request/interpret",{method:"POST",body:form});
+    const data = await response.json();
+    if(!response.ok || !data.ok) throw new Error(data.error || "No pude interpretar el audio.");
+    interpretedVoiceRequest = data.request;
+    voiceRequestUnit = data.request.room || voiceRequestUnit;
+    document.getElementById("voiceUnitLabel").textContent = voiceRequestUnit || "Unidad no identificada";
+    renderVoiceReview(data.request);
+  }catch(error){
+    document.getElementById("voiceRecordStatus").textContent = error.message;
+    showBigStatus(error.message,"error");
+  }
+}
+
+function renderVoiceReview(request){
+  document.getElementById("voiceRecorder").classList.add("hidden");
+  document.getElementById("voiceReview").classList.remove("hidden");
+  document.getElementById("voiceTranscript").textContent = `Escuché: “${request.transcript}”`;
+  document.getElementById("voiceCategory").value = request.category || "Other";
+  document.getElementById("voicePriority").value = request.priority || "normal";
+  document.getElementById("voiceNotes").value = request.notes || "";
+  const warning = document.getElementById("voiceWarning");
+  warning.textContent = request.clarificationQuestion || "Revisa los artículos y cantidades antes de enviar.";
+  warning.classList.toggle("hidden",!request.needsClarification);
+  const command=document.getElementById("voiceCommand");
+  const isCommand=["start_cleaning","finish_cleaning"].includes(request.intent);
+  command.classList.toggle("hidden",!isCommand);
+  if(isCommand)command.textContent=`${request.intent==="start_cleaning"?"Iniciar":"Finalizar"} limpieza · ${request.room}`;
+  document.querySelector("#voiceReview .voice-fields").classList.toggle("hidden",isCommand);
+  document.querySelector("#voiceItems").closest(".voice-field").classList.toggle("hidden",isCommand);
+  document.querySelector(".voice-add").classList.toggle("hidden",isCommand);
+  document.getElementById("voiceNotes").closest(".voice-field").classList.toggle("hidden",isCommand);
+  document.getElementById("voiceConfirmButton").textContent=isCommand?(request.intent==="start_cleaning"?"Confirmar inicio":"Confirmar término"):"Enviar solicitud";
+  const box = document.getElementById("voiceItems");
+  box.innerHTML = "";
+  (request.items || []).forEach(item => addVoiceItem(item));
+  if(!(request.items || []).length) addVoiceItem();
+}
+
+function addVoiceItem(item={name:"",quantity:1}){
+  const row = document.createElement("div");
+  row.className = "voice-item";
+  row.innerHTML = `<input class="voice-quantity" type="number" min="1" max="100" value="${Math.max(1,Number(item.quantity)||1)}" aria-label="Cantidad"><input class="voice-item-name" value="${escapeHtml(item.name || "")}" placeholder="Artículo" aria-label="Artículo"><button class="voice-remove" type="button" aria-label="Eliminar">×</button>`;
+  row.querySelector(".voice-remove").onclick = () => row.remove();
+  document.getElementById("voiceItems").appendChild(row);
+}
+
+async function confirmVoiceRequest(){
+  const request=interpretedVoiceRequest||{};
+  if(request.needsClarification){alert(request.clarificationQuestion||"Necesito confirmar la solicitud.");return;}
+  if(["start_cleaning","finish_cleaning"].includes(request.intent)){
+    const unit=String(request.room||voiceRequestUnit||"").trim().toUpperCase();
+    if(!unit){alert("No pude identificar la unidad.");return;}
+    const assigned=cachedCleanerUnits.some(item=>String(item.unit||"").toUpperCase().includes(unit)||String(item.normalizedRoom||"").toUpperCase()===unit);
+    if(!assigned){alert(`La unidad ${unit} no está en tus asignaciones de hoy.`);return;}
+    const exact=cachedCleanerUnits.find(item=>String(item.unit||"").toUpperCase().includes(unit)||String(item.normalizedRoom||"").toUpperCase()===unit)?.unit||unit;
+    closeVoiceRequest();
+    selectCleanerAssignment(exact,"",false);
+    await sendAction(request.intent==="start_cleaning"?"START":"DONE");
+    const reply=request.intent==="start_cleaning"?`Listo. Inicié la limpieza de ${exact}.`:`Listo. Cerré la limpieza de ${exact} y avisé a inspecciones.`;
+    careSpeak(reply);showBigStatus(reply,"success");
+    return;
+  }
+  if(request.intent==="report_issue"){
+    const unit=String(request.room||voiceRequestUnit||"").trim().toUpperCase();
+    const exact=cachedCleanerUnits.find(item=>String(item.unit||"").toUpperCase().includes(unit)||String(item.normalizedRoom||"").toUpperCase()===unit)?.unit;
+    if(!exact){alert(`La unidad ${unit||"indicada"} no está en tus asignaciones de hoy.`);return;}
+    const note=String(request.notes||request.transcript||"").trim();
+    closeVoiceRequest();selectCleanerAssignment(exact,"",false);
+    document.getElementById("note").value=note;
+    await sendAction("ISSUE");
+    const reply=`Listo. Envié el problema de ${exact} a Andrés y Operaciones.`;
+    careSpeak(reply);showBigStatus(reply,request.priority==="urgent"?"error":"success");
+    return;
+  }
+  const items = [...document.querySelectorAll("#voiceItems .voice-item")].map(row => ({
+    quantity:Math.max(1,Number(row.querySelector(".voice-quantity").value)||1),
+    name:row.querySelector(".voice-item-name").value.trim()
+  })).filter(item => item.name);
+  if(!items.length){ alert("Agrega al menos un artículo."); return; }
+  const button = document.getElementById("voiceConfirmButton");
+  button.disabled = true;
+  button.textContent = "Enviando…";
+  try{
+    const transcript = request.transcript || "";
+    const notes = document.getElementById("voiceNotes").value.trim();
+    const response = await fetch("/api/service-orders",{
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({room:voiceRequestUnit,category:document.getElementById("voiceCategory").value,priority:document.getElementById("voicePriority").value,items,assignedTo:"Runner",requestedBy:document.getElementById("name").value.trim(),notes:[notes,transcript ? `Voice: ${transcript}` : ""].filter(Boolean).join(" · ")})
+    });
+    const data = await response.json();
+    if(!response.ok || !data.ok) throw new Error(data.error || "No se pudo enviar la solicitud.");
+    closeVoiceRequest();
+    const reply=`Listo. Envié la solicitud de ${voiceRequestUnit} a Operaciones.`;
+    showBigStatus(reply,"success");careSpeak(reply);
+    playBeep("success");
+    vibratePhone("success");
+  }catch(error){
+    showBigStatus(error.message,"error");
+  }finally{
+    button.disabled = false;
+    button.textContent = "Enviar solicitud";
+  }
+}
+
+function closeReportPanel(){
+  const panel = document.getElementById("cleaningPanel");
+
+  if(panel){
+    panel.classList.add("hidden");
+  }
+
+  document.body.classList.remove("report-open");
+}
+
+function selectCleanerAssignment(unit, status, arrival){
+  selectedUnit = unit;
+  selectedUnitStatus = status || "";
+  selectedUnitArrival = !!arrival;
+
+  const unitInput = document.getElementById("unit");
+  const unitLabel = document.getElementById("selectedUnitLabel");
+  const statusText = document.getElementById("unitStatusText");
+
+  if(unitInput) unitInput.value = unit;
+  if(unitLabel) unitLabel.innerText = unit;
+  if(statusText) statusText.innerText = getStatusLabel(status, arrival);
+
+  document.querySelectorAll(".assignment-card").forEach(card => {
+    card.classList.remove("selected");
+  });
+
+  const cardId = "card-" + unit.replace(/[^a-zA-Z0-9]/g, "");
+  const card = document.getElementById(cardId);
+
+  if(card){
+    card.classList.add("selected");
+  }
+
+}
+
+function addSelectedPhotos(){
+  const photoInput = document.getElementById("photoInput");
+  const newFiles = Array.from(photoInput.files || []);
+
+  newFiles.forEach(file => {
+    const key = `${file.name}-${file.size}-${file.lastModified}`;
+    const exists = selectedReportFiles.some(existing =>
+      `${existing.name}-${existing.size}-${existing.lastModified}` === key
+    );
+
+    if(!exists){
+      selectedReportFiles.push(file);
+    }
+  });
+
+  photoInput.value = "";
+  updatePhotoCount();
+}
+
+function updatePhotoCount(){
+  const count = selectedReportFiles.length;
+
+  document.getElementById("photoCount").innerText =
+    count > 0
+      ? `${count} foto${count === 1 ? "" : "s"} lista${count === 1 ? "" : "s"} para enviar`
+      : "Toca para abrir la cámara. Toma una foto, luego vuelve a tocar para tomar otra.";
+}
+
+async function uploadPhotosWithReport({ unit, name, action, note, role }){
+  const formData = new FormData();
+
+  formData.append("unit", unit);
+  formData.append("name", name);
+  formData.append("employee", name);
+  formData.append("role", role || "Cleaner");
+  formData.append("action", action || "GENERAL_REPORT");
+  formData.append("message", note || "");
+  formData.append("note", note || "");
+
+  selectedReportFiles.forEach(file => {
+    formData.append("photos", file);
+  });
+
+  const response = await fetch("/submit-report", {
+    method: "POST",
+    body: formData
+  });
+
+  const data = await response.json();
+
+  if(!response.ok || !data.ok){
+    throw new Error(data.message || data.error || "Error enviando reporte");
+  }
+
+  return data;
+}
+
+async function sendAction(action){
+  let actionSucceeded=false;
+
+  if(isSending){
+    return;
+  }
+
+  const name = document.getElementById("name").value.trim();
+  const unit = document.getElementById("unit").value.trim().toUpperCase();
+  const note = document.getElementById("note").value.trim();
+
+  if(!name){
+    alert("No se encontró tu sesión. Vuelve a entrar desde Launch.");
+    window.location.href = "/launch";
+    return;
+  }
+
+  if(!unit){
+    alert("Selecciona una unidad");
+    return;
+  }
+
+  const sendKey = `${action}-${unit}-${name}-${note}`;
+  const now = Date.now();
+
+  if(sendKey === lastSendKey && now - lastSendTime < 30000){
+    showBigStatus("Ya fue enviado. Espera unos segundos.", "error");
+    playBeep("error");
+    vibratePhone("error");
+    return;
+  }
+
+  isSending = true;
+  setCleanerCardLoading(unit,true);
+  lastSendKey = sendKey;
+  lastSendTime = now;
+  setButtonsDisabled(true);
+  setStatus("Enviando...");
+  showBigStatus("Enviando acción...", "loading");
+
+  try{
+    const payload = { action, unit, note, name, photoUrl:"" };
+    const data = window.OSResilience
+      ? await OSResilience.postAction("/action", payload)
+      : await fetch("/action",{
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body:JSON.stringify(payload)
+        }).then(response => response.json());
+
+    if(data.success){
+      actionSucceeded=true;
+      setStatus(data.message || "Enviado");
+      showBigStatus(data.message || "Enviado correctamente", "success");
+      playBeep("success");
+      vibratePhone("success");
+
+      if(action === "START"){
+        updateCleanerCardState(unit,"half","Tap to Finish");
+        updateCachedCleanerUnit(unit, { status:"In Progress" });
+      }
+
+      if(action === "DONE"){
+        updateCleanerCardState(unit,"full","Finished");
+        updateCachedCleanerUnit(unit, { status:"Cleaned - Awaiting Inspection" });
+        document.getElementById("note").value = "";
+      }
+
+      // Solo actualizamos historial; la tarjeta ya cambió localmente.
+      await loadMyReports(true);
+    }else{
+      throw new Error(data.message || "Error");
+    }
+
+  }catch(error){
+    setStatus("Reconectando…");
+    showBigStatus("No se perdió tu acción. Reintentando automáticamente…", "loading");
+  }finally{
+    if(!actionSucceeded){
+      setCleanerCardLoading(unit,false);
+    }else{
+      const cardId="card-"+String(unit||"").replace(/[^a-zA-Z0-9]/g,"");
+      const card=document.getElementById(cardId);
+
+      if(card){
+        card.classList.remove("card-loading");
+        const circle=card.querySelector(".action-circle");
+        if(circle){
+          circle.classList.remove("loading");
+          delete circle.dataset.previousState;
+        }
+      }
+    }
+
+    isSending = false;
+    setButtonsDisabled(false);
+  }
+}
+
+async function sendSmartReport(){
+  await submitReportToAI("GENERAL_REPORT");
+}
+
+async function submitReportToAI(action){
+  if(isSending){
+    return;
+  }
+
+  const name = document.getElementById("name").value.trim();
+  const unit = document.getElementById("unit").value.trim().toUpperCase();
+  const note = document.getElementById("note").value.trim();
+  const hasPhotos = selectedReportFiles.length > 0;
+
+  if(!name){
+    alert("No se encontró tu sesión. Vuelve a entrar desde Launch.");
+    window.location.href = "/launch";
+    return;
+  }
+
+  if(!unit){
+    alert("Selecciona una unidad");
+    return;
+  }
+
+  if(!note && !hasPhotos){
+    alert("Escribe un mensaje o agrega fotos");
+    return;
+  }
+
+  const sendKey = `REPORT-${action}-${unit}-${name}-${note}-${selectedReportFiles.length}`;
+  const now = Date.now();
+
+  if(sendKey === lastSendKey && now - lastSendTime < 30000){
+    showBigStatus("Ese reporte ya fue enviado.", "error");
+    playBeep("error");
+    vibratePhone("error");
+    return;
+  }
+
+  isSending = true;
+  lastSendKey = sendKey;
+  lastSendTime = now;
+  setButtonsDisabled(true);
+  setStatus("Enviando reporte...");
+  showBigStatus(hasPhotos ? "Subiendo fotos..." : "Enviando reporte...", "loading");
+
+  try{
+    const data = await uploadPhotosWithReport({
+      unit,
+      name,
+      action,
+      note,
+      role:"Cleaner"
+    });
+
+    setStatus(data.message || "Reporte enviado");
+    showBigStatus(data.message || "Reporte enviado", "success");
+    playBeep("success");
+    vibratePhone("success");
+
+    document.getElementById("note").value = "";
+    selectedReportFiles = [];
+    document.getElementById("photoInput").value = "";
+    updatePhotoCount();
+
+    closeReportPanel();
+    await loadMyReports(true);
+
+  }catch(error){
+    setStatus("Error: " + error.message);
+    showBigStatus("Error: " + error.message, "error");
+    playBeep("error");
+    vibratePhone("error");
+  }finally{
+    isSending = false;
+    setButtonsDisabled(false);
+  }
+}
+
+async function loadMyReports(forceRefresh = false){
+  const name = document.getElementById("name").value.trim();
+
+  if(!name){
+    document.getElementById("history").innerHTML =
+      "<div class='empty'>Tu historial aparecerá aquí después de cargar tus unidades.</div>";
+    return null;
+  }
+
+  if(reportsRequest){
+    return reportsRequest;
+  }
+
+  if(!forceRefresh && lastReportsLoadedAt && Date.now() - lastReportsLoadedAt < 10000){
+    return null;
+  }
+
+  reportsRequest = (async () => {
+  try{
+    const params = new URLSearchParams({
+      employee:name,
+      role:"Cleaner"
+    });
+
+    if(selectedUnit){
+      params.append("unit", selectedUnit);
+    }
+
+    const url = `/my-reports?${params.toString()}`;
+    const data = window.OS?.api
+      ? await OS.api.get(url)
+      : await fetch(url).then(response => response.json());
+
+    lastReportsLoadedAt = Date.now();
+
+    if(!data.ok || !data.reports || data.reports.length === 0){
+      document.getElementById("history").innerHTML =
+        "<div class='empty'>Todavía no hay reportes o acciones en tu historial de hoy.</div>";
+      return;
+    }
+
+    let html = `<div class="history-list">`;
+
+    data.reports.forEach(item => {
+      const time = item.timeDisplay || item.time || "";
+      const action =
+        item.aiCategory ||
+        item.category ||
+        item.action ||
+        "Reporte";
+
+      const note =
+        item.message ||
+        item.originalMessage ||
+        item.note ||
+        item.aiSummary ||
+        "";
+
+      const sent =
+        item.hotsosSent
+          ? "HotSOS enviado"
+          : (item.needsHotSOS
+              ? "Pendiente HotSOS"
+              : "Guardado");
+
+      const photos = item.photos || [];
+
+      html += `
+        <div class="history-item">
+          <div class="history-top">
+            <span>${escapeHtml(time)} • ${escapeHtml(item.unit || selectedUnit || "")}</span>
+            <span>${escapeHtml(sent)}</span>
+          </div>
+          <div class="history-action">${escapeHtml(action)}</div>
+          ${note ? `<div class="history-note">${escapeHtml(note)}</div>` : ""}
+          ${
+            photos.length > 0
+              ? `
+                <div class="photo-preview" style="margin-top:10px;">
+                  ${photos.map(photo => {
+                    const url = photo.url || photo.photoUrl || "";
+                    if(!url) return "";
+
+                    return `
+                      <a href="${url}" target="_blank">
+                        <img src="${url}" style="width:90px;height:90px;object-fit:cover;border-radius:12px;margin-right:6px;">
+                      </a>
+                    `;
+                  }).join("")}
+                </div>
+              `
+              : ""
+          }
+        </div>
+      `;
+    });
+
+    html += `</div>`;
+    document.getElementById("history").innerHTML = html;
+
+  }catch(error){
+    console.error("Error cargando historial:", error);
+    document.getElementById("history").innerHTML =
+      "<div class='empty'>No se pudo cargar el historial.</div>";
+    return null;
+  }finally{
+    reportsRequest = null;
+  }
+  })();
+
+  return reportsRequest;
+}
+
+function openSettingsMenu(){
+  const sheet = document.getElementById("settingsSheet");
+  if(sheet){
+    sheet.classList.remove("hidden");
+  }
+}
+
+function closeSettingsMenu(){
+  const sheet = document.getElementById("settingsSheet");
+  if(sheet){
+    sheet.classList.add("hidden");
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  updateBottomNavVisibility(localStorage.getItem("employeeRole") || "");
+  bootCleanerPanel();
+});
+
+document.addEventListener("keydown", event => {
+  if(event.key === "Escape"){
+    closeReportPanel();
+  }
+});
+
+document.addEventListener("visibilitychange", () => {
+  if(!document.hidden && currentCleanerName && Date.now() - lastAssignmentsLoadedAt > 60000){
+    loadCleanerAssignments(false);
+  }
+});
+
+let realtimeRefreshTimer = null;
+let realtimeRefreshRunning = false;
+
+async function refreshCleanerRealtime(){
+  if(!currentCleanerName || realtimeRefreshRunning){
+    return;
+  }
+
+  realtimeRefreshRunning = true;
+
+  try{
+    await loadCleanerAssignments(true);
+  }catch(error){
+    console.error("Error actualizando panel en tiempo real:", error);
+  }finally{
+    realtimeRefreshRunning = false;
+  }
+}
+
+function scheduleCleanerRealtimeRefresh(){
+  clearTimeout(realtimeRefreshTimer);
+
+  realtimeRefreshTimer = setTimeout(() => {
+    refreshCleanerRealtime();
+  }, 250);
+}
+
+function connectCleanerRealtime(){
+  const sharedSocket = window.OS?.socket;
+
+  if(!sharedSocket){
+    window.addEventListener("os-ready", connectCleanerRealtime, { once:true });
+    return;
+  }
+
+  console.log("📡 Panel de limpieza usando Socket.IO compartido");
+
+  sharedSocket.off("assignments-updated", handleAssignmentsUpdated);
+  sharedSocket.off("rooms-updated", handleAssignmentsUpdated);
+  sharedSocket.off("room-updated", handleRoomUpdated);
+  sharedSocket.off("rooms-postgres-synced", handlePostgresRoomsSynced);
+  sharedSocket.off("data-api-updated", handleDataApiUpdated);
+
+  sharedSocket.on("assignments-updated", handleAssignmentsUpdated);
+  sharedSocket.on("rooms-updated", handleAssignmentsUpdated);
+  sharedSocket.on("room-updated", handleRoomUpdated);
+  sharedSocket.on("rooms-postgres-synced", handlePostgresRoomsSynced);
+  sharedSocket.on("data-api-updated", handleDataApiUpdated);
+}
+
+function handlePostgresRoomsSynced(payload){
+  console.log("🐘 Rooms sincronizadas en PostgreSQL:", payload);
+
+  if(payload?.date && payload.date !== todayChicagoISO()){
+    return;
+  }
+
+  scheduleCleanerRealtimeRefresh();
+}
+
+function handleDataApiUpdated(payload){
+  if(payload?.module && payload.module !== "rooms" && payload.module !== "assignments"){
+    return;
+  }
+
+  if(payload?.date && payload.date !== todayChicagoISO()){
+    return;
+  }
+
+  scheduleCleanerRealtimeRefresh();
+}
+
+function handleAssignmentsUpdated(payload){
+  console.log("🔔 Asignaciones actualizadas:", payload);
+
+  if(payload?.lightweight || payload?.reason === "server-room-update"){
+    return;
+  }
+
+  scheduleCleanerRealtimeRefresh();
+}
+
+function handleRoomUpdated(update){
+  console.log("⚡ Unidad actualizada:", update);
+
+  const merged = mergeCleanerRoomUpdate(update);
+
+  if(!merged && currentCleanerName){
+    scheduleCleanerRealtimeRefresh();
+  }
+}
+
+connectCleanerRealtime();
+</script>
+
+<script src="/js/push-notifications.js"></script>
+</body>
+</html>

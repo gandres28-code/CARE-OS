@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#07090c" />
+  <title>Still Waters Resort · Command Center</title>
+  <style>
+    :root{
+      --bg:#eef1f5;--bg-glow:rgba(21,100,246,.05);--surface:rgba(255,255,255,.94);--surface-solid:#fff;
+      --surface-2:#f7f9fb;--surface-3:#e9edf2;--text:#10141b;--muted:#687281;--line:#dce2e9;
+      --line-strong:#c7d0db;--shadow:0 18px 48px rgba(31,42,55,.09);--shadow-soft:0 8px 24px rgba(31,42,55,.065);
+      --ready:#15965f;--cleaning:#d83b45;--pending:#7c8796;--stayover:#2474d7;--inspection:#e88418;
+      --room-text:#fff;--accent:#111827;--accent-text:#fff;--header:rgba(255,255,255,.82);
+      --ring:rgba(17,24,39,.09);--glass:blur(22px) saturate(145%);
+    }
+    html[data-theme="dark"]{
+      --bg:#07090d;--bg-glow:rgba(50,115,255,.10);--surface:rgba(15,19,25,.92);--surface-solid:#0f1319;
+      --surface-2:#151a22;--surface-3:#1d242e;--text:#f5f7fa;--muted:#98a4b4;--line:#252d38;
+      --line-strong:#374250;--shadow:0 22px 58px rgba(0,0,0,.38);--shadow-soft:0 10px 28px rgba(0,0,0,.27);
+      --pending:#596474;--accent:#f4f6f8;--accent-text:#080b10;--header:rgba(8,11,15,.82);--ring:rgba(255,255,255,.08);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    body{overflow-x:hidden;background-image:radial-gradient(circle at 12% 2%,var(--bg-glow),transparent 32%),radial-gradient(circle at 88% 8%,var(--bg-glow),transparent 28%)}
+    button{font:inherit}[hidden]{display:none!important}
+    .app{min-height:100vh;padding:20px 22px 28px;max-width:2300px;margin:auto}
+    .topbar{position:sticky;top:14px;z-index:50;display:grid;grid-template-columns:minmax(330px,1fr) auto auto;gap:20px;align-items:center;padding:14px 16px;background:var(--header);border:1px solid var(--line);border-radius:22px;backdrop-filter:var(--glass);box-shadow:var(--shadow-soft)}
+    .brand{display:flex;align-items:center;gap:14px;min-width:0}
+    .mark{width:50px;height:50px;border-radius:15px;display:grid;place-items:center;background:var(--accent);color:var(--accent-text);font-weight:950;letter-spacing:-1.5px;box-shadow:0 0 0 5px var(--ring)}
+    .brand h1{margin:0;font-size:clamp(21px,1.5vw,31px);line-height:1.04;letter-spacing:-.65px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .brand p{margin:6px 0 0;color:var(--muted);font-size:12px;font-weight:650;letter-spacing:.035em;text-transform:uppercase}
+    .clock{text-align:center;min-width:158px;padding:0 14px;border-left:1px solid var(--line);border-right:1px solid var(--line)}
+    .clock strong{display:block;font-size:clamp(26px,2.15vw,43px);line-height:1;letter-spacing:-2px;font-variant-numeric:tabular-nums}
+    .clock span{display:block;margin-top:5px;color:var(--muted);font-size:11px;text-transform:capitalize}
+    .toolbar{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+    .btn{height:42px;border:1px solid var(--line);background:var(--surface-solid);color:var(--text);border-radius:12px;padding:0 14px;cursor:pointer;font-weight:800;font-size:12px;transition:.2s ease;box-shadow:0 1px 0 rgba(255,255,255,.04)}
+    .btn:hover{border-color:var(--line-strong);transform:translateY(-1px);box-shadow:var(--shadow-soft)}
+    .btn.active{background:var(--accent);color:var(--accent-text);border-color:var(--accent)}
+    .live{height:42px;display:inline-flex;align-items:center;gap:9px;border:1px solid var(--line);background:var(--surface-solid);border-radius:999px;padding:0 13px;color:var(--muted);font-size:11px;font-weight:850;letter-spacing:.05em;text-transform:uppercase}
+    .live i{width:8px;height:8px;border-radius:50%;background:#d19a28;box-shadow:0 0 0 5px rgba(209,154,40,.12)}
+    .live.connected i{background:var(--ready);box-shadow:0 0 0 5px rgba(21,150,95,.12);animation:livePulse 2s infinite}
+    @keyframes livePulse{50%{box-shadow:0 0 0 8px rgba(21,150,95,0)}}
+    .legend{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin:16px 0 2px}
+    .legend-item{display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--line);background:var(--surface);border-radius:999px;color:var(--muted);font-size:11px;font-weight:800;backdrop-filter:blur(10px)}
+    .swatch{width:11px;height:11px;border-radius:4px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.16)}
+    .ready-bg{background:var(--ready)}.cleaning-bg{background:var(--cleaning)}.pending-bg{background:var(--pending)}.stayover-bg{background:var(--stayover)}.inspection-bg{background:var(--inspection)}
+    .view{margin-top:16px}.executive-layout{display:grid;gap:14px}
+    .summary{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+    .metric{position:relative;overflow:hidden;padding:16px 17px 15px;background:var(--surface);border:1px solid var(--line);border-radius:19px;box-shadow:var(--shadow-soft);min-width:0;backdrop-filter:blur(14px)}
+    .metric::after{content:"";position:absolute;right:-30px;bottom:-36px;width:110px;height:110px;border-radius:50%;background:var(--metric-color,var(--pending));opacity:.055}
+    .metric:nth-child(1){--metric-color:var(--ready)}.metric:nth-child(2){--metric-color:var(--cleaning)}.metric:nth-child(3){--metric-color:var(--inspection)}.metric:nth-child(4){--metric-color:var(--stayover)}.metric:nth-child(5){--metric-color:var(--pending)}
+    .metric-label{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.1em}
+    .metric-label i{width:10px;height:10px;border-radius:4px;flex:0 0 auto}
+    .metric-value{position:relative;z-index:1;margin-top:10px;font-size:clamp(34px,3vw,58px);font-weight:950;line-height:.92;letter-spacing:-3px;font-variant-numeric:tabular-nums}
+    .metric-note{position:relative;z-index:1;margin-top:9px;color:var(--muted);font-size:11px;font-weight:600}
+    .progress-panel{padding:15px 17px;background:var(--surface);border:1px solid var(--line);border-radius:19px;box-shadow:var(--shadow-soft);backdrop-filter:blur(14px)}
+    .progress-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:11px}.progress-head strong{font-size:13px;letter-spacing:.015em}.progress-head span{font-size:25px;font-weight:950;letter-spacing:-1px}
+    .track{height:11px;background:var(--surface-3);border-radius:999px;overflow:hidden;padding:2px}.fill{height:100%;width:0;background:var(--ready);border-radius:inherit;transition:width .55s cubic-bezier(.2,.8,.2,1);box-shadow:0 0 16px rgba(21,150,95,.25)}
+    .workspace{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;align-items:start}.workspace.with-ranking{grid-template-columns:minmax(0,1fr) 315px}
+    .building-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+    .building-card{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:15px;box-shadow:var(--shadow-soft);backdrop-filter:blur(14px);overflow:hidden;transition:.2s ease}
+    .building-card:hover{border-color:var(--line-strong);transform:translateY(-2px);box-shadow:var(--shadow)}
+    .building-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ready);opacity:.85}
+    .building-head{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:11px;align-items:center;margin-bottom:12px}
+    .building-letter{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;background:var(--surface-3);font-weight:950;font-size:19px;box-shadow:inset 0 0 0 1px var(--line)}
+    .building-title{min-width:0}.building-title strong{display:block;font-size:15px;letter-spacing:-.15px}.building-title span{display:block;margin-top:4px;color:var(--muted);font-size:10px;font-weight:650}
+    .building-percent{font-size:20px;font-weight:950;letter-spacing:-.8px}.mini-track{grid-column:2/4;height:6px;background:var(--surface-3);border-radius:999px;overflow:hidden}.mini-fill{height:100%;background:var(--ready);border-radius:inherit}
+    .status-strip{display:flex;gap:5px;margin:-2px 0 12px 55px;flex-wrap:wrap}.status-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 7px;border-radius:7px;background:var(--surface-2);color:var(--muted);font-size:9px;font-weight:850;border:1px solid var(--line)}.status-chip i{width:6px;height:6px;border-radius:2px}
+    .rooms{display:grid;grid-template-columns:repeat(auto-fill,minmax(68px,1fr));gap:8px}
+    .room{position:relative;min-height:62px;border:0;border-radius:13px;padding:8px 5px;color:var(--room-text);cursor:pointer;text-align:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,.16),0 5px 14px rgba(0,0,0,.10);transition:transform .18s ease,filter .18s ease,box-shadow .18s ease}
+    .room::before{content:"";position:absolute;inset:1px;border-radius:12px;background:linear-gradient(145deg,rgba(255,255,255,.13),transparent 50%);pointer-events:none}
+    .room:hover{transform:translateY(-3px) scale(1.015);filter:brightness(1.05);box-shadow:0 10px 20px rgba(0,0,0,.16)}
+    .room b{position:relative;display:block;font-size:14px;line-height:1.05;letter-spacing:-.15px}.room small{position:relative;display:block;margin-top:6px;font-size:8px;font-weight:900;opacity:.9;text-transform:uppercase;letter-spacing:.055em}
+    .room.ready{background:var(--ready)}.room.cleaning{background:var(--cleaning)}.room.pending{background:var(--pending)}.room.stayover{background:var(--stayover)}.room.inspection{background:var(--inspection)}
+    .room.urgent::after{content:"!";position:absolute;top:5px;right:5px;width:18px;height:18px;display:grid;place-items:center;border-radius:50%;background:#fff;color:#111;font-size:11px;font-weight:950;box-shadow:0 3px 8px rgba(0,0,0,.24)}
+    .room.changed{animation:roomPulse 1.15s ease}@keyframes roomPulse{0%,100%{transform:scale(1)}40%{transform:scale(1.09);filter:brightness(1.25);box-shadow:0 0 0 8px rgba(255,255,255,.12)}}
+    .ranking{position:sticky;top:92px;background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);overflow:hidden;backdrop-filter:blur(14px)}
+    .ranking-head{display:flex;align-items:center;justify-content:space-between;padding:15px 16px;border-bottom:1px solid var(--line)}.ranking-head h2{margin:0;font-size:14px;letter-spacing:.01em}.ranking-head button{width:32px;height:32px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);color:var(--text);cursor:pointer}
+    .ranking-list{padding:8px}.rank-row{display:grid;grid-template-columns:31px minmax(0,1fr) auto;gap:9px;align-items:center;padding:11px 8px;border-bottom:1px solid var(--line)}.rank-row:last-child{border-bottom:0}.rank-number{width:29px;height:29px;border-radius:9px;display:grid;place-items:center;background:var(--surface-3);font-size:11px;font-weight:950}.rank-row:first-child .rank-number{background:var(--accent);color:var(--accent-text)}.rank-name{font-size:12px;font-weight:850;min-width:0}.rank-note{display:block;color:var(--muted);font-size:9px;margin-top:3px}.rank-score{text-align:right}.rank-score strong{font-size:15px}.rank-score span{display:block;color:var(--muted);font-size:8px;text-transform:uppercase;font-weight:800}
+    .map-shell{min-height:calc(100vh - 160px);display:grid;grid-template-rows:auto minmax(0,1fr);gap:14px}
+    .map-summary{display:grid;grid-template-columns:minmax(290px,1.8fr) repeat(5,minmax(105px,.65fr));gap:10px}.map-title-card,.map-stat{background:var(--surface);border:1px solid var(--line);border-radius:17px;box-shadow:var(--shadow-soft);backdrop-filter:blur(14px)}
+    .map-title-card{display:flex;align-items:center;justify-content:space-between;padding:14px 16px}.map-title-card h2{margin:0;font-size:17px}.map-title-card p{margin:5px 0 0;color:var(--muted);font-size:10px;font-weight:650;text-transform:uppercase;letter-spacing:.06em}.map-progress{font-size:29px;font-weight:950;letter-spacing:-1.5px}
+    .map-stat{padding:12px 13px;display:flex;flex-direction:column;justify-content:center}.map-stat span{color:var(--muted);font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.map-stat strong{margin-top:5px;font-size:25px;line-height:1;font-weight:950}
+    .map-canvas{position:relative;overflow:hidden;min-height:650px;border:1px solid var(--line);border-radius:24px;background:var(--surface);box-shadow:var(--shadow);isolation:isolate}
+    .map-canvas::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:42px 42px;opacity:.22;mask-image:linear-gradient(to bottom,black,transparent 92%)}
+    .map-canvas::after{content:"OPERATIONS MAP";position:absolute;right:25px;bottom:18px;color:var(--muted);opacity:.16;font-size:11px;font-weight:950;letter-spacing:.22em}
+    .map-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));grid-auto-rows:minmax(145px,auto);gap:16px;padding:25px;height:100%}
+    .map-building{grid-column:span 3;position:relative;padding:13px;border:1px solid var(--line-strong);border-radius:18px;background:var(--surface-solid);box-shadow:var(--shadow-soft);overflow:hidden;transition:.2s ease}.map-building:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+    .map-building:nth-child(5n+1){grid-column:span 4}.map-building:nth-child(5n+2){grid-column:span 3}.map-building:nth-child(5n+3){grid-column:span 5}.map-building:nth-child(5n+4){grid-column:span 3}.map-building:nth-child(5n+5){grid-column:span 4}
+    .map-building::before{content:"";position:absolute;inset:0;border-top:3px solid var(--ready);pointer-events:none}.map-building-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:11px;padding-bottom:9px;border-bottom:1px solid var(--line)}.map-building-head b{font-size:13px}.map-building-head span{color:var(--muted);font-size:9px;font-weight:750}.map-progress-line{height:5px;background:var(--surface-3);border-radius:99px;overflow:hidden;margin:-5px 0 11px}.map-progress-line i{display:block;height:100%;background:var(--ready);border-radius:inherit}
+    .map-rooms{display:grid;grid-template-columns:repeat(auto-fill,minmax(54px,1fr));gap:6px}.map-rooms .room{min-height:45px;border-radius:10px;padding:5px}.map-rooms .room b{font-size:11px}.map-rooms .room::before{border-radius:9px}
+    .toast{position:fixed;right:22px;bottom:22px;z-index:100;width:min(360px,calc(100vw - 30px));padding:17px;background:var(--surface-solid);border:1px solid var(--line-strong);border-radius:18px;box-shadow:0 24px 70px rgba(0,0,0,.28);transform:translateY(18px);opacity:0;pointer-events:none;transition:.22s ease}.toast.show{transform:none;opacity:1}.toast h3{margin:0 0 13px;font-size:20px}.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.detail{padding:10px;border:1px solid var(--line);background:var(--surface-2);border-radius:11px}.detail span{display:block;color:var(--muted);font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.detail b{display:block;margin-top:5px;font-size:11px}.error{display:none;margin-top:12px;padding:11px 13px;border-radius:12px;background:rgba(216,59,69,.11);border:1px solid rgba(216,59,69,.30);color:var(--cleaning);font-size:12px;font-weight:750}.error.show{display:block}.empty{padding:45px;text-align:center;color:var(--muted);border:1px dashed var(--line-strong);border-radius:18px;background:var(--surface)}.build-tag{position:fixed;left:12px;bottom:9px;z-index:20;color:var(--muted);opacity:.38;font-size:8px;font-weight:900;letter-spacing:.12em;pointer-events:none}
+    @media(max-width:1450px){.summary{grid-template-columns:repeat(3,1fr)}.workspace.with-ranking{grid-template-columns:1fr}.ranking{position:static}.building-grid{grid-template-columns:repeat(2,1fr)}.map-summary{grid-template-columns:repeat(3,1fr)}.map-title-card{grid-column:1/-1}.map-grid{grid-template-columns:repeat(6,1fr)}.map-building:nth-child(n){grid-column:span 2}}
+    @media(max-width:880px){.app{padding:10px}.topbar{position:relative;top:0;grid-template-columns:1fr auto}.clock{display:none}.toolbar{grid-column:1/-1;justify-content:flex-start}.btn,.live{flex:1}.summary{grid-template-columns:repeat(2,1fr)}.building-grid{grid-template-columns:1fr}.map-summary{grid-template-columns:repeat(2,1fr)}.map-grid{grid-template-columns:repeat(2,1fr);padding:12px}.map-building:nth-child(n){grid-column:span 1}.map-canvas{min-height:auto}.legend{justify-content:flex-start}.brand p{display:none}}
+    @media(max-width:520px){.summary{grid-template-columns:1fr 1fr}.metric:last-child{grid-column:1/-1}.map-summary{grid-template-columns:1fr 1fr}.map-grid{grid-template-columns:1fr}.map-building:nth-child(n){grid-column:1}.rooms{grid-template-columns:repeat(4,1fr)}.detail-grid{grid-template-columns:1fr}.brand h1{white-space:normal}.mark{width:43px;height:43px}.topbar{border-radius:17px}}
+    @media(min-width:1800px){.app{padding:26px 30px}.building-grid{grid-template-columns:repeat(4,1fr)}.rooms{grid-template-columns:repeat(auto-fill,minmax(84px,1fr))}.room{min-height:73px}.map-canvas{min-height:790px}.map-grid{gap:19px;padding:30px}.map-building{min-height:175px}.metric{padding:19px}.topbar{padding:16px 19px}}
+  </style>
+<link rel="stylesheet" href="/css/responsive-pages.css?v=full-page-v1">
+</head>
+<body data-view="executive">
+  <!-- BUILD: PREMIUM-V4-SEPARATED-VIEWS -->
+  <main class="app">
+    <header class="topbar">
+      <div class="brand"><div class="mark">417</div><div><h1>Still Waters Resort</h1><p id="subtitle">Executive Operations Wall</p></div></div>
+      <div class="clock"><strong id="clock">--:--</strong><span id="fullDate">Cargando…</span></div>
+      <div class="toolbar">
+        <span class="live" id="liveBadge"><i></i><span id="liveText">Conectando</span></span>
+        <button class="btn active" id="executiveBtn" type="button">Executive</button>
+        <button class="btn" id="mapBtn" type="button">Hotel Map</button>
+        <button class="btn" id="rankingBtn" type="button">Top Cleaners</button>
+        <button class="btn" id="themeBtn" type="button">Light</button>
+        <button class="btn" id="fullscreenBtn" type="button">TV</button>
+      </div>
+    </header>
+
+    <div class="legend" aria-label="Leyenda de estados">
+      <div class="legend-item"><i class="swatch ready-bg"></i>Verde · Ready</div>
+      <div class="legend-item"><i class="swatch cleaning-bg"></i>Rojo · Limpiando</div>
+      <div class="legend-item"><i class="swatch pending-bg"></i>Gris · Sin entrar</div>
+      <div class="legend-item"><i class="swatch stayover-bg"></i>Azul · Stayover</div>
+      <div class="legend-item"><i class="swatch inspection-bg"></i>Naranja · Inspección</div>
+    </div>
+
+    <div class="error" id="errorBanner"></div>
+
+    <section class="view" id="executiveView">
+      <div class="executive-layout">
+        <section class="summary" aria-label="Resumen ejecutivo">
+          <article class="metric"><div class="metric-label"><i class="ready-bg"></i>Ready</div><div class="metric-value" id="readyCount">0</div><div class="metric-note">Listas para huésped</div></article>
+          <article class="metric"><div class="metric-label"><i class="cleaning-bg"></i>Limpiando</div><div class="metric-value" id="cleaningCount">0</div><div class="metric-note">En progreso</div></article>
+          <article class="metric"><div class="metric-label"><i class="inspection-bg"></i>Inspección</div><div class="metric-value" id="inspectionCount">0</div><div class="metric-note">Esperando revisión</div></article>
+          <article class="metric"><div class="metric-label"><i class="stayover-bg"></i>Stayover</div><div class="metric-value" id="stayoverCount">0</div><div class="metric-note">Servicio de estancia</div></article>
+          <article class="metric"><div class="metric-label"><i class="pending-bg"></i>Sin entrar</div><div class="metric-value" id="pendingCount">0</div><div class="metric-note">Aún no iniciadas</div></article>
+        </section>
+        <section class="progress-panel"><div class="progress-head"><strong>Progreso general del hotel</strong><span id="progressPercent">0%</span></div><div class="track"><div class="fill" id="progressFill"></div></div></section>
+        <section class="workspace" id="workspace"><div class="building-grid" id="buildingGrid"></div><aside class="ranking" id="rankingPanel" hidden><div class="ranking-head"><h2>Top Cleaners</h2><button id="closeRanking" type="button" aria-label="Ocultar">×</button></div><div class="ranking-list" id="rankingList"></div></aside></section>
+      </div>
+    </section>
+
+    <section class="view" id="mapView" hidden>
+      <div class="map-shell">
+        <div class="map-summary">
+          <article class="map-title-card"><div><h2>Hotel Map View</h2><p>Vista operativa por zonas y edificios</p></div><div class="map-progress" id="mapProgress">0%</div></article>
+          <article class="map-stat"><span>Ready</span><strong id="mapReady">0</strong></article>
+          <article class="map-stat"><span>Limpiando</span><strong id="mapCleaning">0</strong></article>
+          <article class="map-stat"><span>Inspección</span><strong id="mapInspection">0</strong></article>
+          <article class="map-stat"><span>Stayover</span><strong id="mapStayover">0</strong></article>
+          <article class="map-stat"><span>Sin entrar</span><strong id="mapPending">0</strong></article>
+        </div>
+        <div class="map-canvas"><div class="map-grid" id="mapGrid"></div></div>
+      </div>
+    </section>
+  </main>
+
+  <aside class="toast" id="roomToast" role="dialog" aria-live="polite"><h3 id="detailUnit">Habitación</h3><div class="detail-grid"><div class="detail"><span>Estado</span><b id="detailStatus">-</b></div><div class="detail"><span>Edificio</span><b id="detailBuilding">-</b></div><div class="detail"><span>Cleaner</span><b id="detailCleaner">Sin asignar</b></div><div class="detail"><span>Inspector</span><b id="detailInspector">Sin asignar</b></div></div></aside>
+  <div class="build-tag">COMMAND CENTER V6 · PROFESSIONAL</div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    (() => {
+      "use strict";
+      const $ = (id) => document.getElementById(id);
+      const state = {
+        units: [],
+        view: localStorage.getItem("hotelDashboardView") === "map" ? "map" : "executive",
+        theme: localStorage.getItem("hotelDashboardTheme") === "light" ? "light" : "dark",
+        ranking: localStorage.getItem("hotelDashboardRanking") === "show",
+        previous: new Map(), toastTimer: null, reloadTimer: null, loading: false
+      };
+      const normalize = (value) => String(value || "").trim().toLowerCase();
+      const safe = (value) => String(value ?? "").replace(/[&<>'"]/g, (char) => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[char]));
+      const roomLabel = (unit) => { const text=String(unit||"").trim(); const match=text.match(/\b\d{2,4}\s*[A-Z]?\b/i); return match?match[0].replace(/\s+/g,""):text.replace(/\s*\([^)]*\).*$/,"").slice(0,12); };
+      const buildingName = (value) => value && value !== "OTHER" ? `Edificio ${value}` : "Casas / Other";
+
+      function statusMeta(unit){
+        const status=normalize(unit.status);
+        const hasStartedAt=Boolean(String(unit.startedAt||"").trim());
+
+        // Ready siempre tiene prioridad sobre cualquier otro indicador.
+        if(status.includes("ready")) return {key:"ready",label:"Ready"};
+
+        // Stayover se muestra azul mientras no haya llegado a Ready.
+        if(unit.stayover) return {key:"stayover",label:"Stayover"};
+
+        // Naranja: terminó limpieza o ya está en proceso de inspección.
+        if(
+          status.includes("awaiting inspection") ||
+          status.includes("inspection started") ||
+          status === "cleaned" ||
+          status.includes("ready for inspection")
+        ) return {key:"inspection",label:"Necesita inspección"};
+
+        // Rojo únicamente cuando existe evidencia real de que la limpieza comenzó.
+        // No usamos status.includes("cleaning") porque algunos cuartos pendientes
+        // llegan con un estado general que contiene esa palabra.
+        if(
+          hasStartedAt ||
+          status === "in progress" ||
+          status === "cleaning started" ||
+          status === "started"
+        ) return {key:"cleaning",label:"Limpiando"};
+
+        return {key:"pending",label:"Sin entrar"};
+      }
+      function applyTheme(){
+        document.documentElement.dataset.theme=state.theme;
+        $("themeBtn").textContent=state.theme==="dark"?"Light":"Dark";
+        const meta=document.querySelector('meta[name="theme-color"]'); if(meta) meta.content=state.theme==="dark"?"#07090c":"#f4f6f8";
+      }
+      function applyView(){
+        const isExecutive=state.view==="executive";
+        $("executiveView").hidden=!isExecutive;
+        $("mapView").hidden=isExecutive;
+        $("executiveBtn").classList.toggle("active",isExecutive);
+        $("mapBtn").classList.toggle("active",!isExecutive);
+        document.body.dataset.view=state.view;
+        $("subtitle").textContent=isExecutive?"Executive Operations Wall":"Hotel Map View · Live Operations";
+      }
+      function applyRanking(){
+        $("rankingPanel").hidden=!state.ranking;
+        $("workspace").classList.toggle("with-ranking",state.ranking);
+        $("rankingBtn").classList.toggle("active",state.ranking);
+        $("rankingBtn").textContent=state.ranking?"Hide Top":"Top Cleaners";
+      }
+      function updateClock(){
+        const now=new Date();
+        $("clock").textContent=now.toLocaleTimeString("en-US",{timeZone:"America/Chicago",hour:"numeric",minute:"2-digit"});
+        $("fullDate").textContent=now.toLocaleDateString("es-MX",{timeZone:"America/Chicago",weekday:"long",month:"long",day:"numeric"});
+      }
+      function groupUnits(units){return units.reduce((groups,unit)=>{const key=String(unit.building||"OTHER").toUpperCase();(groups[key]||=[]).push(unit);return groups;},{});}
+      function sortBuildings(keys){return keys.sort((a,b)=>{if(a==="OTHER")return 1;if(b==="OTHER")return-1;return a.localeCompare(b,undefined,{numeric:true});});}
+      function roomButton(unit,compact=false){
+        const meta=statusMeta(unit); const changed=state.previous.has(unit.id)&&state.previous.get(unit.id)!==meta.key;
+        return `<button type="button" class="room ${meta.key}${unit.urgent?" urgent":""}${changed?" changed":""}" data-unit-id="${safe(unit.id)}" aria-label="${safe(unit.unit)}: ${meta.label}"><b>${safe(roomLabel(unit.unit))}</b>${compact?"":`<small>${meta.label}</small>`}</button>`;
+      }
+      function totalsFor(units){const t={ready:0,cleaning:0,inspection:0,stayover:0,pending:0};units.forEach(u=>t[statusMeta(u).key]++);return t;}
+      function renderSummary(units){
+        const t=totalsFor(units); const pct=units.length?Math.round(t.ready/units.length*100):0;
+        $("readyCount").textContent=t.ready;$("cleaningCount").textContent=t.cleaning;$("inspectionCount").textContent=t.inspection;$("stayoverCount").textContent=t.stayover;$("pendingCount").textContent=t.pending;
+        $("progressPercent").textContent=`${pct}%`;$("progressFill").style.width=`${pct}%`;
+        $("mapReady").textContent=t.ready;$("mapCleaning").textContent=t.cleaning;$("mapInspection").textContent=t.inspection;$("mapStayover").textContent=t.stayover;$("mapPending").textContent=t.pending;$("mapProgress").textContent=`${pct}%`;
+      }
+      function renderExecutive(groups,keys){
+        if(!keys.length){$("buildingGrid").innerHTML='<div class="empty">No hay habitaciones cargadas para hoy.</div>';return;}
+        $("buildingGrid").innerHTML=keys.map(key=>{const units=groups[key].slice().sort((a,b)=>roomLabel(a.unit).localeCompare(roomLabel(b.unit),undefined,{numeric:true}));const ready=units.filter(u=>statusMeta(u).key==="ready").length;const pct=units.length?Math.round(ready/units.length*100):0;const counts=totalsFor(units);return `<article class="building-card"><div class="building-head"><div class="building-letter">${safe(key==="OTHER"?"⌂":key)}</div><div class="building-title"><strong>${safe(buildingName(key))}</strong><span>${ready} ready de ${units.length} habitaciones</span></div><div class="building-percent">${pct}%</div><div class="mini-track"><div class="mini-fill" style="width:${pct}%"></div></div></div><div class="status-strip"><span class="status-chip"><i class="ready-bg"></i>${counts.ready}</span><span class="status-chip"><i class="cleaning-bg"></i>${counts.cleaning}</span><span class="status-chip"><i class="inspection-bg"></i>${counts.inspection}</span><span class="status-chip"><i class="stayover-bg"></i>${counts.stayover}</span><span class="status-chip"><i class="pending-bg"></i>${counts.pending}</span></div><div class="rooms">${units.map(u=>roomButton(u)).join("")}</div></article>`;}).join("");
+      }
+      function renderMap(groups,keys){
+        if(!keys.length){$("mapGrid").innerHTML='<div class="empty">No hay edificios disponibles.</div>';return;}
+        $("mapGrid").innerHTML=keys.map(key=>{const units=groups[key].slice().sort((a,b)=>roomLabel(a.unit).localeCompare(roomLabel(b.unit),undefined,{numeric:true}));const ready=units.filter(u=>statusMeta(u).key==="ready").length;const pct=units.length?Math.round(ready/units.length*100):0;return `<section class="map-building"><div class="map-building-head"><b>${safe(buildingName(key))}</b><span>${ready}/${units.length} ready · ${pct}%</span></div><div class="map-progress-line"><i style="width:${pct}%"></i></div><div class="map-rooms">${units.map(u=>roomButton(u,true)).join("")}</div></section>`;}).join("");
+      }
+      function renderRanking(units){
+        const scores=new Map();units.forEach(unit=>{const cleaner=String(unit.cleaner||"").trim();if(!cleaner)return;const current=scores.get(cleaner)||{total:0,ready:0,working:0};current.total++;const key=statusMeta(unit).key;if(key==="ready")current.ready++;if(key==="cleaning")current.working++;scores.set(cleaner,current);});
+        const rows=[...scores.entries()].sort((a,b)=>b[1].ready-a[1].ready||b[1].total-a[1].total||a[0].localeCompare(b[0])).slice(0,8);
+        $("rankingList").innerHTML=rows.length?rows.map(([name,score],index)=>`<div class="rank-row"><div class="rank-number">${index+1}</div><div class="rank-name">${safe(name)}<small>${score.total} asignadas · ${score.working} limpiando</small></div><div class="rank-value">${score.ready}</div></div>`).join(""):'<div class="empty">Aún no hay cleaners asignados.</div>';
+      }
+      function bindRoomButtons(){document.querySelectorAll("[data-unit-id]").forEach(button=>button.addEventListener("click",()=>showRoom(button.dataset.unitId)));}
+      function showRoom(id){const unit=state.units.find(item=>String(item.id)===String(id));if(!unit)return;const meta=statusMeta(unit);$("detailUnit").textContent=unit.unit||"Habitación";$("detailStatus").textContent=`${meta.label}${unit.urgent?" · URGENTE":""}`;$("detailBuilding").textContent=buildingName(unit.building||"OTHER");$("detailCleaner").textContent=unit.cleaner||"Sin asignar";$("detailInspector").textContent=unit.inspector||"Sin asignar";$("roomToast").classList.add("show");clearTimeout(state.toastTimer);state.toastTimer=setTimeout(()=>$("roomToast").classList.remove("show"),5500);}
+      function render(data){state.previous=new Map(state.units.map(unit=>[unit.id,statusMeta(unit).key]));state.units=Array.isArray(data.units)?data.units:[];const groups=groupUnits(state.units);const keys=sortBuildings(Object.keys(groups));renderSummary(state.units);renderExecutive(groups,keys);renderMap(groups,keys);renderRanking(state.units);bindRoomButtons();}
+      function showError(message){const banner=$("errorBanner");banner.textContent=message;banner.style.display="block";}
+      async function loadDashboard(force=false){if(state.loading)return;state.loading=true;try{const response=await fetch(`/admin-dashboard-data?t=${Date.now()}${force?"&refresh=1":""}`,{cache:"no-store"});const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.message||"No se pudo cargar el dashboard");$("errorBanner").style.display="none";render(data);}catch(error){showError(`No se pudo cargar la operación: ${error.message}`);}finally{state.loading=false;}}
+      function scheduleRefresh(delay=300){clearTimeout(state.reloadTimer);state.reloadTimer=setTimeout(()=>loadDashboard(false),delay);}
+      function connectRealtime(){if(typeof io!=="function"){$("liveText").textContent="Cada 15 s";return;}const socket=io({transports:["websocket","polling"]});socket.on("connect",()=>{$("liveBadge").classList.add("connected");$("liveText").textContent="En vivo";});socket.on("disconnect",()=>{$("liveBadge").classList.remove("connected");$("liveText").textContent="Reconectando";});["rooms:updated","room:updated","dashboard:updated","operations:updated","notion:updated","data:updated","employee:updated"].forEach(name=>socket.on(name,scheduleRefresh));socket.onAny(name=>{if(/room|dashboard|operation|notion/i.test(name))scheduleRefresh();});}
+      $("executiveBtn").addEventListener("click",()=>{state.view="executive";localStorage.setItem("hotelDashboardView",state.view);applyView();});
+      $("mapBtn").addEventListener("click",()=>{state.view="map";localStorage.setItem("hotelDashboardView",state.view);applyView();});
+      $("rankingBtn").addEventListener("click",()=>{state.ranking=!state.ranking;localStorage.setItem("hotelDashboardRanking",state.ranking?"show":"hide");applyRanking();});
+      $("closeRanking").addEventListener("click",()=>{state.ranking=false;localStorage.setItem("hotelDashboardRanking","hide");applyRanking();});
+      $("themeBtn").addEventListener("click",()=>{state.theme=state.theme==="dark"?"light":"dark";localStorage.setItem("hotelDashboardTheme",state.theme);applyTheme();});
+      $("fullscreenBtn").addEventListener("click",async()=>{try{if(!document.fullscreenElement)await document.documentElement.requestFullscreen();else await document.exitFullscreen();}catch(_){}});
+      $("roomToast").addEventListener("click",()=>$("roomToast").classList.remove("show"));
+      applyTheme();applyView();applyRanking();updateClock();setInterval(updateClock,1000);loadDashboard(true);setInterval(()=>loadDashboard(false),15000);connectRealtime();
+    })();
+  </script>
+
+<script src="/js/push-notifications.js"></script>
+<script src="/js/admin-alerts.js"></script>
+</body>
+</html>

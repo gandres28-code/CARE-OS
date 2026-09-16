@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Care | Time Clock</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1220;--card:#172033;--field:#253149;--muted:#9eabc0;--green:#12a66a;--red:#e34b55;--blue:#2868e8}
+*{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at top,#17284a 0,#0b1220 48%);color:#fff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
+.container{max-width:520px;margin:auto;padding:calc(24px + env(safe-area-inset-top)) 18px 30px}.card{background:rgba(23,32,51,.96);border:1px solid rgba(255,255,255,.08);border-radius:26px;padding:24px;box-shadow:0 22px 55px rgba(0,0,0,.3)}
+h1{text-align:center;margin:0 0 6px;font-size:30px}.subtitle{text-align:center;color:var(--muted);margin-bottom:24px}.status{background:#0c1526;border-radius:18px;padding:16px;text-align:center;margin-bottom:18px}.status-title{color:var(--muted);font-size:13px;text-transform:uppercase;letter-spacing:.08em}.status-value{font-size:20px;font-weight:800;margin-top:5px}.distance{font-size:13px;color:#72e2ac;margin-top:7px}
+label{display:block;color:#cbd5e1;font-size:14px;font-weight:700;margin:15px 0 7px}input,select{width:100%;border:0;border-radius:15px;background:var(--field);color:#fff;padding:16px;font-size:18px;outline:none}#code{text-align:center;font-size:24px;letter-spacing:.05em}.hint{color:var(--muted);font-size:12px;line-height:1.4;margin-top:7px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}button{border:0;border-radius:16px;padding:17px 10px;color:#fff;font-size:18px;font-weight:900;cursor:pointer}.in{background:var(--green)}.out{background:var(--red)}button:disabled{opacity:.55;cursor:wait}#msg{min-height:24px;text-align:center;margin-top:18px;font-size:16px;line-height:1.45}.loader{display:none;margin:16px auto 0;width:34px;height:34px;border:4px solid rgba(255,255,255,.18);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:420px){.card{padding:20px}.actions{grid-template-columns:1fr}h1{font-size:27px}}
+.return-bar{display:none;position:fixed;left:0;right:0;bottom:0;z-index:50;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:rgba(8,14,26,.96);border-top:1px solid rgba(255,255,255,.10);backdrop-filter:blur(16px)}.return-bar.show{display:block}.return-btn{display:flex;align-items:center;justify-content:center;gap:9px;width:min(520px,100%);margin:auto;text-decoration:none;background:var(--blue);color:#fff;border-radius:16px;padding:15px 18px;font-size:17px;font-weight:900;box-shadow:0 12px 28px rgba(40,104,232,.28)}body.has-return .container{padding-bottom:105px}
+</style>
+</head>
+<body>
+<div class="container"><div class="card">
+<h1>🕒 Time Clock</h1><div class="subtitle">Clock In / Clock Out para cualquier lugar de trabajo</div>
+<div class="status"><div class="status-title">Estado de ubicación</div><div id="gpsStatus" class="status-value">Listo para registrar</div><div id="distance" class="distance"></div></div>
+<label for="workLocation">Lugar de trabajo</label>
+<select id="workLocation" onchange="toggleLocationNote()">
+<option value="Hotel">Hotel principal</option><option value="Chateau">Casas de Chateau</option><option value="Office">Oficina</option><option value="Laundry">Lavandería</option><option value="Other">Otro lugar</option>
+</select>
+<div id="locationNoteWrap" style="display:none"><label for="locationNote">Nombre del lugar</label><input id="locationNote" maxlength="120" placeholder="Ejemplo: Oficina de Branson West"></div>
+<div class="hint">El hotel principal valida que estés dentro de la propiedad. En los demás lugares se guarda tu GPS como comprobante, sin bloquear el registro.</div>
+<label for="code">Código de empleado</label><input id="code" placeholder="Ingresa tu código" inputmode="numeric" autocomplete="one-time-code">
+<div class="actions"><button class="in" onclick="sendClock('clock-in')">CLOCK IN</button><button class="out" onclick="sendClock('clock-out')">CLOCK OUT</button></div>
+<div id="loader" class="loader"></div><div id="msg"></div>
+</div></div>
+<div id="runnerReturnBar" class="return-bar"><a class="return-btn" href="/runner-orders">← Volver a Runner Orders</a></div>
+<script>
+const buttons=[...document.querySelectorAll('button')];
+const params=new URLSearchParams(location.search);
+const savedRole=String(localStorage.getItem('employeeRole')||localStorage.getItem('role')||'').toLowerCase();
+const cameFromRunner=params.get('from')==='runner'||savedRole==='runner';
+if(cameFromRunner){document.body.classList.add('has-return');document.getElementById('runnerReturnBar').classList.add('show');}
+const savedCode=localStorage.getItem('employeeCode')||localStorage.getItem('code')||'';
+if(savedCode)document.getElementById('code').value=savedCode;
+function showLoading(show){document.getElementById('loader').style.display=show?'block':'none';buttons.forEach(b=>b.disabled=show)}
+function toggleLocationNote(){const value=document.getElementById('workLocation').value;document.getElementById('locationNoteWrap').style.display=value==='Other'?'block':'none'}
+function getLocation(){return new Promise((resolve,reject)=>{if(!navigator.geolocation)return reject(new Error('Este dispositivo no permite GPS.'));navigator.geolocation.getCurrentPosition(p=>resolve({lat:p.coords.latitude,lng:p.coords.longitude,accuracy:p.coords.accuracy}),()=>reject(new Error('Activa Location Services para registrar tu horario.')),{enableHighAccuracy:true,timeout:15000,maximumAge:30000})})}
+async function sendClock(type){const code=document.getElementById('code').value.trim();const workLocation=document.getElementById('workLocation').value;const locationNote=document.getElementById('locationNote').value.trim();const msg=document.getElementById('msg');const gps=document.getElementById('gpsStatus');const distance=document.getElementById('distance');if(!code){msg.textContent='Ingresa tu código de empleado.';return}if(workLocation==='Other'&&!locationNote){msg.textContent='Escribe el nombre del lugar de trabajo.';return}
+try{showLoading(true);msg.textContent='📍 Obteniendo ubicación…';gps.textContent='Localizando…';distance.textContent='';const location=await getLocation();gps.textContent='GPS localizado';msg.textContent='⏳ Guardando horario…';const res=await fetch('/'+type,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code,workLocation,locationNote,...location})});let data={};try{data=await res.json()}catch{}if(!res.ok)throw new Error(data.error||data.message||'No se pudo registrar el horario.');msg.textContent='✅ '+(data.message||'Horario registrado.');gps.textContent='✅ '+(data.locationStatus||workLocation);gps.style.color='#72e2ac';if(Number.isFinite(Number(data.distanceFeet))&&workLocation==='Hotel')distance.textContent=`Distancia aproximada: ${Math.round(data.distanceFeet)} ft`;if(type==='clock-out')document.getElementById('code').value='';}
+catch(error){gps.textContent='No se pudo registrar';gps.style.color='#ff7b83';msg.textContent=error.message||'Ocurrió un problema. Intenta nuevamente.'}finally{showLoading(false)}}
+toggleLocationNote();
+</script>
+</body></html>

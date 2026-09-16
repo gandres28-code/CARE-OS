@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Habitaciones · Care OS</title>
+  <meta name="theme-color" content="#0f172a" />
+
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --surface: #ffffff;
+      --surface-2: #f8fafc;
+      --border: #dbe3ef;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --success: #059669;
+      --warning: #d97706;
+      --danger: #dc2626;
+      --shadow: 0 14px 40px rgba(15, 23, 42, 0.08);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      padding: 18px;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .page {
+      max-width: 1500px;
+      margin: 0 auto;
+    }
+
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: flex-start;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(26px, 4vw, 40px);
+      letter-spacing: -0.04em;
+    }
+
+    .hero p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      max-width: 760px;
+      line-height: 1.55;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 12px;
+      padding: 11px 15px;
+      font-weight: 800;
+      transition: transform 0.15s ease, opacity 0.15s ease, background 0.15s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn:disabled {
+      cursor: wait;
+      opacity: 0.6;
+      transform: none;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-danger {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .stat {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .stat span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .stat strong {
+      display: block;
+      margin-top: 8px;
+      font-size: 28px;
+      letter-spacing: -0.03em;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: minmax(240px, 1fr) 180px 180px 170px auto;
+      gap: 10px;
+      padding: 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field label {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--text);
+      border-radius: 11px;
+      padding: 11px 12px;
+      outline: none;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    .toolbar .refresh-wrap {
+      display: flex;
+      align-items: flex-end;
+    }
+
+    .refresh-wrap .btn {
+      width: 100%;
+      min-height: 43px;
+    }
+
+    .content {
+      display: grid;
+      grid-template-columns: minmax(0, 1.7fr) minmax(320px, 0.8fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .panel-head h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .panel-head span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      max-height: calc(100vh - 315px);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 980px;
+    }
+
+    th,
+    td {
+      padding: 13px 14px;
+      border-bottom: 1px solid #edf1f7;
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: #f8fafc;
+      color: #475569;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    tbody tr {
+      transition: background 0.15s ease;
+    }
+
+    tbody tr:hover {
+      background: #f8fbff;
+    }
+
+    tbody tr.selected {
+      background: #eff6ff;
+    }
+
+    .room-name {
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .sub {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      padding: 6px 9px;
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .badge-ready {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .badge-progress {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .badge-waiting {
+      background: #ffedd5;
+      color: #9a3412;
+    }
+
+    .badge-pending {
+      background: #e2e8f0;
+      color: #334155;
+    }
+
+    .badge-danger {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .badge-neutral {
+      background: #f1f5f9;
+      color: #475569;
+    }
+
+    .row-actions {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    .icon-btn {
+      border: 1px solid var(--border);
+      background: white;
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .empty,
+    .loading {
+      padding: 48px 20px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .editor {
+      padding: 18px;
+    }
+
+    .editor-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .editor .full {
+      grid-column: 1 / -1;
+    }
+
+    .check-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      grid-column: 1 / -1;
+    }
+
+    .check-card {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding: 12px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    .check-card input {
+      width: 18px;
+      height: 18px;
+    }
+
+    .editor-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .editor-actions .btn-primary {
+      flex: 1;
+    }
+
+    .history {
+      border-top: 1px solid var(--border);
+      padding: 16px 18px 18px;
+    }
+
+    .history h3 {
+      margin: 0 0 12px;
+      font-size: 16px;
+    }
+
+    .history-list {
+      display: grid;
+      gap: 10px;
+      max-height: 330px;
+      overflow: auto;
+    }
+
+    .history-item {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 11px;
+      background: #fbfdff;
+    }
+
+    .history-item strong {
+      display: block;
+      font-size: 13px;
+    }
+
+    .history-item p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 50;
+      width: min(390px, calc(100vw - 36px));
+      border-radius: 14px;
+      padding: 13px 15px;
+      box-shadow: 0 18px 55px rgba(15, 23, 42, 0.22);
+      color: white;
+      font-weight: 800;
+      transform: translateY(30px);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.2s ease;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast.success {
+      background: #047857;
+    }
+
+    .toast.error {
+      background: #b91c1c;
+    }
+
+    .live-dot {
+      width: 9px;
+      height: 9px;
+      display: inline-block;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 0 5px rgba(16, 185, 129, 0.12);
+      margin-right: 7px;
+    }
+
+    @media (max-width: 1100px) {
+      .stats {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .toolbar {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+
+      .toolbar .search-field {
+        grid-column: 1 / -1;
+      }
+
+      .content {
+        grid-template-columns: 1fr;
+      }
+
+      .table-wrap {
+        max-height: none;
+      }
+    }
+
+    @media (max-width: 700px) {
+      body {
+        padding: 12px;
+      }
+
+      .hero {
+        display: block;
+      }
+
+      .hero-actions {
+        justify-content: flex-start;
+        margin-top: 14px;
+      }
+
+      .stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .toolbar .search-field {
+        grid-column: auto;
+      }
+
+      .editor-grid,
+      .check-row {
+        grid-template-columns: 1fr;
+      }
+
+      .stat strong {
+        font-size: 24px;
+      }
+    }
+  </style>
+<link rel="stylesheet" href="/css/responsive-pages.css?v=full-page-v1">
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <div>
+        <h1>🏨 Administrador de habitaciones</h1>
+        <p>
+          Controla habitaciones, asignaciones, estados, prioridad y preinspección directamente desde PostgreSQL.
+          Los cambios se reflejan en tiempo real dentro de Care OS.
+        </p>
+      </div>
+
+      <div class="hero-actions">
+        <button class="btn btn-secondary" type="button" onclick="clearSelection()">Limpiar selección</button>
+        <button class="btn btn-primary" type="button" onclick="loadRooms(true)">Actualizar ahora</button>
+      </div>
+    </section>
+
+    <section class="stats">
+      <article class="stat"><span>Total</span><strong id="statTotal">0</strong></article>
+      <article class="stat"><span>En progreso</span><strong id="statProgress">0</strong></article>
+      <article class="stat"><span>Para inspeccionar</span><strong id="statInspect">0</strong></article>
+      <article class="stat"><span>Ready</span><strong id="statReady">0</strong></article>
+      <article class="stat"><span>Urgentes</span><strong id="statUrgent">0</strong></article>
+    </section>
+
+    <section class="toolbar">
+      <div class="field search-field">
+        <label for="searchInput">Buscar</label>
+        <input id="searchInput" type="search" placeholder="Unidad, cleaner, inspector, edificio..." autocomplete="off" />
+      </div>
+
+      <div class="field">
+        <label for="dateFilter">Fecha</label>
+        <input id="dateFilter" type="date" />
+      </div>
+
+      <div class="field">
+        <label for="statusFilter">Estado</label>
+        <select id="statusFilter">
+          <option value="">Todos</option>
+          <option value="Not Started">Not Started</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Cleaned - Awaiting Inspection">Para inspeccionar</option>
+          <option value="Inspection Started">Inspection Started</option>
+          <option value="Ready for Guest">Ready for Guest</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="urgentFilter">Prioridad</label>
+        <select id="urgentFilter">
+          <option value="">Todas</option>
+          <option value="true">Urgentes</option>
+          <option value="false">Normales</option>
+        </select>
+      </div>
+
+      <div class="refresh-wrap">
+        <button id="refreshBtn" class="btn btn-secondary" type="button" onclick="loadRooms(true)">↻ Recargar</button>
+      </div>
+    </section>
+
+    <section class="content">
+      <article class="panel">
+        <header class="panel-head">
+          <div>
+            <h2>Habitaciones</h2>
+            <span id="resultsLabel"><span class="live-dot"></span>Conectando...</span>
+          </div>
+        </header>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Unidad</th>
+                <th>Estado</th>
+                <th>Cleaner</th>
+                <th>Inspector</th>
+                <th>Operación</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="roomsBody">
+              <tr><td colspan="6" class="loading">Cargando habitaciones...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <aside class="panel">
+        <header class="panel-head">
+          <div>
+            <h2 id="editorTitle">Editar habitación</h2>
+            <span id="editorSubtitle">Selecciona una unidad de la tabla</span>
+          </div>
+        </header>
+
+        <form id="roomForm" class="editor" autocomplete="off">
+          <div class="editor-grid">
+            <div class="field full">
+              <label for="roomName">Nombre de unidad</label>
+              <input id="roomName" name="room_name" type="text" placeholder="Ej. 439 B (1) - I" disabled />
+            </div>
+
+            <div class="field">
+              <label for="workDate">Fecha</label>
+              <input id="workDate" name="work_date" type="date" disabled />
+            </div>
+
+            <div class="field">
+              <label for="roomType">Tipo</label>
+              <input id="roomType" name="room_type" type="text" placeholder="1, 2, 3, S, M..." disabled />
+            </div>
+
+            <div class="field">
+              <label for="building">Edificio</label>
+              <input id="building" name="building" type="text" placeholder="A, B, I..." disabled />
+            </div>
+
+            <div class="field">
+              <label for="status">Estado</label>
+              <select id="status" name="status" disabled>
+                <option value="Not Started">Not Started</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Cleaned - Awaiting Inspection">Cleaned - Awaiting Inspection</option>
+                <option value="Inspection Started">Inspection Started</option>
+                <option value="Ready for Guest">Ready for Guest</option>
+              </select>
+            </div>
+
+            <div class="field full">
+              <label for="assignedCleaner">Cleaner asignado</label>
+              <input id="assignedCleaner" name="assigned_cleaner" type="text" placeholder="Nombre del cleaner" disabled />
+            </div>
+
+            <div class="field full">
+              <label for="assignedInspector">Inspector asignado</label>
+              <input id="assignedInspector" name="assigned_inspector" type="text" placeholder="Nombre del inspector" disabled />
+            </div>
+
+            <div class="check-row">
+              <label class="check-card">
+                <input id="arrival" name="arrival" type="checkbox" disabled />
+                <span><strong>Arrival</strong><br><small>Entrada de huésped hoy</small></span>
+              </label>
+
+              <label class="check-card">
+                <input id="stayover" name="stayover" type="checkbox" disabled />
+                <span><strong>Stayover</strong><br><small>Servicio con huésped alojado</small></span>
+              </label>
+
+              <label class="check-card">
+                <input id="urgent" name="urgent" type="checkbox" disabled />
+                <span><strong>Urgente</strong><br><small>Prioridad operativa alta</small></span>
+              </label>
+
+              <label class="check-card">
+                <input id="guestOut" name="guest_out" type="checkbox" disabled />
+                <span><strong>Guest Out</strong><br><small>El huésped ya salió</small></span>
+              </label>
+
+              <label class="check-card">
+                <input id="preInspection" name="pre_inspection" type="checkbox" disabled />
+                <span><strong>Preinspección</strong><br><small>Preinspección completada</small></span>
+              </label>
+
+              <label class="check-card">
+                <input id="preInspectionStarted" name="pre_inspection_started" type="checkbox" disabled />
+                <span><strong>Preinspección iniciada</strong><br><small>Trabajo de preinspección activo</small></span>
+              </label>
+            </div>
+
+            <div class="field full">
+              <label for="adminNote">Nota administrativa</label>
+              <textarea id="adminNote" name="admin_note" rows="4" placeholder="Motivo o detalle del cambio..." disabled></textarea>
+            </div>
+          </div>
+
+          <div class="editor-actions">
+            <button id="saveBtn" class="btn btn-primary" type="submit" disabled>Guardar cambios</button>
+            <button class="btn btn-secondary" type="button" onclick="clearSelection()">Cancelar</button>
+          </div>
+        </form>
+
+        <section class="history">
+          <h3>Historial administrativo</h3>
+          <div id="historyList" class="history-list">
+            <div class="empty">Selecciona una unidad para ver su historial.</div>
+          </div>
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const state = {
+      rooms: [],
+      selectedRoom: null,
+      loading: false,
+      socket: null,
+    };
+
+    const els = {
+      body: document.getElementById("roomsBody"),
+      search: document.getElementById("searchInput"),
+      date: document.getElementById("dateFilter"),
+      statusFilter: document.getElementById("statusFilter"),
+      urgentFilter: document.getElementById("urgentFilter"),
+      refreshBtn: document.getElementById("refreshBtn"),
+      resultsLabel: document.getElementById("resultsLabel"),
+      form: document.getElementById("roomForm"),
+      editorTitle: document.getElementById("editorTitle"),
+      editorSubtitle: document.getElementById("editorSubtitle"),
+      historyList: document.getElementById("historyList"),
+      saveBtn: document.getElementById("saveBtn"),
+      toast: document.getElementById("toast"),
+      statTotal: document.getElementById("statTotal"),
+      statProgress: document.getElementById("statProgress"),
+      statInspect: document.getElementById("statInspect"),
+      statReady: document.getElementById("statReady"),
+      statUrgent: document.getElementById("statUrgent"),
+    };
+
+    function todayISO() {
+      return new Intl.DateTimeFormat("en-CA", {
+        timeZone: "America/Chicago",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }).format(new Date());
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function normalizeRoom(raw) {
+      return {
+        id: raw.id,
+        roomName: raw.room_name ?? raw.roomName ?? raw.unit ?? raw.name ?? "",
+        workDate: raw.work_date ?? raw.workDate ?? raw.date ?? "",
+        roomType: raw.room_type ?? raw.roomType ?? "",
+        building: raw.building ?? "",
+        status: raw.status ?? raw.cleaning_status ?? "Not Started",
+        assignedCleaner: raw.assigned_cleaner ?? raw.assignedCleaner ?? "",
+        assignedInspector: raw.assigned_inspector ?? raw.assignedInspector ?? "",
+        arrival: Boolean(raw.arrival),
+        stayover: Boolean(raw.stayover),
+        urgent: Boolean(raw.urgent),
+        guestOut: Boolean(raw.guest_out ?? raw.guestOut),
+        preInspection: Boolean(raw.pre_inspection ?? raw.preInspection),
+        preInspectionStarted: Boolean(raw.pre_inspection_started ?? raw.preInspectionStarted),
+        preInspectionStartedAt: raw.pre_inspection_started_at ?? raw.preInspectionStartedAt ?? null,
+        updatedAt: raw.updated_at ?? raw.updatedAt ?? null,
+      };
+    }
+
+    function statusClass(status) {
+      const value = String(status || "").toLowerCase();
+
+      if (value.includes("ready")) return "badge-ready";
+      if (value.includes("inspection started")) return "badge-progress";
+      if (value.includes("awaiting inspection") || value.includes("cleaned")) return "badge-waiting";
+      if (value.includes("progress")) return "badge-progress";
+      if (value.includes("not started") || !value) return "badge-pending";
+
+      return "badge-neutral";
+    }
+
+    function statusLabel(status) {
+      const labels = {
+        "Not Started": "Pendiente",
+        "In Progress": "En progreso",
+        "Cleaned - Awaiting Inspection": "Para inspeccionar",
+        "Inspection Started": "Inspección en progreso",
+        "Ready for Guest": "Ready for Guest",
+      };
+
+      return labels[status] || status || "Sin estado";
+    }
+
+    async function api(url, options = {}) {
+      const response = await fetch(url, {
+        headers: {
+          "Content-Type": "application/json",
+          ...(options.headers || {}),
+        },
+        ...options,
+      });
+
+      const text = await response.text();
+      let data = {};
+
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch {
+        data = { message: text || "Respuesta inválida del servidor" };
+      }
+
+      if (!response.ok || data.ok === false) {
+        throw new Error(data.message || data.error || `Error ${response.status}`);
+      }
+
+      return data;
+    }
+
+    async function loadRooms(force = false) {
+      if (state.loading) return;
+
+      state.loading = true;
+      els.refreshBtn.disabled = true;
+      els.refreshBtn.textContent = "Cargando...";
+
+      try {
+        const params = new URLSearchParams();
+        const date = els.date.value || todayISO();
+
+        params.set("date", date);
+        if (force) params.set("refresh", "1");
+
+        const data = await api(`/api/admin/rooms?${params.toString()}`);
+        const rows = data.rooms || data.data || data.results || [];
+
+        state.rooms = rows.map(normalizeRoom);
+        renderRooms();
+
+        if (state.selectedRoom) {
+          const refreshed = state.rooms.find((room) => String(room.id) === String(state.selectedRoom.id));
+          if (refreshed) selectRoom(refreshed, false);
+        }
+      } catch (error) {
+        els.body.innerHTML = `<tr><td colspan="6" class="empty">${escapeHtml(error.message)}</td></tr>`;
+        showToast(error.message, "error");
+      } finally {
+        state.loading = false;
+        els.refreshBtn.disabled = false;
+        els.refreshBtn.textContent = "↻ Recargar";
+      }
+    }
+
+    function getFilteredRooms() {
+      const search = els.search.value.trim().toLowerCase();
+      const status = els.statusFilter.value;
+      const urgent = els.urgentFilter.value;
+
+      return state.rooms.filter((room) => {
+        const haystack = [
+          room.roomName,
+          room.assignedCleaner,
+          room.assignedInspector,
+          room.building,
+          room.roomType,
+          room.status,
+        ]
+          .join(" ")
+          .toLowerCase();
+
+        if (search && !haystack.includes(search)) return false;
+        if (status && room.status !== status) return false;
+        if (urgent && String(room.urgent) !== urgent) return false;
+
+        return true;
+      });
+    }
+
+    function renderRooms() {
+      const rooms = getFilteredRooms();
+
+      els.resultsLabel.innerHTML = `<span class="live-dot"></span>${rooms.length} de ${state.rooms.length} habitaciones`;
+
+      const total = state.rooms.length;
+      const progress = state.rooms.filter((r) =>
+        ["In Progress", "Inspection Started"].includes(r.status)
+      ).length;
+      const inspect = state.rooms.filter((r) => r.status === "Cleaned - Awaiting Inspection").length;
+      const ready = state.rooms.filter((r) => r.status === "Ready for Guest").length;
+      const urgent = state.rooms.filter((r) => r.urgent).length;
+
+      els.statTotal.textContent = total;
+      els.statProgress.textContent = progress;
+      els.statInspect.textContent = inspect;
+      els.statReady.textContent = ready;
+      els.statUrgent.textContent = urgent;
+
+      if (!rooms.length) {
+        els.body.innerHTML = `<tr><td colspan="6" class="empty">No hay habitaciones que coincidan con los filtros.</td></tr>`;
+        return;
+      }
+
+      els.body.innerHTML = rooms
+        .map((room) => {
+          const selected = state.selectedRoom && String(state.selectedRoom.id) === String(room.id);
+          const flags = [
+            room.arrival ? `<span class="badge badge-neutral">🧳 Arrival</span>` : "",
+            room.stayover ? `<span class="badge badge-progress">Stayover</span>` : "",
+            room.guestOut ? `<span class="badge badge-ready">🚪 Guest Out</span>` : "",
+            room.preInspectionStarted ? `<span class="badge badge-progress">◐ Pre</span>` : "",
+            room.preInspection ? `<span class="badge badge-ready">✓ Pre</span>` : "",
+            room.urgent ? `<span class="badge badge-danger">🔥 Urgente</span>` : "",
+          ].filter(Boolean).join(" ");
+
+          return `
+            <tr class="${selected ? "selected" : ""}" data-room-id="${escapeHtml(room.id)}">
+              <td>
+                <div class="room-name">${escapeHtml(room.roomName || "Sin nombre")}</div>
+                <div class="sub">${escapeHtml(room.workDate || "")} · ${escapeHtml(room.building || "OTHER")} · ${escapeHtml(room.roomType || "Sin tipo")}</div>
+              </td>
+              <td><span class="badge ${statusClass(room.status)}">${escapeHtml(statusLabel(room.status))}</span></td>
+              <td>${escapeHtml(room.assignedCleaner || "Sin asignar")}</td>
+              <td>${escapeHtml(room.assignedInspector || "Sin asignar")}</td>
+              <td>${flags || `<span class="sub">Sin banderas</span>`}</td>
+              <td>
+                <div class="row-actions">
+                  <button class="icon-btn" type="button" onclick="selectRoomById('${escapeHtml(room.id)}')">Editar</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        })
+        .join("");
+    }
+
+    function selectRoomById(id) {
+      const room = state.rooms.find((item) => String(item.id) === String(id));
+      if (room) selectRoom(room);
+    }
+
+    async function selectRoom(room, fetchHistory = true) {
+      state.selectedRoom = { ...room };
+      renderRooms();
+
+      els.editorTitle.textContent = room.roomName || "Editar habitación";
+      els.editorSubtitle.textContent = `${room.workDate || ""} · ID ${room.id}`;
+
+      document.getElementById("roomName").value = room.roomName || "";
+      document.getElementById("workDate").value = room.workDate || "";
+      document.getElementById("roomType").value = room.roomType || "";
+      document.getElementById("building").value = room.building || "";
+      document.getElementById("status").value = room.status || "Not Started";
+      document.getElementById("assignedCleaner").value = room.assignedCleaner || "";
+      document.getElementById("assignedInspector").value = room.assignedInspector || "";
+      document.getElementById("arrival").checked = room.arrival;
+      document.getElementById("stayover").checked = room.stayover;
+      document.getElementById("urgent").checked = room.urgent;
+      document.getElementById("guestOut").checked = room.guestOut;
+      document.getElementById("preInspection").checked = room.preInspection;
+      document.getElementById("preInspectionStarted").checked = room.preInspectionStarted;
+      document.getElementById("adminNote").value = "";
+
+      setEditorEnabled(true);
+
+      if (fetchHistory) {
+        await loadHistory(room.id);
+      }
+    }
+
+    function setEditorEnabled(enabled) {
+      els.form.querySelectorAll("input, select, textarea, button[type='submit']").forEach((element) => {
+        element.disabled = !enabled;
+      });
+    }
+
+    function clearSelection() {
+      state.selectedRoom = null;
+      els.form.reset();
+      els.editorTitle.textContent = "Editar habitación";
+      els.editorSubtitle.textContent = "Selecciona una unidad de la tabla";
+      els.historyList.innerHTML = `<div class="empty">Selecciona una unidad para ver su historial.</div>`;
+      setEditorEnabled(false);
+      renderRooms();
+    }
+
+    async function loadHistory(roomId) {
+      els.historyList.innerHTML = `<div class="loading">Cargando historial...</div>`;
+
+      try {
+        const data = await api(`/api/admin/rooms/${encodeURIComponent(roomId)}/history`);
+        const history = data.history || data.data || data.results || [];
+
+        if (!history.length) {
+          els.historyList.innerHTML = `<div class="empty">Todavía no hay cambios administrativos.</div>`;
+          return;
+        }
+
+        els.historyList.innerHTML = history.map((item) => {
+          const action = item.action || item.event_type || "ROOM_UPDATED";
+          const changedBy = item.changed_by || item.updated_by || item.actor_name || "Sistema";
+          const changedAt = item.created_at || item.changed_at || item.updated_at || "";
+          const details = item.details || item.changes || item.payload || item.note || "";
+
+          return `
+            <article class="history-item">
+              <strong>${escapeHtml(action)} · ${escapeHtml(changedBy)}</strong>
+              <p>${escapeHtml(formatDateTime(changedAt))}</p>
+              <p>${escapeHtml(typeof details === "string" ? details : JSON.stringify(details))}</p>
+            </article>
+          `;
+        }).join("");
+      } catch (error) {
+        els.historyList.innerHTML = `<div class="empty">${escapeHtml(error.message)}</div>`;
+      }
+    }
+
+    function formatDateTime(value) {
+      if (!value) return "Sin fecha";
+
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return String(value);
+
+      return date.toLocaleString("es-US", {
+        timeZone: "America/Chicago",
+        dateStyle: "medium",
+        timeStyle: "short",
+      });
+    }
+
+    els.form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      if (!state.selectedRoom) return;
+
+      const saveBtn = els.saveBtn;
+      const previousText = saveBtn.textContent;
+
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Guardando...";
+
+      try {
+        const payload = {
+          roomNumber: document.getElementById("roomName").value.trim(),
+          roomType: document.getElementById("roomType").value.trim(),
+          building: document.getElementById("building").value.trim(),
+          cleaningStatus: document.getElementById("status").value,
+          assignedCleaner: document.getElementById("assignedCleaner").value.trim(),
+          assignedInspector: document.getElementById("assignedInspector").value.trim(),
+          arrival: document.getElementById("arrival").checked,
+          stayover: document.getElementById("stayover").checked,
+          urgent: document.getElementById("urgent").checked,
+          guestOut: document.getElementById("guestOut").checked,
+          preInspection: document.getElementById("preInspection").checked,
+          preInspectionStarted: document.getElementById("preInspectionStarted").checked,
+          adminNote: document.getElementById("adminNote").value.trim(),
+          updatedBy: getCurrentUserName(),
+        };
+
+        const data = await api(`/api/admin/rooms/${encodeURIComponent(state.selectedRoom.id)}`, {
+          method: "PATCH",
+          body: JSON.stringify(payload),
+        });
+
+        const updated = normalizeRoom(data.room || data.data || { ...state.selectedRoom, ...payload });
+        const index = state.rooms.findIndex((room) => String(room.id) === String(updated.id));
+
+        if (index >= 0) {
+          state.rooms[index] = updated;
+        }
+
+        state.selectedRoom = updated;
+        selectRoom(updated, false);
+        renderRooms();
+        await loadHistory(updated.id);
+        showToast("Habitación actualizada correctamente.", "success");
+      } catch (error) {
+        showToast(error.message, "error");
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = previousText;
+      }
+    });
+
+    function getCurrentUserName() {
+      const possibleKeys = ["userName", "employeeName", "name", "maidUserName"];
+
+      for (const key of possibleKeys) {
+        const value = localStorage.getItem(key);
+        if (value) return value;
+      }
+
+      try {
+        const raw = localStorage.getItem("maidUser") || localStorage.getItem("user");
+        const parsed = raw ? JSON.parse(raw) : null;
+        if (parsed?.name) return parsed.name;
+      } catch {}
+
+      return "Admin";
+    }
+
+    function showToast(message, type = "success") {
+      els.toast.textContent = message;
+      els.toast.className = `toast ${type} show`;
+
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => {
+        els.toast.classList.remove("show");
+      }, 3200);
+    }
+
+    function connectSocket() {
+      if (typeof io !== "function") {
+        els.resultsLabel.textContent = "Modo manual";
+        return;
+      }
+
+      state.socket = io();
+
+      state.socket.on("connect", () => {
+        els.resultsLabel.innerHTML = `<span class="live-dot"></span>Tiempo real conectado`;
+      });
+
+      state.socket.on("disconnect", () => {
+        els.resultsLabel.textContent = "Reconectando...";
+      });
+
+      state.socket.on("room-updated", (payload) => {
+        const raw = payload?.room || payload;
+        if (!raw?.id) return;
+
+        const room = normalizeRoom(raw);
+        const index = state.rooms.findIndex((item) => String(item.id) === String(room.id));
+
+        if (index >= 0) {
+          state.rooms[index] = room;
+        } else if (!room.workDate || room.workDate === els.date.value) {
+          state.rooms.unshift(room);
+        }
+
+        if (state.selectedRoom && String(state.selectedRoom.id) === String(room.id)) {
+          selectRoom(room, false);
+          loadHistory(room.id);
+        }
+
+        renderRooms();
+      });
+
+      state.socket.on("rooms-updated", (payload) => {
+        const date = payload?.workDate || payload?.date || "";
+        if (!date || date === els.date.value) {
+          loadRooms(false);
+        }
+      });
+    }
+
+    [els.search, els.statusFilter, els.urgentFilter].forEach((element) => {
+      element.addEventListener("input", renderRooms);
+      element.addEventListener("change", renderRooms);
+    });
+
+    els.date.addEventListener("change", () => {
+      clearSelection();
+      loadRooms(true);
+    });
+
+    els.date.value = todayISO();
+    connectSocket();
+    loadRooms(false);
+  </script>
+</body>
+</html>
