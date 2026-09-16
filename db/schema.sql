@@ -295,6 +295,72 @@ COMMIT;
 
 BEGIN;
 
+CREATE TABLE IF NOT EXISTS team_messages (
+  id BIGSERIAL PRIMARY KEY,
+  sender TEXT NOT NULL,
+  sender_role TEXT NOT NULL DEFAULT '',
+  message TEXT NOT NULL,
+  channel TEXT NOT NULL DEFAULT 'general',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS team_messages_channel_idx
+ON team_messages (channel, created_at DESC);
+
+CREATE TABLE IF NOT EXISTS announcements (
+  id BIGSERIAL PRIMARY KEY,
+  title TEXT NOT NULL,
+  body TEXT NOT NULL,
+  priority TEXT NOT NULL DEFAULT 'normal' CHECK (priority IN ('normal','important','urgent')),
+  author TEXT NOT NULL DEFAULT '',
+  active BOOLEAN NOT NULL DEFAULT TRUE,
+  expires_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS announcements_active_idx
+ON announcements (active, created_at DESC);
+
+CREATE TABLE IF NOT EXISTS room_photos (
+  id BIGSERIAL PRIMARY KEY,
+  room_id BIGINT REFERENCES rooms(id) ON DELETE CASCADE,
+  room_number TEXT NOT NULL,
+  category TEXT NOT NULL DEFAULT 'reference',
+  photo_url TEXT NOT NULL,
+  caption TEXT NOT NULL DEFAULT '',
+  uploaded_by TEXT NOT NULL DEFAULT '',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS room_photos_room_idx
+ON room_photos (room_number, created_at DESC);
+
+CREATE TABLE IF NOT EXISTS room_inventory (
+  id BIGSERIAL PRIMARY KEY,
+  room_id BIGINT REFERENCES rooms(id) ON DELETE CASCADE,
+  room_number TEXT NOT NULL,
+  item_name TEXT NOT NULL,
+  expected_quantity INTEGER NOT NULL DEFAULT 1 CHECK (expected_quantity >= 0),
+  location TEXT NOT NULL DEFAULT '',
+  notes TEXT NOT NULL DEFAULT '',
+  active BOOLEAN NOT NULL DEFAULT TRUE,
+  updated_by TEXT NOT NULL DEFAULT '',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS room_inventory_room_idx
+ON room_inventory (room_number, active, item_name);
+
+INSERT INTO schema_migrations (migration_name)
+VALUES ('011_care_os_unified_centers')
+ON CONFLICT (migration_name) DO NOTHING;
+
+COMMIT;
+
+BEGIN;
+
 ALTER TABLE payroll_records ADD COLUMN IF NOT EXISTS property_name TEXT NOT NULL DEFAULT 'ALL';
 ALTER TABLE payroll_records ADD COLUMN IF NOT EXISTS manual_override BOOLEAN NOT NULL DEFAULT FALSE;
 ALTER TABLE payroll_records ADD COLUMN IF NOT EXISTS adjustment_reason TEXT NOT NULL DEFAULT '';
