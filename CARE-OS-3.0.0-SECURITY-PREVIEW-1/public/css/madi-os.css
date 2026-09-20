@@ -1,0 +1,36 @@
+async loadUser(){
+
+    const code=localStorage.getItem("employeeCode");
+
+    if(!code){
+        console.log("No hay código de empleado");
+        return;
+    }
+
+    try{
+
+        const response=await fetch(`/api/me?code=${encodeURIComponent(code)}`);
+
+        const data=await response.json();
+
+        if(!data.ok){
+
+            console.log(data.message);
+
+            return;
+
+        }
+
+        this.user=data.user;
+
+        console.log("Usuario cargado",this.user);
+
+    }
+
+    catch(error){
+
+        console.log(error);
+
+    }
+
+},

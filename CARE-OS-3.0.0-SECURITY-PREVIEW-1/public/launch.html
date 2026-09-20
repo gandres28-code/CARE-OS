@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Care Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#111827">
+  <style>
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:radial-gradient(circle at top left, rgba(37,99,235,.22), transparent 34%),radial-gradient(circle at bottom right, rgba(124,58,237,.18), transparent 30%),linear-gradient(180deg,#0f172a,#111827);color:white;display:flex;align-items:center;justify-content:center;padding:20px;}
+    .card{width:100%;max-width:430px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(20px);border-radius:30px;padding:28px;box-shadow:0 24px 60px rgba(0,0,0,.35);}
+    .logo{width:72px;height:72px;border-radius:24px;background:white;color:#111827;display:grid;place-items:center;font-size:34px;margin-bottom:18px;}
+    h1{margin:0;font-size:32px;letter-spacing:-.05em;}
+    p{color:#cbd5e1;line-height:1.45;margin:8px 0 22px;font-size:15px;}
+    label{display:block;font-size:13px;font-weight:900;color:#e5e7eb;margin-bottom:8px;}
+    input{width:100%;padding:18px;border-radius:18px;border:1px solid rgba(255,255,255,.20);background:rgba(255,255,255,.12);color:white;font-size:22px;font-weight:900;text-align:center;letter-spacing:.12em;outline:none;}
+    input::placeholder{color:#94a3b8;letter-spacing:0;font-weight:700;}
+    button{width:100%;margin-top:14px;padding:18px;border:none;border-radius:18px;background:#2563eb;color:white;font-size:17px;font-weight:950;cursor:pointer;box-shadow:0 14px 28px rgba(37,99,235,.35);}
+    button:disabled{opacity:.65;cursor:not-allowed;}
+    .status{margin-top:14px;color:#fca5a5;font-weight:800;text-align:center;min-height:20px;}
+    .status.ok{color:#86efac;}
+    .small{margin-top:18px;color:#94a3b8;font-size:12px;text-align:center;}
+    .choice{display:none;margin-top:18px;padding-top:18px;border-top:1px solid rgba(255,255,255,.14);}
+    .choice h2{margin:0 0 6px;font-size:20px;letter-spacing:-.04em;}
+    .choice p{margin:0 0 12px;font-size:13px;}
+    .choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .choice-grid button{margin:0;min-height:100px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);box-shadow:none;font-size:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;}
+    .choice-grid b{font-size:28px;line-height:1;}
+    .secondary{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);box-shadow:none;}
+  </style>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#111827">
+<link rel="stylesheet" href="/css/care-theme.css?v=1"></head>
+<body>
+  <div class="card">
+    <div class="logo">C</div>
+    <h1>C.A.R.E</h1>
+    <p>Ingresa tu código para entrar a tu área de trabajo.</p>
+
+    <form id="loginForm" autocomplete="off">
+      <div id="loginBox">
+        <label for="code">Código de empleado</label>
+        <input id="code" placeholder="Ejemplo: 1234" autocomplete="off" inputmode="text">
+        <button id="loginBtn" type="submit">Entrar</button>
+      </div>
+    </form>
+
+    <div id="roleChoice" class="choice">
+      <h2>¿Qué vas a hacer hoy?</h2>
+      <p id="choiceName">Selecciona tu área de trabajo.</p>
+      <div class="choice-grid">
+        <button type="button" onclick="goCleaning()"><b>CL</b>Limpieza</button>
+        <button type="button" onclick="goInspection()"><b>IN</b>Inspección</button>
+      </div>
+      <button type="button" class="secondary" onclick="resetLogin()">Usar otro código</button>
+    </div>
+
+    <div id="status" class="status"></div>
+    <div class="small">Limpieza · Inspecciones · Operaciones · Service Orders · Clock</div>
+  </div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/maid-core.js"></script>
+
+<script>
+const SESSION_TTL_MS = 5 * 60 * 1000;
+const REQUEST_TIMEOUT_MS = 12000;
+
+let currentUser = null;
+let isLoggingIn = false;
+
+function normalizeRole(role){
+  return String(role || "").trim().toLowerCase();
+}
+
+function setStatus(message, ok = false){
+  const status = document.getElementById("status");
+  status.className = ok ? "status ok" : "status";
+  status.innerText = message || "";
+}
+
+function openOS(moduleName, fallbackUrl){
+  if(window.OS && typeof window.OS.open === "function"){
+    window.OS.open(moduleName);
+    return;
+  }
+
+  window.location.replace(fallbackUrl);
+}
+
+function saveUser(data, typedCode){
+  const realCode = String(data.code || typedCode || "").trim();
+  const name = String(data.name || "").trim();
+  const role = String(data.role || "").trim();
+
+  localStorage.setItem("employeeCode", realCode);
+  localStorage.setItem("employeeName", name);
+  localStorage.setItem("employeeRole", role);
+  localStorage.setItem("employeeSessionVerifiedAt", String(Date.now()));
+
+  currentUser = { name, code: realCode, role };
+}
+
+function loadSavedUser(){
+  const code = localStorage.getItem("employeeCode") || "";
+  const name = localStorage.getItem("employeeName") || "";
+  const role = localStorage.getItem("employeeRole") || "";
+
+  if(!code || !name || !role) return null;
+
+  return { code, name, role };
+}
+
+function clearUserSession(){
+  [
+    "employeeCode",
+    "employeeName",
+    "employeeRole",
+    "employeeSessionVerifiedAt",
+    "cleanerName"
+  ].forEach(key => localStorage.removeItem(key));
+}
+
+async function fetchJson(url, options = {}){
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+  try{
+    const response = await fetch(url, {
+      ...options,
+      cache: "no-store",
+      signal: controller.signal,
+      headers: {
+        Accept: "application/json",
+        ...(options.headers || {})
+      }
+    });
+
+    const data = await response.json().catch(() => ({}));
+
+    if(!response.ok){
+      throw new Error(data.message || `Error ${response.status}`);
+    }
+
+    return data;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+function goCleaning(){
+  if(currentUser && currentUser.name){
+    localStorage.setItem("cleanerName", currentUser.name);
+  }
+
+  openOS("cleaning", "/");
+}
+
+function goInspection(){
+  openOS("inspection", "/inspector");
+}
+
+function showRoleChoice(){
+  document.getElementById("loginBox").style.display = "none";
+  document.getElementById("roleChoice").style.display = "block";
+  document.getElementById("choiceName").innerText =
+    currentUser && currentUser.name
+      ? currentUser.name + ", selecciona tu área de trabajo."
+      : "Selecciona tu área de trabajo.";
+
+  document.getElementById("loginBtn").disabled = false;
+}
+
+function resetLogin(){
+  currentUser = null;
+  isLoggingIn = false;
+  clearUserSession();
+
+  document.getElementById("code").value = "";
+  document.getElementById("roleChoice").style.display = "none";
+  document.getElementById("loginBox").style.display = "block";
+  document.getElementById("loginBtn").disabled = false;
+
+  setStatus("");
+  document.getElementById("code").focus();
+}
+
+function routeUser(){
+  const role = normalizeRole(currentUser && currentUser.role);
+
+  if(role === "cleaner") return goCleaning();
+  if(role === "inspector") return goInspection();
+
+  if(role === "cleaner / inspector" || role === "inspector / cleaner"){
+    showRoleChoice();
+    return;
+  }
+
+  if(role === "dispatch / inspector"){
+    openOS("dashboard", "/app");
+    return;
+  }
+
+  if(role === "runner" || role === "laundry / activities / runner") {
+    window.location.replace("/runner-orders");
+    return;
+  }
+
+  if([
+    "laundry / activities",
+    "laundry",
+    "activities"
+  ].includes(role)){
+    openOS("clock", "/time-clock");
+    return;
+  }
+
+  if([
+    "admin",
+    "manager",
+    "owner",
+    "company owner",
+    "dispatch",
+    "operations"
+  ].includes(role)){
+    openOS("dashboard", "/app");
+    return;
+  }
+
+  setStatus("Tu rol no tiene acceso configurado.");
+  document.getElementById("loginBtn").disabled = false;
+  isLoggingIn = false;
+}
+
+async function login(){
+  if(isLoggingIn) return;
+
+  const code = document.getElementById("code").value.trim();
+  const btn = document.getElementById("loginBtn");
+
+  if(!code){
+    setStatus("Escribe tu código.");
+    return;
+  }
+
+  isLoggingIn = true;
+  btn.disabled = true;
+  setStatus("Verificando...");
+
+  try{
+    const data = await fetchJson("/login-role", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code })
+    });
+
+    if(!data.ok){
+      throw new Error(data.message || "Código no encontrado.");
+    }
+
+    saveUser(data, code);
+    setStatus("Acceso correcto. Abriendo...", true);
+    routeUser();
+
+  } catch(error){
+    const message = error.name === "AbortError"
+      ? "El servidor tardó demasiado. Intenta otra vez."
+      : error.message || "Error verificando código.";
+
+    setStatus(message);
+    btn.disabled = false;
+    isLoggingIn = false;
+  }
+}
+
+async function validateSavedSession(savedUser){
+  try{
+    const data = await fetchJson(
+      "/api/me"
+    );
+
+    if(!data.ok || !data.user || !data.user.active){
+      throw new Error("Sesión expirada");
+    }
+
+    saveUser({
+      name: data.user.name,
+      code: savedUser.code,
+      role: data.user.role,
+    }, savedUser.code);
+
+    routeUser();
+  } catch(error){
+    clearUserSession();
+    currentUser = null;
+    setStatus("Sesión expirada. Ingresa tu código otra vez.");
+    document.getElementById("loginBtn").disabled = false;
+  }
+}
+
+document.getElementById("loginForm").addEventListener("submit", event => {
+  event.preventDefault();
+  login();
+});
+
+window.addEventListener("DOMContentLoaded", () => {
+  const savedUser = loadSavedUser();
+  if(!savedUser) return;
+
+  currentUser = savedUser;
+  document.getElementById("code").value = savedUser.code;
+
+  const verifiedAt = Number(
+    localStorage.getItem("employeeSessionVerifiedAt") || 0
+  );
+
+  // Validate on every launch so role changes made in Notion take effect immediately.
+  setStatus("Actualizando acceso...", true);
+  validateSavedSession(savedUser);
+});
+</script>
+<script src="/js/care-theme.js?v=1"></script></body>
+</html>
