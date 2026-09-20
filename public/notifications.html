@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Notificaciones</title>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  background:#f5f7fb;
+  color:#111827;
+}
+
+.header{
+  background:#111827;
+  color:white;
+  padding:55px 20px 25px;
+  border-bottom-left-radius:30px;
+  border-bottom-right-radius:30px;
+}
+
+.header h1{
+  margin:0;
+  font-size:30px;
+}
+
+.header p{
+  margin-top:6px;
+  color:#cbd5e1;
+}
+
+.container{
+  padding:20px;
+}
+
+.card{
+  background:white;
+  border-radius:22px;
+  padding:18px;
+  margin-bottom:14px;
+  box-shadow:0 10px 25px rgba(0,0,0,.08);
+  border-left:6px solid #2563eb;
+}
+
+.card h3{
+  margin:0;
+  font-size:17px;
+}
+
+.card p{
+  margin:8px 0;
+  color:#6b7280;
+  line-height:1.4;
+}
+
+.time{
+  color:#9ca3af;
+  font-size:13px;
+}
+
+.empty{
+  text-align:center;
+  padding:60px 20px;
+  color:#6b7280;
+}
+</style>
+<link rel="stylesheet" href="/css/responsive-pages.css?v=full-page-v1">
+<link rel="stylesheet" href="/css/care-theme.css?v=1"></head>
+
+<body>
+
+<div class="header">
+  <h1>🔔 Notificaciones</h1>
+  <p>Actividad importante del sistema</p>
+</div>
+
+<div class="container">
+
+  <div id="list"></div>
+
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+let notifications = [];
+  async function loadNotifications(){
+  try{
+    const response = await fetch(`/notifications-data?t=${Date.now()}`);
+    const data = await response.json();
+
+    if(data.ok){
+      notifications = data.notifications || [];
+      renderNotifications();
+    }
+  }catch(error){
+    console.log(error);
+  }
+}
+
+loadNotifications();
+
+function renderNotifications(){
+
+  const list = document.getElementById("list");
+
+  if(notifications.length === 0){
+    list.innerHTML = `
+      <div class="empty">
+        No hay notificaciones todavía.
+      </div>
+    `;
+    return;
+  }
+
+  list.innerHTML = notifications.map(n=>`
+    <div class="card">
+      <h3>${n.title}</h3>
+      <p>${n.message}</p>
+      <div class="time">${n.time}</div>
+    </div>
+  `).join("");
+
+}
+
+const socket = io();
+
+socket.on("system-notification", notification => {
+  notifications.unshift(notification);
+
+  if(notifications.length > 100){
+    notifications.pop();
+  }
+
+  renderNotifications();
+});
+
+renderNotifications();
+</script>
+
+
+<script src="/js/push-notifications.js"></script>
+<script src="/js/admin-alerts.js"></script>
+<script src="/js/care-theme.js?v=1"></script></body>
+</html>
