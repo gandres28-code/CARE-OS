@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <title>C.A.R.E | Inspecciones</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f8fafc">
+  <style>
+    :root{--bg:#f6f8fb;--ink:#101828;--muted:#667085;--line:#e4e7ec;--teal:#0f766e;--green:#16a34a;--purple:#7c3aed;--blue:#2563eb;--red:#dc2626;--shadow:0 18px 45px rgba(15,23,42,.08);--soft:0 8px 22px rgba(15,23,42,.055)}
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%}body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 0 0,rgba(8,145,178,.10),transparent 35%),radial-gradient(circle at 100% 4%,rgba(124,58,237,.08),transparent 30%),linear-gradient(180deg,#fff 0%,var(--bg) 100%);color:var(--ink)}
+    .app-shell{width:100%;max-width:640px;min-height:100vh;margin:0 auto;padding:18px 16px 110px}.hidden{display:none!important}
+    .hero-card{background:linear-gradient(135deg,#fff,#f0fdfa);border:1px solid rgba(228,231,236,.88);border-radius:30px;padding:20px;box-shadow:0 22px 50px rgba(8,145,178,.08)}.hero-line{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}.hero h1{margin:0;font-size:38px;line-height:1.02;letter-spacing:-.075em}.hero-name{margin-top:7px;color:#0f766e;font-size:22px;line-height:1.1;font-weight:950;letter-spacing:-.035em}.hero-subtitle{margin-top:10px;color:#667085;font-size:13px;font-weight:800;line-height:1.35}.refresh-button{width:auto;margin:0;padding:11px 13px;border-radius:999px;background:#101828;color:#fff;border:1px solid #101828;box-shadow:0 14px 28px rgba(16,24,40,.16);font-size:12px;font-weight:1000;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}.refresh-symbol{font-size:18px;line-height:1}
+    .date-pill{width:max-content;max-width:100%;margin-top:16px;display:flex;align-items:center;gap:9px;color:#344054;background:#f8fafc;border:1px solid var(--line);border-radius:999px;padding:9px 12px;font-size:13px;font-weight:950}.date-box{width:28px;height:28px;border-radius:10px;background:#f0fdfa;color:#0f766e;display:grid;place-items:center;font-size:13px;font-weight:1000}
+    .today-progress{margin-top:16px;padding:14px;border-radius:24px;background:rgba(255,255,255,.74);border:1px solid rgba(228,231,236,.9);box-shadow:0 14px 34px rgba(15,23,42,.055)}.today-progress-top{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:10px;color:#344054;font-size:12px;font-weight:950}.progress-track{height:11px;border-radius:999px;background:#eef2f7;overflow:hidden;border:1px solid rgba(228,231,236,.9)}.progress-fill{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,#0891b2,#7c3aed,#16a34a);transition:width .55s ease}
+    .stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:14px 0 18px}.stat-card{position:relative;overflow:hidden;display:flex;align-items:center;gap:12px;text-align:left;padding:15px;border-radius:24px;background:rgba(255,255,255,.88);border:1px solid var(--line);box-shadow:0 12px 26px rgba(15,23,42,.055)}.stat-icon{width:44px;height:44px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:21px;flex:0 0 auto}.stat-icon.pre{background:#f0fdfa;color:#115e59}.stat-icon.final{background:#eff6ff;color:#1d4ed8}.stat-icon.progress{background:#f5f3ff;color:#5b21b6}.stat-icon.general{background:#ecfdf3;color:#166534}.stat-card strong{display:block;font-size:27px;line-height:1;letter-spacing:-.06em}.stat-card span{display:block;margin-top:4px;color:#667085;font-size:10px;font-weight:950;text-transform:uppercase;letter-spacing:.06em}
+    .card{background:#fff;border:1px solid var(--line);border-radius:28px;padding:18px;box-shadow:var(--soft);margin-bottom:16px}.section-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.section-title span:first-child{font-size:17px;font-weight:1000;letter-spacing:-.035em}.muted,.section-title small{color:var(--muted);font-size:12px;font-weight:850;line-height:1.35}input,textarea{width:100%;border:1px solid var(--line);background:#f8fafc;color:#101828;border-radius:18px;outline:none;font-size:16px;transition:.16s ease;box-shadow:inset 0 1px 0 rgba(255,255,255,.75)}input{padding:16px}textarea{min-height:118px;padding:15px;resize:vertical;line-height:1.38}input:focus,textarea:focus{background:#fff;border-color:#67e8f9;box-shadow:0 0 0 4px rgba(8,145,178,.12)}button{width:100%;border:none;border-radius:18px;padding:16px 17px;margin:8px 0;font-size:16px;font-weight:950;color:white;cursor:pointer;transition:transform .12s ease,opacity .12s ease,box-shadow .12s ease;box-shadow:0 11px 22px rgba(15,23,42,.13)}button:active{transform:scale(.986)}button:disabled{opacity:.58;cursor:not-allowed;transform:none}.btn-primary{background:linear-gradient(135deg,#0f766e,#0f766e)}.report{background:linear-gradient(135deg,#111827,#344054)}
+    .tab-bar{display:flex;gap:8px;overflow-x:auto;padding:4px 0 14px;scrollbar-width:none}.tab-bar::-webkit-scrollbar{display:none}.tab-btn{width:auto;margin:0;padding:11px 14px;border-radius:999px;background:#fff;color:#667085;border:1px solid var(--line);box-shadow:var(--soft);font-size:12px;white-space:nowrap;flex:0 0 auto}.tab-btn.active{background:linear-gradient(135deg,#f0fdfa,#ccfbf1);color:#115e59;border-color:#99f6e4}
+    .building-group{margin-bottom:15px;border:1px solid var(--line);border-radius:24px;background:rgba(255,255,255,.82);overflow:hidden;box-shadow:var(--soft)}.building-header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 15px;background:#fff;cursor:pointer}.building-header strong{font-size:14px;letter-spacing:-.02em}.building-header span{color:#667085;font-size:12px;font-weight:950}.building-body{display:flex;flex-direction:column;gap:12px;padding:0 12px 12px}.building-group.closed .building-body{display:none}
+    .inspection-card{position:relative;overflow:hidden;min-height:154px;background:#fff;border:1px solid #e4e7ec;border-radius:24px;box-shadow:0 16px 36px rgba(15,23,42,.065);cursor:pointer;animation:cardIn .32s ease both}@keyframes cardIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}.inspection-card:before{content:"";position:absolute;inset:0 auto 0 0;width:5px;background:#98a2b3}.inspection-card.pre:before{background:#0891b2}.inspection-card.final:before{background:#2563eb}.inspection-card.active:before{background:#7c3aed}.inspection-card.ready:before{background:#16a34a}.inspection-card.urgent:before{background:#dc2626}.inspection-card.selected{border:2px solid #101828;box-shadow:0 20px 44px rgba(16,24,40,.15)}.inspection-layout{display:grid;grid-template-columns:1fr 118px;min-height:112px;background:#fff}.inspection-content{padding:18px 16px 12px 20px;min-width:0}.room-title{font-size:27px;line-height:1.02;font-weight:1000;letter-spacing:-.06em;margin-bottom:14px}.meta-row{display:flex;flex-wrap:wrap;gap:8px}.meta-pill{min-height:34px;border-radius:999px;padding:9px 14px;font-size:11px;font-weight:1000;text-transform:uppercase;letter-spacing:.03em;background:#f2f4f7;color:#475467;border:1px solid transparent;display:inline-flex;align-items:center}.meta-pill.guest,.meta-pill.pre{background:#ecfeff;color:#115e59;border-color:#a5f3fc}.meta-pill.ready{background:#dcfce7;color:#166534;border-color:#bbf7d0}.action-panel{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:12px 10px;border-left:1px solid #edf0f4;background:#f8fafc;color:#344054;gap:8px}.inspection-card.pre .action-panel{background:#f0fdfa;color:#115e59}.inspection-card.final .action-panel{background:#eff6ff;color:#1d4ed8}.inspection-card.active .action-panel{background:#f5f3ff;color:#5b21b6}.inspection-card.ready .action-panel{background:#ecfdf3;color:#166534}.action-circle{width:48px;height:48px;border-radius:999px;display:grid;place-items:center;border:2px dashed currentColor;opacity:.88;font-size:19px;line-height:1}.tap-label{display:block;font-size:11px;line-height:1.18;font-weight:1000;text-transform:uppercase;letter-spacing:.045em}.inspection-footer{border-top:1px solid #edf0f4;padding:12px 16px 13px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;color:#667085;font-size:12px;font-weight:850;background:#fff}.footer-right{display:flex;align-items:center;gap:12px}.status-tag{font-size:11px;font-weight:1000;text-transform:uppercase;letter-spacing:.045em;color:#344054}.inline-report{width:46px;height:46px;min-width:46px;margin:0;padding:0;border-radius:16px;display:grid;place-items:center;background:#f8fafc;color:#344054;border:1px solid #e4e7ec;box-shadow:none;font-size:22px;line-height:1}
+    .report-sheet,.settings-sheet{position:fixed;left:14px;right:14px;bottom:calc(env(safe-area-inset-bottom) + 86px);z-index:130;max-width:610px;margin:0 auto;background:rgba(255,255,255,.96);backdrop-filter:blur(22px);border:1px solid rgba(228,231,236,.95);border-radius:28px;padding:16px;box-shadow:0 28px 70px rgba(15,23,42,.22);animation:sheetUp .24s ease both}@keyframes sheetUp{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}.sheet-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.sheet-head span{display:block;color:#667085;font-size:11px;font-weight:1000;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}.sheet-head strong{display:block;color:#101828;font-size:24px;font-weight:1000;letter-spacing:-.055em;line-height:1}.sheet-close{width:auto;margin:0;padding:10px 13px;border-radius:999px;background:#f8fafc;color:#344054;border:1px solid #e4e7ec;box-shadow:none;font-size:12px;font-weight:1000}.file-box{border:1.5px dashed #cbd5e1;background:#f8fafc;padding:12px;border-radius:18px;margin-top:10px}.file-box label{font-weight:950;display:block;margin-bottom:4px;color:#344054}.photo-preview{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.photo-preview img{width:100%;height:82px;object-fit:cover;border-radius:12px;border:1px solid #e4e7ec}.history-list{display:flex;flex-direction:column;gap:10px;margin-top:10px}.history-item{background:#fff;border:1px solid var(--line);border-radius:18px;padding:13px;box-shadow:0 6px 14px rgba(15,23,42,.04)}.history-top{display:flex;justify-content:space-between;gap:10px;color:#667085;font-size:12px;font-weight:850;margin-bottom:7px}.history-note{margin-top:6px;color:#344054;font-size:14px;line-height:1.38;white-space:pre-wrap}.empty{text-align:center;color:#667085;padding:26px 10px;font-size:14px;font-weight:750;line-height:1.35}#status{min-height:20px;text-align:center;color:#344054;font-weight:950;margin:10px 0 0;font-size:14px}#bigStatus{display:none;position:fixed;top:0;left:0;width:100%;padding:calc(env(safe-area-inset-top) + 15px) 16px 15px;color:white;font-size:16px;font-weight:1000;text-align:center;z-index:9999;box-shadow:0 8px 25px rgba(0,0,0,.25)}#bigStatus.success{background:#16a34a}#bigStatus.error{background:#dc2626}#bigStatus.loading{background:#2563eb}
+    .bottom-nav{position:fixed;left:14px;right:14px;bottom:calc(env(safe-area-inset-bottom) + 10px);z-index:90;max-width:610px;margin:0 auto;padding:8px;background:rgba(255,255,255,.88);backdrop-filter:blur(20px);border:1px solid rgba(228,231,236,.95);border-radius:28px;box-shadow:0 18px 46px rgba(15,23,42,.12);display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.nav-item{text-decoration:none;color:#667085;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:58px;border-radius:18px;font-size:12px;font-weight:950;background:transparent;box-shadow:none;border:none;cursor:pointer;padding:0;margin:0;width:auto}.nav-item.active{color:#115e59;background:linear-gradient(135deg,#f0fdfa,#ccfbf1)}.settings-option{width:100%;border:1px solid #e4e7ec;background:#f8fafc;color:#101828;box-shadow:none;border-radius:18px;padding:15px;text-align:left;font-size:15px;font-weight:1000}@media(max-width:390px){.inspection-layout{grid-template-columns:1fr 108px}.room-title{font-size:24px}.action-circle{width:44px;height:44px}.stats-grid{grid-template-columns:repeat(2,1fr)}}
+  
+    /* Reliable SVG progress circles */
+    .action-circle{
+      width:50px;
+      height:50px;
+      display:grid;
+      place-items:center;
+      position:relative;
+      flex:0 0 50px;
+      color:currentColor;
+      margin:0 auto;
+      line-height:0;
+    }
+
+    .action-circle svg{
+      width:46px;
+      height:46px;
+      display:block;
+      transform:rotate(-90deg);
+      transform-origin:50% 50%;
+      overflow:visible;
+    }
+
+    .action-circle .ring-track{
+      fill:none;
+      stroke:rgba(148,163,184,.25);
+      stroke-width:5;
+    }
+
+    .action-circle .ring-value{
+      fill:none;
+      stroke:currentColor;
+      stroke-width:5;
+      stroke-linecap:round;
+      stroke-dasharray:100;
+      stroke-dashoffset:100;
+      transition:stroke-dashoffset .38s ease;
+    }
+
+    .action-circle.empty .ring-value{
+      stroke-dashoffset:100;
+    }
+
+    .action-circle.half .ring-value{
+      stroke-dashoffset:50;
+    }
+
+    .action-circle.full .ring-value{
+      stroke-dashoffset:0;
+    }
+
+    .action-circle.loading svg{
+      animation:ringSpin .72s linear infinite;
+    }
+
+    .action-circle.loading .ring-value{
+      stroke-dasharray:28 72;
+      stroke-dashoffset:0;
+      transition:none;
+    }
+
+    @keyframes ringSpin{
+      from{transform:rotate(-90deg)}
+      to{transform:rotate(270deg)}
+    }
+
+    .inspection-card.card-loading{
+      pointer-events:none;
+      opacity:.78;
+    }
+
+    .inspection-card.general:before{background:#64748b}
+    .inspection-card.general .action-panel{background:#f8fafc;color:#475569}
+  
+    /* Final SVG ring alignment override */
+    .action-panel{
+      overflow:hidden;
+    }
+
+    .action-circle{
+      width:48px!important;
+      height:48px!important;
+      min-width:48px!important;
+      flex:0 0 48px!important;
+      display:grid!important;
+      place-items:center!important;
+      margin:0 auto!important;
+      padding:0!important;
+      border:0!important;
+      outline:0!important;
+      box-shadow:none!important;
+      background:transparent!important;
+      border-radius:50%!important;
+      overflow:visible!important;
+      line-height:0!important;
+    }
+
+    .action-circle::before,
+    .action-circle::after{
+      content:none!important;
+      display:none!important;
+    }
+
+    .action-circle svg{
+      width:48px!important;
+      height:48px!important;
+      display:block!important;
+      margin:0!important;
+      padding:0!important;
+      position:static!important;
+      transform:rotate(-90deg);
+      transform-origin:24px 24px!important;
+      overflow:visible!important;
+    }
+
+    .action-circle .ring-track,
+    .action-circle .ring-value{
+      vector-effect:non-scaling-stroke;
+    }
+
+    .action-circle.loading svg{
+      animation:ringSpin .72s linear infinite!important;
+      transform-origin:24px 24px!important;
+    }
+
+    @keyframes ringSpin{
+      from{transform:rotate(-90deg)}
+      to{transform:rotate(270deg)}
+    }
+
+  
+    .hero-actions{
+      display:flex;
+      flex-direction:column;
+      align-items:flex-end;
+      gap:8px;
+      flex:0 0 auto;
+    }
+
+    .push-bell-button{
+      width:42px !important;
+      height:42px !important;
+      min-width:42px !important;
+      margin:0 !important;
+      padding:0 !important;
+      border-radius:999px !important;
+      display:grid !important;
+      place-items:center !important;
+      align-self:flex-end;
+      background:#111827;
+      color:#fff;
+      border:1px solid rgba(255,255,255,.16);
+      box-shadow:0 10px 24px rgba(15,23,42,.20);
+      font-size:18px !important;
+      line-height:1 !important;
+      cursor:pointer;
+    }
+
+    .push-bell-button:active{
+      transform:scale(.94);
+    }
+
+    .push-bell-button:disabled{
+      background:#166534 !important;
+      opacity:.78 !important;
+      cursor:default;
+    }
+
+  </style>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#111827">
+<link rel="stylesheet" href="/css/responsive-pages.css?v=full-page-v1">
+<link rel="stylesheet" href="/css/care-theme.css?v=1"></head>
+<body>
+<div id="bigStatus"></div>
+<div class="app-shell">
+  <section class="hero"><div class="hero-card"><div class="hero-line"><div><h1>Inspecciones</h1><div id="heroInspectorName" class="hero-name">Cargando...</div><div class="hero-subtitle">Tus unidades separadas por edificio y organizadas por etapa de inspección.</div></div><div class="hero-actions"><button class="refresh-button" onclick="loadInspectorAssignments(false)"><span class="refresh-symbol">↻</span>Actualizar</button><button id="enablePushNotifications417" class="push-bell-button" type="button" title="Activar notificaciones" aria-label="Activar notificaciones" onclick="window.enable417PushNotifications?.()">🔔</button></div></div><div class="date-pill"><span class="date-box" id="dateDay">--</span><span id="dateText">Hoy</span></div><div class="today-progress"><div class="today-progress-top"><span>Progreso de hoy</span><strong id="todayProgressText">0 de 0</strong></div><div class="progress-track"><div id="todayProgressFill" class="progress-fill"></div></div></div></div></section>
+  <section class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon pre">◔</div>
+      <div><strong id="statPre">0</strong><span>Pre inspección</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon final">◫</div>
+      <div><strong id="statFinal">0</strong><span>Para inspeccionar</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon general">▦</div>
+      <div><strong id="statGeneral">0</strong><span>Vista general</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon progress">✓</div>
+      <div><strong id="statCompleted">0</strong><span>Completadas</span></div>
+    </div>
+  </section>
+  <section id="accessCard" class="card"><div class="section-title"><span>Acceso seguro</span><small>Verificando sesión</small></div><input id="code" type="hidden" value="session"><div id="inspectorName" style="text-align:center;font-weight:900;margin:12px 0;">Cargando tus inspecciones…</div></section>
+  <section><div class="tab-bar">
+      <button id="tab-pre" class="tab-btn active" onclick="setActiveTab('pre')">Pre inspección</button>
+      <button id="tab-final" class="tab-btn" onclick="setActiveTab('final')">Para inspeccionar</button>
+      <button id="tab-general" class="tab-btn" onclick="setActiveTab('general')">Vista general</button>
+      <button id="tab-completed" class="tab-btn" onclick="setActiveTab('completed')">Completadas</button>
+    </div><div id="assignments" class="empty">Cargando inspecciones...</div></section>
+  <input id="name" class="hidden"><input id="unit" class="hidden"><p id="status"></p>
+  <section id="reportSheet" class="report-sheet hidden"><div class="sheet-head"><div><span>Reporte de inspección</span><strong id="selectedUnitLabel"></strong></div><button class="sheet-close" onclick="closeReportPanel()">Cerrar</button></div><textarea id="note" placeholder="Escribe el reporte aquí. Ejemplo: faltan towels, hay cabello en baño, sink tapado, item encontrado..."></textarea><div class="file-box"><label>Fotos</label><div class="muted">Puedes agregar fotos como evidencia si es necesario.</div><input type="file" id="photoInput" accept="image/*" capture="environment" multiple onchange="addSelectedPhotos()"><div id="photoPreview" class="photo-preview"></div></div><button class="report action-btn" onclick="sendSmartReport('INSPECTION_REPORT')">Enviar reporte</button></section>
+  <section id="historyCard" class="card hidden"><div class="section-title"><span>Historial de hoy</span><button class="tab-btn" style="margin:0" onclick="loadMyHistory(false)">Actualizar</button></div><div id="historyList" class="history-list"></div></section>
+</div>
+<nav class="bottom-nav"><a class="nav-item active" href="/inspector"><span style="font-size:18px">🔎</span>Inspecciones</a><button class="nav-item" type="button" onclick="openSettingsMenu()"><span style="font-size:18px">⚙️</span>Settings</button></nav>
+<section id="settingsSheet" class="settings-sheet hidden"><div class="sheet-head"><div><span>Settings</span><strong>Cuenta</strong></div><button class="sheet-close" onclick="closeSettingsMenu()">Cerrar</button></div><button class="settings-option" onclick="window.OS?.clearSession?.();window.location.replace('/launch');">Cambiar usuario</button></section>
+<script src="/socket.io/socket.io.js"></script><script src="/js/maid-core.js"></script>
+<script src="/js/resilience.js?v=stable-20260719-1"></script>
+<script>
+let isSending=false,lastSendKey="",lastSendTime=0,selectedReportFiles=[],selectedUnit="",currentInspectorCode="",currentInspectorName="",lastUnits=[],activeTab="pre",collapsedBuildings={};
+let inspectorDataSource="postgres";
+let suppressInspectorRealtimeUntil=0;
+let inspectorSocketAttached=false;
+
+function todayChicagoISO(){
+  return new Intl.DateTimeFormat("en-CA",{
+    timeZone:"America/Chicago",
+    year:"numeric",
+    month:"2-digit",
+    day:"2-digit"
+  }).format(new Date());
+}
+
+function normalizePostgresInspectorRooms(data){
+  const rooms=Array.isArray(data?.rooms)?data.rooms:[];
+
+  return rooms.map(room=>({
+    id:room.id,
+    notionId:room.notionId||"",
+    unit:room.unit||room.roomNumber||"",
+    normalizedRoom:room.normalizedRoom||"",
+    roomType:room.roomType||"",
+    building:room.building||"OTHER",
+    status:room.status||"Pending",
+    guestOut:Boolean(room.guestOut),
+    guestOutAt:room.guestOutAt||null,
+    priority:room.urgent?"Urgent":"Normal",
+    urgent:Boolean(room.urgent),
+    arrival:Boolean(room.arrival),
+    assignedCleaner:room.assignedCleaner||"",
+    assignedCleaners:Array.isArray(room.assignedCleaners)?room.assignedCleaners:[],
+    assignedInspector:room.assignedInspector||"",
+    assignedInspectors:Array.isArray(room.assignedInspectors)?room.assignedInspectors:[],
+    startedAt:room.startedAt||null,
+    finishedAt:room.finishedAt||null,
+    inspectionStartedAt:room.inspectionStartedAt||null,
+    readyAt:room.readyAt||null,
+    preInspection:Boolean(room.preInspection),
+    preInspectionStarted:Boolean(room.preInspectionStarted)
+  }));
+}
+
+async function fetchInspectorAssignmentsPostgres(name){
+  const params=new URLSearchParams({
+    date:todayChicagoISO(),
+    employee:name,
+    role:"inspector",
+    t:String(Date.now())
+  });
+
+  const url=`/api/v2/rooms?${params.toString()}`;
+  const data=window.OSResilience
+    ? await OSResilience.fetchJson(url,{cache:"no-store"},{timeoutMs:7000,retries:1})
+    : await fetch(url,{cache:"no-store",headers:{"Accept":"application/json"}}).then(async response=>{
+        const body=await response.json().catch(()=>({}));
+        if(!response.ok)throw new Error(body.message||`HTTP ${response.status}`);
+        return body;
+      });
+
+  if(!data.ok)throw new Error(data.message||"No se pudieron cargar las inspecciones");
+
+  return{
+    ok:true,
+    source:"postgres",
+    inspector:name,
+    units:normalizePostgresInspectorRooms(data)
+  };
+}
+
+async function fetchInspectorAssignmentsFallback(code){
+  const url=`/inspector-assignments?t=${Date.now()}`;
+  const data=window.OS?.api?.get
+    ? await OS.api.get(url)
+    : await fetch(url,{cache:"no-store"}).then(async response=>{
+        const body=await response.json();
+        if(!response.ok)throw new Error(body.message||`Error ${response.status}`);
+        return body;
+      });
+
+  if(!data.ok){
+    throw new Error(data.message||"No se pudieron cargar las inspecciones");
+  }
+
+  return{...data,source:"notion"};
+}
+
+let inspectorAssignmentsRequest=null;
+let inspectorHistoryRequest=null;
+let lastAssignmentsLoadedAt=0;
+let lastHistoryLoadedAt=0;
+const ASSIGNMENTS_FRESH_MS=15000;
+const HISTORY_FRESH_MS=15000;
+const PAGE_REFRESH_AFTER_MS=60000;
+
+// Estado local autoritativo durante la reconciliación PostgreSQL.
+// Evita que una respuesta vieja cambie TERMINAR de vuelta a COMENZAR.
+const pendingInspectorActions=new Map();
+const PENDING_ACTION_TTL_MS=20000;
+
+function inspectorUnitKey(unit){
+  return String(unit||"").trim().toUpperCase();
+}
+
+function rememberInspectorAction(action,unit){
+  pendingInspectorActions.set(inspectorUnitKey(unit),{
+    action,
+    savedAt:Date.now()
+  });
+}
+
+function reconcilePendingInspectorAction(incoming){
+  const key=inspectorUnitKey(incoming?.unit);
+  const pending=pendingInspectorActions.get(key);
+  if(!pending)return incoming;
+
+  if(Date.now()-pending.savedAt>PENDING_ACTION_TTL_MS){
+    pendingInspectorActions.delete(key);
+    return incoming;
+  }
+
+  const status=String(incoming?.status||"").toLowerCase();
+
+  if(pending.action==="PRE_INSPECTION_START"){
+    if(incoming.preInspectionStarted===true){
+      pendingInspectorActions.delete(key);
+    }else if(!incoming.preInspection){
+      incoming.preInspectionStarted=true;
+    }
+  }
+
+  if(pending.action==="PRE_INSPECTION_COMPLETE"){
+    if(incoming.preInspection===true){
+      pendingInspectorActions.delete(key);
+    }else{
+      incoming.preInspectionStarted=false;
+      incoming.preInspection=true;
+    }
+  }
+
+  if(pending.action==="INSPECTION_START"){
+    if(status.includes("inspection started")){
+      pendingInspectorActions.delete(key);
+    }else if(!status.includes("ready")){
+      incoming.status="Inspection Started";
+    }
+  }
+
+  if(pending.action==="READY_GUEST"){
+    if(status.includes("ready")){
+      pendingInspectorActions.delete(key);
+    }else{
+      incoming.status="Ready for Guest";
+    }
+  }
+
+  return incoming;
+}
+
+function normalizeRole(role){return String(role||"").trim().toLowerCase()}function canInspect(role){return["inspector","cleaner / inspector","inspector / cleaner","dispatch / inspector","admin","manager","owner","company owner"].includes(normalizeRole(role))}
+function setupDate(){const now=new Date(),day=String(now.getDate()).padStart(2,"0"),text=now.toLocaleDateString("es-US",{month:"short",day:"numeric",year:"numeric"});document.getElementById("dateDay").innerText=day;document.getElementById("dateText").innerText=text}
+async function waitForOSUser(){return new Promise(resolve=>{let tries=0;const timer=setInterval(()=>{tries++;if(window.OS&&OS.user){clearInterval(timer);resolve(OS.user);return}if(tries>30){clearInterval(timer);resolve(null)}},100)})}
+async function bootInspectorPanel(){
+  setupDate();
+
+  const savedName=String(
+    localStorage.getItem("employeeName")||
+    localStorage.getItem("inspectorName")||
+    ""
+  ).trim();
+
+  const savedRole=String(
+    localStorage.getItem("employeeRole")||
+    ""
+  ).trim();
+
+  const user=await waitForOSUser();
+
+  if(!user){
+    location.href="/launch";
+    return;
+  }
+
+  const role=user.role||savedRole;
+
+  if(!canInspect(role)){
+    location.href="/launch";
+    return;
+  }
+
+  const name=String(user.name||savedName||"").trim();
+
+  if(!name){
+    location.href="/launch";
+    return;
+  }
+  currentInspectorCode="session";
+
+  if(name){
+    currentInspectorName=name;
+    document.getElementById("name").value=name;
+    localStorage.setItem("employeeName",name);
+    setInspectorDisplayName(name);
+  }
+
+  document.getElementById("accessCard").classList.add("hidden");
+  await loadInspectorAssignments(false);
+}
+function setInspectorDisplayName(name){const safe=name||"Inspector";document.getElementById("heroInspectorName").innerText=safe;document.getElementById("inspectorName").innerText=`Inspector: ${safe}`}
+function escapeHtml(v){return String(v||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;")}function safeJsString(v){return String(v||"").replace(/\\/g,"\\\\").replace(/'/g,"\\'")}function truthy(v){if(v===true)return true;return["true","yes","si","sí","done","complete","completed","checked","out"].includes(String(v||"").trim().toLowerCase())}function getItemValue(item,names){for(const n of names){if(item&&item[n]!==undefined&&item[n]!==null)return item[n]}return""}function isGuestOut(item){return truthy(getItemValue(item,["guestOut","Guest Out","guest_out","guestout","isGuestOut"]))}function isPreInspected(item){return truthy(getItemValue(item,["preInspection","Pre Inspection","preInspected","Pre Inspected","pre_inspection","preInspectionComplete","preInspectionCompleted"]))}function isPreInspectionStarted(item){return truthy(getItemValue(item,["preInspectionStarted","Pre Inspection Started","pre_inspection_started"]))}function cleanStatus(item){return String(item?.status||"").toLowerCase()}
+function classifyInspectionUnit(item){
+  const status=cleanStatus(item);
+
+  if(status.includes("ready")){
+    return "completed";
+  }
+
+  if(status.includes("inspection started")){
+    return "final";
+  }
+
+  if(status.includes("cleaned") || status.includes("awaiting")){
+    return "final";
+  }
+
+  if(isGuestOut(item) && !isPreInspected(item)){
+    return "pre";
+  }
+
+  return "general";
+}
+function getUnitState(item){
+  const group=classifyInspectionUnit(item);
+  const status=cleanStatus(item);
+
+  if(group==="completed"){
+    return{
+      cardClass:"ready",
+      title:"Completada",
+      action:"Completada",
+      footer:"Ready for Guest",
+      actionType:null,
+      circle:"full"
+    };
+  }
+
+  if(group==="final"){
+    if(status.includes("inspection started")){
+      return{
+        cardClass:"active",
+        title:"En inspección",
+        action:"Terminar",
+        footer:"Inspección iniciada",
+        actionType:"READY_GUEST",
+        circle:"half"
+      };
+    }
+
+    return{
+      cardClass:"final",
+      title:"Para inspeccionar",
+      action:"Comenzar",
+      footer:"Limpieza terminada",
+      actionType:"INSPECTION_START",
+      circle:"empty"
+    };
+  }
+
+  if(group==="pre"){
+    if(isPreInspectionStarted(item)){
+      return{
+        cardClass:"active",
+        title:"Pre inspección",
+        action:"Terminar",
+        footer:"Pre inspección iniciada",
+        actionType:"PRE_INSPECTION_COMPLETE",
+        circle:"half"
+      };
+    }
+
+    return{
+      cardClass:"pre",
+      title:"Pre inspección",
+      action:"Comenzar",
+      footer:"Guest Out",
+      actionType:"PRE_INSPECTION_START",
+      circle:"empty"
+    };
+  }
+
+  return{
+    cardClass:"general",
+    title:"Asignada",
+    action:"Ver",
+    footer:"En limpieza o esperando Guest Out",
+    actionType:null,
+    circle:"empty"
+  };
+}
+function getBuildingName(unit){
+  const raw=String(unit||"").trim().toUpperCase();
+
+  const explicitBuilding=raw.match(/(?:-|–|—)\s*([A-Z])\s*$/);
+  if(explicitBuilding){
+    return `Edificio ${explicitBuilding[1]}`;
+  }
+
+  const roomWithBuilding=raw.match(/^\s*\d{2,4}[A-Z+\s]*.*?\s([A-Z])\s*$/);
+  if(roomWithBuilding){
+    return `Edificio ${roomWithBuilding[1]}`;
+  }
+
+  return "Casas";
+}
+function updateStats(units){
+  const pre=units.filter(item=>classifyInspectionUnit(item)==="pre").length;
+  const final=units.filter(item=>classifyInspectionUnit(item)==="final").length;
+  const completed=units.filter(item=>classifyInspectionUnit(item)==="completed").length;
+  const total=units.length;
+  const percent=total?Math.round((completed/total)*100):0;
+
+  document.getElementById("statPre").innerText=pre;
+  document.getElementById("statFinal").innerText=final;
+  document.getElementById("statGeneral").innerText=total;
+  document.getElementById("statCompleted").innerText=completed;
+  document.getElementById("todayProgressText").innerText=`${completed} de ${total} completadas`;
+  document.getElementById("todayProgressFill").style.width=`${percent}%`;
+}
+function setActiveTab(tab){
+  activeTab=tab;
+
+  document.querySelectorAll(".tab-btn").forEach(button=>{
+    button.classList.remove("active");
+  });
+
+  const activeButton=document.getElementById(`tab-${tab}`);
+  if(activeButton){
+    activeButton.classList.add("active");
+  }
+
+  if(tab==="general"){
+    collapsedBuildings={};
+    lastUnits.forEach(item=>{
+      collapsedBuildings[getBuildingName(item.unit)]=true;
+    });
+  }
+
+  renderAssignments();
+}
+async function loadInspectorAssignments(silent=false,forceRefresh=false){
+  if(inspectorAssignmentsRequest){
+    return inspectorAssignmentsRequest;
+  }
+
+  const y=scrollY;
+  const code="session";
+  currentInspectorCode=code;
+  document.getElementById("accessCard").classList.add("hidden");
+
+  if(!currentInspectorName){
+    window.location.replace("/launch");
+    return;
+  }
+
+  const cacheIsFresh=
+    !forceRefresh &&
+    lastUnits.length>0 &&
+    Date.now()-lastAssignmentsLoadedAt<ASSIGNMENTS_FRESH_MS;
+
+  if(cacheIsFresh){
+    updateStats(lastUnits);
+    renderAssignments();
+    return;
+  }
+
+  // No borres las tarjetas durante una actualización. Mostrar "Cargando..."
+  // solamente en la primera entrada evita el parpadeo de toda la pantalla.
+  if(!silent && lastUnits.length===0){
+    document.getElementById("assignments").innerHTML=
+      "<div class='empty'>Cargando inspecciones desde PostgreSQL...</div>";
+  }
+
+  inspectorAssignmentsRequest=(async()=>{
+    try{
+      let data=null;
+      let loginName=
+        currentInspectorName||
+        window.OS?.user?.name||
+        localStorage.getItem("employeeName")||
+        "";
+
+      if(!loginName){
+        const identity=await fetchInspectorAssignmentsFallback(code);
+        loginName=identity.inspector||"";
+        currentInspectorName=loginName;
+        localStorage.setItem("employeeName",loginName);
+      }
+
+      try{
+        data=await fetchInspectorAssignmentsPostgres(loginName);
+        inspectorDataSource="postgres";
+      }catch(postgresError){
+        console.warn("PostgreSQL no disponible. Usando fallback:",postgresError.message);
+        data=await fetchInspectorAssignmentsFallback(code);
+        inspectorDataSource="notion";
+      }
+
+      currentInspectorName=data.inspector||loginName||currentInspectorName||"";
+      document.getElementById("name").value=currentInspectorName;
+      setInspectorDisplayName(currentInspectorName);
+
+      const nameLabel=document.getElementById("inspectorName");
+      if(nameLabel){
+        nameLabel.innerText=
+          `${currentInspectorName} · ${
+            inspectorDataSource==="postgres"?"PostgreSQL":"Fallback Notion"
+          }`;
+      }
+
+      const incomingUnits=(data.units||[]).map(reconcilePendingInspectorAction);
+
+      incomingUnits.forEach(incoming=>{
+        const local=lastUnits.find(existing=>
+          String(existing.id||existing.unit)===String(incoming.id||incoming.unit)
+        );
+
+        if(local?.preInspectionStarted&&!incoming.preInspectionStarted&&!incoming.preInspection){
+          incoming.preInspectionStarted=true;
+        }
+
+        if(
+          String(local?.status||"").toLowerCase().includes("inspection started")&&
+          !String(incoming.status||"").toLowerCase().includes("inspection started")&&
+          !String(incoming.status||"").toLowerCase().includes("ready")
+        ){
+          incoming.status="Inspection Started";
+        }
+      });
+
+      lastUnits=incomingUnits;
+      lastAssignmentsLoadedAt=Date.now();
+      window.OSResilience?.saveSnapshot(`inspector:${currentInspectorName.toLowerCase()}`, {
+        ...data, units:incomingUnits, inspector:currentInspectorName
+      });
+
+      if(activeTab==="general"){
+        collapsedBuildings={};
+        lastUnits.forEach(item=>{
+          collapsedBuildings[getBuildingName(item.unit)]=true;
+        });
+      }
+
+      updateStats(lastUnits);
+      renderAssignments();
+
+      if(inspectorDataSource==="notion"&&!silent){
+        showBigStatus(
+          "PostgreSQL no respondió. Usando Notion temporalmente.",
+          "error"
+        );
+      }
+
+      if(!silent){
+        loadMyHistory(false);
+      }
+
+      if(silent){
+        requestAnimationFrame(()=>scrollTo(0,y));
+      }
+
+      return data;
+    }catch(error){
+      console.error("Error cargando inspecciones:",error);
+
+      const snapshot=window.OSResilience?.loadSnapshot(`inspector:${currentInspectorName.toLowerCase()}`);
+      if(snapshot?.units?.length){
+        lastUnits=snapshot.units;
+        updateStats(lastUnits);
+        renderAssignments();
+        if(!silent)showBigStatus("Mostrando la última información guardada.","error");
+        return {...snapshot,cached:true,offline:true};
+      }
+      if(!silent){
+        document.getElementById("assignments").innerHTML='<div class="empty">Reconectando… Tus inspecciones aparecerán automáticamente.</div>';
+        showBigStatus("No pudimos actualizar en este momento. Intentaremos de nuevo.","error");
+      }
+      return null;
+    }finally{
+      inspectorAssignmentsRequest=null;
+    }
+  })();
+
+  return inspectorAssignmentsRequest;
+}
+function renderAssignments(){const c=document.getElementById("assignments");if(!lastUnits.length){c.innerHTML="<div class='empty'>No tienes unidades asignadas hoy.</div>";return}const visible=lastUnits.filter(item=>{
+  const group=classifyInspectionUnit(item);
+
+  if(activeTab==="general"){
+    return true;
+  }
+
+  return group===activeTab;
+});
+if(!visible.length){c.innerHTML="<div class='empty'>No hay unidades en esta sección.</div>";return}const groups={};visible.forEach(i=>{const b=getBuildingName(i.unit);if(!groups[b])groups[b]=[];groups[b].push(i)});let html="";Object.keys(groups).sort().forEach(building=>{const closed=collapsedBuildings[building]===true,units=groups[building];html+=`<div class="building-group ${closed?"closed":""}"><div class="building-header" onclick="toggleBuilding('${safeJsString(building)}')"><strong>${escapeHtml(building)}</strong><span>${units.length} units</span></div><div class="building-body">`;units.forEach(item=>{const st=getUnitState(item),id=String(item.unit||"").replace(/[^a-zA-Z0-9]/g,""),guest=isGuestOut(item),pre=isPreInspected(item),urgent=String(item.priority||"").toLowerCase()==="urgent",cls=`${st.cardClass} ${urgent?"urgent":""}`;html+=`<div class="inspection-card ${cls}" id="card-${id}" onclick="selectAssignment('${safeJsString(item.unit)}')"><div class="inspection-layout"><div class="inspection-content"><div class="room-title">${escapeHtml(item.unit)}</div><div class="meta-row">${guest?`<span class="meta-pill guest">Guest Out</span>`:""}${pre?`<span class="meta-pill pre">Pre-Inspected</span>`:""}${st.cardClass==="ready"?`<span class="meta-pill ready">Ready</span>`:""}${urgent?`<span class="meta-pill" style="background:#fee2e2;color:#991b1b;border-color:#fecaca;">Urgent</span>`:""}</div></div><div class="action-panel" onclick="quickInspectionAction(event,'${st.actionType||""}','${safeJsString(item.unit)}')"><span class="action-circle ${st.circle}">
+  <svg viewBox="0 0 48 48" aria-hidden="true">
+    <circle class="ring-track" cx="24" cy="24" r="18" pathLength="100"></circle>
+    <circle class="ring-value" cx="24" cy="24" r="18" pathLength="100"></circle>
+  </svg>
+</span><span class="tap-label">${escapeHtml(st.action)}</span></div></div><div class="inspection-footer"><span>${escapeHtml(st.footer)}</span><div class="footer-right"><strong class="status-tag">${escapeHtml(st.title)}</strong><button class="inline-report" title="Reporte" onclick="openReportForUnit(event,'${safeJsString(item.unit)}')">✎</button></div></div></div>`});html+=`</div></div>`});c.innerHTML=html;if(selectedUnit)markSelectedCard(selectedUnit)}
+function toggleBuilding(b){collapsedBuildings[b]=!collapsedBuildings[b];renderAssignments()}function markSelectedCard(unit){document.querySelectorAll(".inspection-card").forEach(c=>c.classList.remove("selected"));const card=document.getElementById("card-"+String(unit||"").replace(/[^a-zA-Z0-9]/g,""));if(card)card.classList.add("selected")}function selectAssignment(unit){
+  selectedUnit=unit;
+  document.getElementById("unit").value=unit;
+  document.getElementById("selectedUnitLabel").innerText=unit;
+  markSelectedCard(unit);
+
+  if(Date.now()-lastHistoryLoadedAt>HISTORY_FRESH_MS){
+    loadMyHistory(true);
+  }
+}
+function setButtonsDisabled(d){document.querySelectorAll(".action-btn").forEach(b=>b.disabled=d)}function showBigStatus(m,t){const b=document.getElementById("bigStatus");b.className="";b.classList.add(t);b.innerText=m;b.style.display="block";if(t!=="loading")setTimeout(()=>b.style.display="none",3300)}function playBeep(type){try{const A=window.AudioContext||window.webkitAudioContext,a=new A(),o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.type="sine";o.frequency.value=type==="success"?880:220;g.gain.setValueAtTime(.12,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+.25);o.start(a.currentTime);o.stop(a.currentTime+.25)}catch(e){}}function vibratePhone(type){if(navigator.vibrate)navigator.vibrate(type==="success"?[90,40,90]:[240,80,240])}
+function setInspectionCardLoading(unit,loading){
+  const id="card-"+String(unit||"").replace(/[^a-zA-Z0-9]/g,"");
+  const card=document.getElementById(id);
+  if(!card)return;
+  card.classList.toggle("card-loading",!!loading);
+  const circle=card.querySelector(".action-circle");
+
+  if(circle){
+    if(loading){
+      circle.dataset.previousState=
+        circle.classList.contains("full") ? "full" :
+        circle.classList.contains("half") ? "half" :
+        "empty";
+
+      circle.classList.remove("empty","half","full");
+      circle.classList.add("loading");
+    }else{
+      const previousState=circle.dataset.previousState||"empty";
+      circle.classList.remove("loading","empty","half","full");
+      circle.classList.add(previousState);
+      delete circle.dataset.previousState;
+    }
+  }
+}
+async function quickInspectionAction(event,action,unit){if(event){event.stopPropagation();event.preventDefault()}if(!action||!unit||isSending)return;selectAssignment(unit);await sendInspectionAction(action)}
+function updateCircleVisual(unit,state,label){
+  const id="card-"+String(unit||"").replace(/[^a-zA-Z0-9]/g,"");
+  const card=document.getElementById(id);
+  if(!card)return;
+
+  const circle=card.querySelector(".action-circle");
+  const textLabel=card.querySelector(".tap-label");
+
+  if(circle){
+    circle.classList.remove("empty","half","full","loading");
+    void circle.offsetWidth;
+    circle.classList.add(state);
+  }
+
+  if(textLabel && label){
+    textLabel.innerText=label;
+  }
+}
+
+function applyLocalInspectorAction(action,unit){
+  const item=lastUnits.find(room=>String(room.unit||"")===String(unit||""));
+  if(!item)return;
+
+  // Conserva la pestaña actual. Al terminar una unidad, la tarjeta sale de
+  // esa sección, pero el inspector permanece exactamente donde estaba.
+  const tabBeforeAction=activeTab;
+
+  if(action==="PRE_INSPECTION_START"){
+    item.preInspectionStarted=true;
+  }
+
+  if(action==="PRE_INSPECTION_COMPLETE"){
+    item.preInspectionStarted=false;
+    item.preInspection=true;
+  }
+
+  if(action==="INSPECTION_START"){
+    item.status="Inspection Started";
+  }
+
+  if(action==="READY_GUEST"){
+    item.status="Ready for Guest";
+  }
+
+  activeTab=tabBeforeAction;
+  updateStats(lastUnits);
+
+  document.querySelectorAll(".tab-btn").forEach(button=>{
+    button.classList.remove("active");
+  });
+
+  const activeButton=document.getElementById(`tab-${activeTab}`);
+  if(activeButton){
+    activeButton.classList.add("active");
+  }
+
+  renderAssignments();
+}
+async function sendInspectionAction(action){
+  if(isSending)return;
+
+  let actionSucceeded=false;
+  const name=document.getElementById("name").value.trim()||currentInspectorName;
+  const unit=selectedUnit||document.getElementById("unit").value.trim().toUpperCase();
+
+  if(!name){
+    showBigStatus("Sesión no válida","error");
+    window.location.replace("/launch");
+    return;
+  }
+
+  if(!unit){
+    showBigStatus("Selecciona una unidad","error");
+    return;
+  }
+
+  const key=`${action}-${unit}-${name}`;
+  const now=Date.now();
+
+  if(key===lastSendKey&&now-lastSendTime<30000){
+    showBigStatus("Ya fue enviado. Espera unos segundos.","error");
+    playBeep("error");
+    vibratePhone("error");
+    return;
+  }
+
+  isSending=true;
+  lastSendKey=key;
+  lastSendTime=now;
+  setInspectionCardLoading(unit,true);
+  setButtonsDisabled(true);
+  document.getElementById("status").innerText="Enviando...";
+  showBigStatus("Enviando acción...","loading");
+
+  try{
+    const payload={action,unit,note:"",name,photoUrl:""};
+    const data=window.OSResilience
+      ? await OSResilience.postAction("/inspector-action",payload)
+      : window.OS?.api?.post
+        ? await OS.api.post("/inspector-action",payload)
+        : await fetch("/inspector-action",{
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify(payload)
+          }).then(async response=>{
+            const body=await response.json();
+            if(!response.ok)throw new Error(body.message||`Error ${response.status}`);
+            return body;
+          });
+
+    if(!data.success){
+      throw new Error(data.message||"No se pudo guardar la acción");
+    }
+
+    actionSucceeded=true;
+    document.getElementById("status").innerText=data.message||"Enviado";
+    showBigStatus(data.message||"Enviado correctamente","success");
+    playBeep("success");
+    vibratePhone("success");
+
+    // Evita que los eventos duplicados del servidor vuelvan a dibujar
+    // la pantalla mientras aplicamos el cambio local.
+    suppressInspectorRealtimeUntil=Date.now()+5000;
+    rememberInspectorAction(action,unit);
+    applyLocalInspectorAction(action,unit);
+    lastAssignmentsLoadedAt=Date.now();
+
+    // Actualiza solo el historial. Las habitaciones se mantienen localmente.
+    loadMyHistory(true,true);
+
+    // Una sola reconciliación silenciosa después de que PostgreSQL tenga tiempo
+    // de recibir el cambio, sin vaciar ni parpadear la lista.
+    setTimeout(()=>scheduleInspectorRealtimeRefresh(0),5200);
+  }catch(error){
+    document.getElementById("status").innerText="Reconectando…";
+    showBigStatus("No se perdió tu acción. Reintentando automáticamente…","loading");
+  }finally{
+    setInspectionCardLoading(unit,false);
+    isSending=false;
+    setButtonsDisabled(false);
+  }
+}
+function openReportForUnit(event,unit){if(event){event.stopPropagation();event.preventDefault()}selectAssignment(unit);document.getElementById("reportSheet").classList.remove("hidden");setTimeout(()=>document.getElementById("note").focus(),150)}function closeReportPanel(){document.getElementById("reportSheet").classList.add("hidden")}
+function addSelectedPhotos(){const input=document.getElementById("photoInput"),files=Array.from(input.files||[]);files.forEach(file=>{const key=`${file.name}-${file.size}-${file.lastModified}`;if(!selectedReportFiles.some(e=>`${e.name}-${e.size}-${e.lastModified}`===key))selectedReportFiles.push(file)});input.value="";previewPhotos()}function previewPhotos(){const p=document.getElementById("photoPreview");p.innerHTML="";selectedReportFiles.slice(0,12).forEach((file,i)=>{const url=URL.createObjectURL(file);p.innerHTML+=`<div style="position:relative;"><img src="${url}"><button type="button" onclick="removeSelectedPhoto(${i})" style="position:absolute;right:3px;top:3px;width:24px;height:24px;padding:0;border-radius:999px;background:#dc2626;font-size:12px;line-height:1;margin:0;">×</button></div>`});if(selectedReportFiles.length>12)p.innerHTML+=`<div class="muted">+${selectedReportFiles.length-12} fotos más</div>`}function removeSelectedPhoto(i){selectedReportFiles.splice(i,1);previewPhotos()}
+async function sendSmartReport(action){if(isSending)return;const name=document.getElementById("name").value.trim()||currentInspectorName,unit=selectedUnit||document.getElementById("unit").value.trim().toUpperCase(),message=document.getElementById("note").value.trim();if(!name){alert("Sesión no válida.");location.href="/launch";return}if(!unit){alert("Selecciona una unidad");return}if(!message&&!selectedReportFiles.length){alert("Escribe el mensaje del reporte o agrega fotos");return}const key=`${action}-${unit}-${name}-${message}-${selectedReportFiles.length}`,now=Date.now();if(key===lastSendKey&&now-lastSendTime<30000){showBigStatus("Ya fue enviado. Espera unos segundos.","error");playBeep("error");vibratePhone("error");return}isSending=true;lastSendKey=key;lastSendTime=now;setButtonsDisabled(true);showBigStatus("Subiendo reporte y fotos...","loading");try{const fd=new FormData();fd.append("unit",unit);fd.append("employee",name);fd.append("name",name);fd.append("role","Inspector");fd.append("action",action);fd.append("message",message);fd.append("note",message);fd.append("sourcePanel","Inspector Panel");selectedReportFiles.forEach(f=>fd.append("photos",f));const res=await fetch("/submit-report",{method:"POST",body:fd}),data=await res.json();if(data.success||data.ok){showBigStatus(data.message||"Reporte enviado correctamente","success");playBeep("success");vibratePhone("success");document.getElementById("note").value="";selectedReportFiles=[];document.getElementById("photoInput").value="";document.getElementById("photoPreview").innerHTML="";closeReportPanel();setTimeout(()=>loadMyHistory(true),500)}else{showBigStatus(data.message||data.error||"Error","error");playBeep("error");vibratePhone("error")}}catch(e){showBigStatus("Error: "+e.message,"error");playBeep("error");vibratePhone("error")}finally{isSending=false;setButtonsDisabled(false)}}
+async function loadMyHistory(silent=false,forceRefresh=false){
+  const name=document.getElementById("name").value.trim()||currentInspectorName;
+  const card=document.getElementById("historyCard");
+  const list=document.getElementById("historyList");
+
+  if(!name){
+    card.classList.add("hidden");
+    return;
+  }
+
+  if(inspectorHistoryRequest){
+    return inspectorHistoryRequest;
+  }
+
+  const cacheIsFresh=
+    !forceRefresh &&
+    Date.now()-lastHistoryLoadedAt<HISTORY_FRESH_MS &&
+    list.children.length>0;
+
+  if(cacheIsFresh){
+    return;
+  }
+
+  card.classList.remove("hidden");
+
+  if(!silent){
+    list.innerHTML="<div class='empty'>Cargando historial...</div>";
+  }
+
+  inspectorHistoryRequest=(async()=>{
+    try{
+      const params=new URLSearchParams({
+        employee:name,
+        role:"Inspector"
+      });
+
+      if(selectedUnit){
+        params.append("unit",selectedUnit);
+      }
+
+      const url=`/my-reports?${params.toString()}`;
+      const data=window.OS?.api?.get
+        ? await OS.api.get(url)
+        : await fetch(url).then(async response=>{
+            const body=await response.json();
+            if(!response.ok)throw new Error(body.message||`Error ${response.status}`);
+            return body;
+          });
+
+      const reports=data.reports||data.events||[];
+      lastHistoryLoadedAt=Date.now();
+
+      if(!reports.length){
+        list.innerHTML="<div class='empty'>Todavía no hay reportes enviados hoy.</div>";
+        return;
+      }
+
+      let html="";
+
+      reports.slice(0,20).forEach(item=>{
+        const time=item.timeDisplay||item.time||item.displayTime||"";
+        const unit=item.unit||"";
+        const action=item.aiCategory||item.category||item.action||"Reporte";
+        const msg=item.message||item.originalMessage||item.note||item.aiSummary||item.summary||"";
+        const sent=item.hotsosSent
+          ?"HotSOS enviado"
+          :(item.needsHotSOS?"Pendiente HotSOS":"Recibido");
+        const photos=item.photos||[];
+
+        html+=`<div class="history-item">
+          <div class="history-top">
+            <span>${escapeHtml(time)} · ${escapeHtml(unit)}</span>
+            <span>${escapeHtml(sent)}</span>
+          </div>
+          <div class="muted">${escapeHtml(action)}</div>
+          ${msg?`<div class="history-note">${escapeHtml(msg)}</div>`:""}
+          ${photos.length?`<div class="photo-preview" style="margin-top:10px;">${
+            photos.map(photo=>{
+              const url=photo.url||photo.photoUrl||"";
+              return url?`<a href="${escapeHtml(url)}" target="_blank" rel="noopener"><img src="${escapeHtml(url)}"></a>`:"";
+            }).join("")
+          }</div>`:""}
+        </div>`;
+      });
+
+      list.innerHTML=html;
+    }catch(error){
+      console.error("Error cargando historial:",error);
+
+      if(!silent){
+        list.innerHTML="<div class='empty'>No se pudo cargar el historial.</div>";
+      }
+    }finally{
+      inspectorHistoryRequest=null;
+    }
+  })();
+
+  return inspectorHistoryRequest;
+}
+function openSettingsMenu(){document.getElementById("settingsSheet").classList.remove("hidden")}function closeSettingsMenu(){document.getElementById("settingsSheet").classList.add("hidden")}
+document.addEventListener("DOMContentLoaded",bootInspectorPanel);
+document.addEventListener("visibilitychange",()=>{
+  if(
+    !document.hidden&&
+    currentInspectorCode&&
+    Date.now()-lastAssignmentsLoadedAt>PAGE_REFRESH_AFTER_MS
+  ){
+    scheduleInspectorRealtimeRefresh();
+  }
+});
+
+window.addEventListener("focus",()=>{
+  if(
+    currentInspectorCode&&
+    Date.now()-lastAssignmentsLoadedAt>PAGE_REFRESH_AFTER_MS
+  ){
+    scheduleInspectorRealtimeRefresh();
+  }
+});
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"){
+    closeReportPanel();
+    closeSettingsMenu();
+  }
+});
+
+function mergeInspectorRoomUpdate(update){
+  if(!update || !update.unit)return false;
+
+  const itemIndex=lastUnits.findIndex(item=>{
+    return String(item.id||"")===String(update.id||update.pageId||"") ||
+           String(item.unit||"")===String(update.unit||"");
+  });
+
+  if(itemIndex<0)return false;
+
+  lastUnits[itemIndex]={
+    ...lastUnits[itemIndex],
+    ...update,
+  };
+
+  updateStats(lastUnits);
+  renderAssignments();
+  return true;
+}
+
+let inspectorSocket=null;
+let inspectorRealtimeTimer=null;
+let inspectorRealtimeRunning=false;
+
+async function refreshInspectorRealtime(){
+  if(
+    !currentInspectorCode||
+    isSending||
+    inspectorRealtimeRunning||
+    Date.now()<suppressInspectorRealtimeUntil
+  ){
+    return;
+  }
+
+  inspectorRealtimeRunning=true;
+
+  try{
+    await loadInspectorAssignments(true,true);
+  }catch(error){
+    console.error("Error actualizando inspecciones en tiempo real:",error);
+  }finally{
+    inspectorRealtimeRunning=false;
+  }
+}
+
+function scheduleInspectorRealtimeRefresh(delay=700){
+  clearTimeout(inspectorRealtimeTimer);
+
+  inspectorRealtimeTimer=setTimeout(()=>{
+    refreshInspectorRealtime();
+  },delay);
+}
+
+function handleInspectorRoomUpdate(update){
+  if(Date.now()<suppressInspectorRealtimeUntil)return;
+
+  // Los cambios pequeños se mezclan localmente sin reconstruir toda la pantalla.
+  if(!mergeInspectorRoomUpdate(update)){
+    scheduleInspectorRealtimeRefresh();
+  }
+}
+
+function attachInspectorSocket(){
+  if(inspectorSocketAttached)return;
+
+  const socket=window.OS?.socket||window.socket||io();
+  if(!socket)return;
+
+  inspectorSocketAttached=true;
+  inspectorSocket=socket;
+
+  let lastRealtimeSignalAt=0;
+  const refresh=payload=>{
+    if(payload?.date&&payload.date!==todayChicagoISO())return;
+    const now=Date.now();
+    if(now-lastRealtimeSignalAt<900)return;
+    lastRealtimeSignalAt=now;
+    scheduleInspectorRealtimeRefresh(900);
+  };
+
+  // Quita listeners anteriores por seguridad y registra exactamente uno.
+  socket.off?.("assignments-updated",refresh);
+  socket.off?.("rooms-updated",refresh);
+  socket.off?.("room-updated",handleInspectorRoomUpdate);
+  socket.off?.("rooms-postgres-synced",refresh);
+
+  socket.on("assignments-updated",refresh);
+  socket.on("rooms-updated",refresh);
+  socket.on("room-updated",handleInspectorRoomUpdate);
+  socket.on("rooms-postgres-synced",refresh);
+  socket.on("data-api-updated",payload=>{
+    if(payload?.module&&payload.module!=="rooms"&&payload.module!=="assignments")return;
+    refresh(payload);
+  });
+}
+
+window.addEventListener("os-ready",attachInspectorSocket,{once:true});
+if(document.readyState==="loading"){
+  document.addEventListener("DOMContentLoaded",attachInspectorSocket,{once:true});
+}else{
+  attachInspectorSocket();
+}
+</script>
+
+<script src="/js/push-notifications.js"></script>
+<script src="/js/care-theme.js?v=1"></script></body>
+</html>

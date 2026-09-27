@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Master Operations</title>
+
+<style>
+body{font-family:Arial,sans-serif;background:#f4f4f4;margin:0;padding:20px;}
+h1{text-align:center;margin-bottom:10px;}
+.topbar{text-align:center;margin-bottom:18px;color:#555;font-size:14px;}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.stat{background:white;padding:15px;border-radius:12px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.08);font-weight:bold;}
+.stat-number{font-size:26px;margin-bottom:5px;}
+.filters{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:18px;}
+.filter-btn{padding:12px;border:none;border-radius:10px;background:#111827;color:white;font-weight:bold;cursor:pointer;}
+.view-buttons{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px;}
+.search-box{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:15px;}
+.search-box input{padding:12px;border-radius:10px;border:1px solid #ccc;font-size:16px;}
+.units{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;}
+.unit{background:white;padding:15px;border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.08);border-left:8px solid #d1d5db;cursor:pointer;}
+.arrival{border-left-color:#dc2626;}
+.urgent{animation:blink 1s infinite;border-left-color:#dc2626;}
+.cleaning{border-left-color:#7c3aed;}
+.inspection{border-left-color:#f59e0b;}
+.ready{border-left-color:#16a34a;}
+@keyframes blink{0%{opacity:1}50%{opacity:.55}100%{opacity:1}}
+.small{font-size:13px;color:#555;margin:3px 0;}
+.badge{display:inline-block;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:bold;margin-top:6px;background:#e5e7eb;}
+.badge-red{background:#fee2e2;color:#991b1b;}
+.badge-green{background:#dcfce7;color:#166534;}
+.badge-orange{background:#ffedd5;color:#9a3412;}
+.badge-purple{background:#ede9fe;color:#5b21b6;}
+.actions{margin-top:12px;display:grid;gap:7px;}
+.actions button{width:100%;padding:10px;border:none;border-radius:10px;color:white;font-weight:bold;cursor:pointer;}
+.btn-start{background:#7c3aed;}.btn-done{background:#dc2626;}.btn-inspection{background:#f59e0b;}.btn-ready{background:#16a34a;}.btn-issue{background:#111827;}
+.loading{text-align:center;font-weight:bold;color:#555;}
+#detailOverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:9998;}
+#detailPanel{display:none;position:fixed;top:0;right:0;width:420px;max-width:95%;height:100%;background:white;z-index:9999;padding:20px;overflow:auto;box-shadow:-4px 0 20px rgba(0,0,0,.25);box-sizing:border-box;}
+.close-btn{background:#111827;color:white;border:none;border-radius:10px;padding:10px 14px;float:right;cursor:pointer;}
+.detail-photo{width:100%;max-width:320px;border-radius:12px;margin:8px 0;}
+.dispatch-board{display:grid;grid-template-columns:repeat(5,minmax(220px,1fr));gap:12px;overflow-x:auto;}
+.dispatch-column{background:#e5e7eb;border-radius:14px;padding:10px;min-height:300px;}
+.dispatch-column h3{text-align:center;font-size:15px;margin:8px 0 12px;}
+.dispatch-card{background:white;border-radius:12px;padding:12px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.12);cursor:pointer;border-left:6px solid #9ca3af;}
+.dispatch-card.arrival{border-left-color:#dc2626;}.dispatch-card.urgent{animation:blink 1s infinite;border-left-color:#dc2626;}.dispatch-card.cleaning{border-left-color:#7c3aed;}.dispatch-card.inspection{border-left-color:#f59e0b;}.dispatch-card.ready{border-left-color:#16a34a;}
+@media(max-width:900px){.dispatch-board{grid-template-columns:repeat(5,220px);}}
+@media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr);}.filters{grid-template-columns:1fr 1fr;}.search-box{grid-template-columns:1fr;}}
+</style>
+<link rel="stylesheet" href="/css/responsive-pages.css?v=full-page-v1">
+</head>
+<body>
+
+<h1>🏨 Master Operations</h1>
+<div class="topbar" id="todayLabel">Cargando...</div>
+
+<div class="stats">
+  <div class="stat"><div class="stat-number" id="totalUnits">0</div><div>Total</div></div>
+  <div class="stat"><div class="stat-number" id="arrivalUnits">0</div><div>Arrivals</div></div>
+  <div class="stat"><div class="stat-number" id="inspectionUnits">0</div><div>Inspection</div></div>
+  <div class="stat"><div class="stat-number" id="readyUnits">0</div><div>Ready</div></div>
+</div>
+
+<div class="filters">
+  <button class="filter-btn" onclick="setFilter('ALL')">Todas</button>
+  <button class="filter-btn" onclick="setFilter('ARRIVAL')">Arrivals</button>
+  <button class="filter-btn" onclick="setFilter('INSPECTION')">Inspección</button>
+  <button class="filter-btn" onclick="setFilter('READY')">Ready</button>
+  <button class="filter-btn" onclick="setFilter('URGENT')">Urgentes</button>
+</div>
+
+<div class="view-buttons">
+  <button class="filter-btn" onclick="showCardView()">📋 Vista Tarjetas</button>
+  <button class="filter-btn" onclick="showDispatchView()">🧭 Vista Dispatch</button>
+</div>
+
+<div class="search-box">
+  <input id="searchUnit" placeholder="Buscar unidad..." oninput="renderCurrentView()">
+  <input id="filterCleaner" placeholder="Filtrar por limpiador..." oninput="renderCurrentView()">
+  <input id="filterInspector" placeholder="Filtrar por inspector..." oninput="renderCurrentView()">
+</div>
+
+<div id="dispatchBoard" class="dispatch-board" style="display:none;"></div>
+<div id="units" class="units"><div class="loading">Cargando unidades...</div></div>
+
+<div id="detailOverlay" onclick="closeDetail()"></div>
+<div id="detailPanel"><button class="close-btn" onclick="closeDetail()">✖</button><div id="detailContent">Cargando...</div></div>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+let allUnits = [];
+let currentFilter = "ALL";
+let isLoading = false;
+let currentView = "cards";
+let draggedUnitData = null;
+
+function escapeHtml(value){return String(value||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");}
+function encodeValue(value){return encodeURIComponent(String(value||""));}
+function cleanSearch(value){return String(value||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();}
+function formatStatus(status){return status||"No Status";}
+
+function getUnitClass(unit){
+  if(unit.priority==="Urgent") return "urgent";
+  if(unit.status==="Ready for Guest") return "ready";
+  if(unit.status==="Cleaned - Awaiting Inspection") return "inspection";
+  if(unit.status==="Inspection Started") return "inspection";
+  if(unit.status==="In Progress") return "cleaning";
+  if(unit.arrival) return "arrival";
+  return "";
+}
+
+function getStatusBadge(unit){
+  if(unit.priority==="Urgent") return `<span class="badge badge-red">🚨 URGENT</span>`;
+  if(unit.status==="Ready for Guest") return `<span class="badge badge-green">✅ Ready</span>`;
+  if(unit.status==="Cleaned - Awaiting Inspection") return `<span class="badge badge-orange">🟠 Awaiting Inspection</span>`;
+  if(unit.status==="Inspection Started") return `<span class="badge badge-purple">🔍 Inspection Started</span>`;
+  if(unit.status==="In Progress") return `<span class="badge badge-purple">🧹 In Progress</span>`;
+  if(unit.arrival) return `<span class="badge badge-red">ARRIVAL</span>`;
+  return `<span class="badge">Normal</span>`;
+}
+
+function setFilter(filter){currentFilter=filter;renderCurrentView();}
+
+function unitMatchesFilter(unit){
+  if(currentFilter==="ALL") return true;
+  if(currentFilter==="ARRIVAL") return !!unit.arrival;
+  if(currentFilter==="URGENT") return unit.priority==="Urgent";
+  if(currentFilter==="READY") return unit.status==="Ready for Guest";
+  if(currentFilter==="INSPECTION") return unit.status==="Cleaned - Awaiting Inspection" || unit.status==="Inspection Started";
+  return true;
+}
+
+function getFilteredUnits(){
+  const searchUnit=cleanSearch(document.getElementById("searchUnit")?.value||"");
+  const filterCleaner=cleanSearch(document.getElementById("filterCleaner")?.value||"");
+  const filterInspector=cleanSearch(document.getElementById("filterInspector")?.value||"");
+  return allUnits.filter((unit)=>{
+    const unitText=cleanSearch(unit.unit);
+    const cleanerText=cleanSearch(unit.cleaner);
+    const inspectorText=cleanSearch(unit.inspector);
+    return (!searchUnit || unitText.includes(searchUnit)) && (!filterCleaner || cleanerText.includes(filterCleaner)) && (!filterInspector || inspectorText.includes(filterInspector)) && unitMatchesFilter(unit);
+  });
+}
+
+function renderCurrentView(){currentView==="dispatch" ? renderDispatchBoard() : renderUnits();}
+
+async function loadMaster(){
+  if(isLoading) return;
+  isLoading=true;
+  try{
+    const response=await fetch("/master-units");
+    const data=await response.json();
+    if(!data.ok){
+      document.getElementById("units").innerHTML=`<div class="loading">Error: ${escapeHtml(data.message||"No se pudo cargar")}</div>`;
+      return;
+    }
+    allUnits=data.units||[];
+    document.getElementById("todayLabel").innerText=`Fecha: ${data.date||""} | Unidades: ${data.count||0}`;
+    updateStats();
+    renderCurrentView();
+  }catch(error){
+    document.getElementById("units").innerHTML=`<div class="loading">Error cargando unidades</div>`;
+  }finally{isLoading=false;}
+}
+
+function updateStats(){
+  const arrivals=allUnits.filter(unit=>unit.arrival).length;
+  const inspection=allUnits.filter(unit=>unit.status==="Cleaned - Awaiting Inspection"||unit.status==="Inspection Started").length;
+  const ready=allUnits.filter(unit=>unit.status==="Ready for Guest").length;
+  document.getElementById("totalUnits").innerText=allUnits.length;
+  document.getElementById("arrivalUnits").innerText=arrivals;
+  document.getElementById("inspectionUnits").innerText=inspection;
+  document.getElementById("readyUnits").innerText=ready;
+}
+
+function renderUnits(){
+  const container=document.getElementById("units");
+  const visibleUnits=getFilteredUnits();
+  if(visibleUnits.length===0){container.innerHTML=`<div class="loading">No hay unidades para este filtro.</div>`;return;}
+  container.innerHTML="";
+  visibleUnits.forEach(unit=>{
+    const unitClass=getUnitClass(unit);
+    const encodedUnit=encodeValue(unit.unit);
+    const encodedCleaner=encodeValue(unit.cleaner);
+    const encodedInspector=encodeValue(unit.inspector);
+    container.innerHTML+=`
+      <div class="unit ${unitClass}" onclick="openDetail('${encodedUnit}')">
+        <h3>${escapeHtml(unit.unit)}</h3>
+        <div class="small">Cleaner: ${escapeHtml(unit.cleaner||"-")}</div>
+        <div class="small">Inspector: ${escapeHtml(unit.inspector||"-")}</div>
+        <div class="small">Status: ${escapeHtml(formatStatus(unit.status))}</div>
+        ${getStatusBadge(unit)}
+        <div class="actions">
+          <button class="btn-start" onclick="event.stopPropagation(); masterAction('START','${encodedUnit}','${encodedCleaner}','cleaner')">🟢 Start Cleaning</button>
+          <button class="btn-done" onclick="event.stopPropagation(); masterAction('DONE','${encodedUnit}','${encodedCleaner}','cleaner')">🔴 Finish Cleaning</button>
+          <button class="btn-inspection" onclick="event.stopPropagation(); masterAction('INSPECTION_START','${encodedUnit}','${encodedInspector}','inspector')">🔍 Start Inspection</button>
+          <button class="btn-ready" onclick="event.stopPropagation(); masterAction('READY_GUEST','${encodedUnit}','${encodedInspector}','inspector')">✅ Ready for Guest</button>
+          <button class="btn-issue" onclick="event.stopPropagation(); reportIssue('${encodedUnit}','${encodedCleaner}')">⚠️ Report Problem</button>
+          <button class="btn-issue" onclick="event.stopPropagation(); updateUnitField('${encodedUnit}','priority','Urgent')">🚨 Marcar Urgent</button>
+          <button class="btn-ready" onclick="event.stopPropagation(); updateUnitField('${encodedUnit}','priority','Normal')">✅ Quitar Urgent</button>
+          <button class="btn-start" onclick="event.stopPropagation(); changeCleaner('${encodedUnit}')">👤 Cambiar Cleaner</button>
+          <button class="btn-inspection" onclick="event.stopPropagation(); changeInspector('${encodedUnit}')">🔍 Cambiar Inspector</button>
+        </div>
+      </div>`;
+  });
+}
+
+async function masterAction(action,encodedUnit,encodedName,role,silent=false){
+  const unit=decodeURIComponent(encodedUnit||"");
+  const name=decodeURIComponent(encodedName||"");
+  if(!unit){if(!silent) alert("No hay unidad seleccionada");return false;}
+  if(!name||name==="-"){if(!silent) alert("No hay persona asignada para esta acción");return false;}
+  const response=await fetch("/master-action",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action,unit,name,role,note:"Acción realizada desde App Maestra"})});
+  const data=await response.json();
+  if(data.ok){if(!silent){alert(data.message||"Acción completada");await loadMaster();}return true;}
+  if(!silent) alert(data.message||"Error");return false;
+}
+
+async function reportIssue(encodedUnit,encodedName){
+  const note=prompt("Describe el problema:");
+  if(!note) return;
+  const unit=decodeURIComponent(encodedUnit||"");
+  const name=decodeURIComponent(encodedName||"");
+  if(!name||name==="-"){alert("No hay limpiador asignado para reportar problema");return;}
+  const response=await fetch("/master-action",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"ISSUE",unit,name,role:"cleaner",note})});
+  const data=await response.json();
+  if(data.ok){alert(data.message||"Problema reportado");await loadMaster();}else{alert(data.message||"Error");}
+}
+
+async function updateUnitField(encodedUnit,field,value){
+  const unit=decodeURIComponent(encodedUnit||"");
+  const response=await fetch("/master-update-unit",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({unit,field,value})});
+  const data=await response.json();
+  if(data.ok){alert(data.message||"Unidad actualizada");await loadMaster();}else{alert(data.message||"Error");}
+}
+
+async function changeCleaner(encodedUnit){const unit=decodeURIComponent(encodedUnit||"");const value=prompt("Nuevo nombre del cleaner:");if(!value) return;await updateUnitField(encodeURIComponent(unit),"cleaner",value.trim());}
+async function changeInspector(encodedUnit){const unit=decodeURIComponent(encodedUnit||"");const value=prompt("Nuevo nombre del inspector:");if(!value) return;await updateUnitField(encodeURIComponent(unit),"inspector",value.trim());}
+
+function closeDetail(){document.getElementById("detailOverlay").style.display="none";document.getElementById("detailPanel").style.display="none";}
+
+async function openDetail(encodedUnit){
+  const unit=decodeURIComponent(encodedUnit||"");
+  document.getElementById("detailOverlay").style.display="block";
+  document.getElementById("detailPanel").style.display="block";
+  document.getElementById("detailContent").innerHTML="⏳ Cargando...";
+  const response=await fetch(`/master-unit-detail?unit=${encodeURIComponent(unit)}`);
+  const data=await response.json();
+  if(!data.ok){document.getElementById("detailContent").innerHTML=`<h2>Error</h2><p>${escapeHtml(data.message||"No se pudo cargar")}</p>`;return;}
+  const logsHtml=(data.logs||[]).map(log=>`
+    <div style="border-top:1px solid #ddd; padding:10px 0;">
+      <b>${escapeHtml(log.action)}</b><br>
+      <span class="small">${escapeHtml(log.time)}</span><br>
+      ${log.cleaner?`<div class="small">Cleaner: ${escapeHtml(log.cleaner)}</div>`:""}
+      ${log.inspector?`<div class="small">Inspector: ${escapeHtml(log.inspector)}</div>`:""}
+      ${log.note?`<div>${escapeHtml(log.note)}</div>`:""}
+      ${log.lostAndFound?`<div class="badge badge-red">🎒 Lost & Found</div>`:""}
+      ${log.photoUrl?`<a href="${escapeHtml(log.photoUrl)}" target="_blank"><img class="detail-photo" src="${escapeHtml(log.photoUrl)}"></a>`:""}
+    </div>`).join("");
+  document.getElementById("detailContent").innerHTML=`
+    <h2>${escapeHtml(data.unit)}</h2>
+    <p><b>Status:</b> ${escapeHtml(data.status||"N/A")}</p>
+    <p><b>Cleaner:</b> ${escapeHtml(data.cleaner||"-")}</p>
+    <p><b>Inspector:</b> ${escapeHtml(data.inspector||"-")}</p>
+    <p><b>Arrival:</b> ${data.arrival?"Sí":"No"}</p>
+    <p><b>Priority:</b> ${escapeHtml(data.priority||"Normal")}</p>
+    <p><b>Started At:</b> ${escapeHtml(data.startedAt||"N/A")}</p>
+    <p><b>Finished At:</b> ${escapeHtml(data.finishedAt||"N/A")}</p>
+    <h3>Historial / Fotos</h3>
+    ${logsHtml||"<p>No hay registros todavía.</p>"}`;
+}
+
+function showCardView(){currentView="cards";document.getElementById("units").style.display="grid";document.getElementById("dispatchBoard").style.display="none";renderUnits();}
+function showDispatchView(){currentView="dispatch";document.getElementById("units").style.display="none";document.getElementById("dispatchBoard").style.display="grid";renderDispatchBoard();}
+
+function getDispatchColumn(unit){
+  if(unit.priority==="Urgent") return "URGENTES";
+  if(unit.status==="Ready for Guest") return "READY";
+  if(unit.status==="Inspection Started") return "INSPECCIÓN INICIADA";
+  if(unit.status==="Cleaned - Awaiting Inspection") return "LISTA PARA INSPECCIÓN";
+  if(unit.status==="In Progress") return "EN LIMPIEZA";
+  return "SIN INICIAR";
+}
+
+function renderDispatchBoard(){
+  const board=document.getElementById("dispatchBoard");
+  const columns={"SIN INICIAR":[],"EN LIMPIEZA":[],"LISTA PARA INSPECCIÓN":[],"INSPECCIÓN INICIADA":[],"READY":[],"URGENTES":[]};
+  getFilteredUnits().forEach(unit=>{const column=getDispatchColumn(unit);if(!columns[column]) columns[column]=[];columns[column].push(unit);});
+  board.innerHTML="";
+  Object.entries(columns).forEach(([columnName,units])=>{
+    let cardsHtml="";
+    units.forEach(unit=>{
+      const encodedUnit=encodeValue(unit.unit);
+      const unitClass=getUnitClass(unit);
+      cardsHtml+=`
+        <div class="dispatch-card ${unitClass}" draggable="true" ondragstart="dragUnit(event,'${encodedUnit}','${encodeValue(unit.cleaner)}','${encodeValue(unit.inspector)}')" onclick="openDetail('${encodedUnit}')">
+          <b>${escapeHtml(unit.unit)}</b>
+          <div class="small">Cleaner: ${escapeHtml(unit.cleaner||"-")}</div>
+          <div class="small">Inspector: ${escapeHtml(unit.inspector||"-")}</div>
+          <div class="small">${escapeHtml(unit.status||"No Status")}</div>
+          ${unit.arrival?`<div class="badge badge-red">ARRIVAL</div>`:""}
+          ${unit.priority==="Urgent"?`<div class="badge badge-red">URGENT</div>`:""}
+        </div>`;
+    });
+    board.innerHTML+=`
+      <div class="dispatch-column" ondragover="allowDrop(event)" ondrop="dropUnit(event,'${columnName}')">
+        <h3>${columnName} (${units.length})</h3>
+        ${cardsHtml||`<p class="small" style="text-align:center;">Vacío</p>`}
+      </div>`;
+  });
+}
+
+function updateLocalUnitStatus(unitName,columnName){
+  const item=allUnits.find(unit=>unit.unit===unitName);
+  if(!item) return;
+  if(columnName==="EN LIMPIEZA") item.status="In Progress";
+  if(columnName==="LISTA PARA INSPECCIÓN") item.status="Cleaned - Awaiting Inspection";
+  if(columnName==="INSPECCIÓN INICIADA") item.status="Inspection Started";
+  if(columnName==="READY") item.status="Ready for Guest";
+  if(columnName==="URGENTES") item.priority="Urgent";
+}
+
+function dragUnit(event,encodedUnit,encodedCleaner,encodedInspector){draggedUnitData={unit:decodeURIComponent(encodedUnit||""),cleaner:decodeURIComponent(encodedCleaner||""),inspector:decodeURIComponent(encodedInspector||"")};event.dataTransfer.effectAllowed="move";}
+function allowDrop(event){event.preventDefault();}
+
+async function dropUnit(event,columnName){
+  event.preventDefault();
+  if(!draggedUnitData||!draggedUnitData.unit) return;
+  let action="";let role="";let name="";
+  if(columnName==="EN LIMPIEZA"){action="START";role="cleaner";name=draggedUnitData.cleaner;}
+  if(columnName==="LISTA PARA INSPECCIÓN"){action="DONE";role="cleaner";name=draggedUnitData.cleaner;}
+  if(columnName==="INSPECCIÓN INICIADA"){action="INSPECTION_START";role="inspector";name=draggedUnitData.inspector;}
+  if(columnName==="READY"){action="READY_GUEST";role="inspector";name=draggedUnitData.inspector;}
+  if(columnName==="URGENTES"){
+    const movedUnit=draggedUnitData.unit;
+    updateLocalUnitStatus(movedUnit,columnName);renderDispatchBoard();updateStats();
+    await updateUnitField(encodeURIComponent(movedUnit),"priority","Urgent");
+    draggedUnitData=null;return;
+  }
+  if(columnName==="SIN INICIAR"){alert("No se puede regresar automáticamente a Sin Iniciar todavía.");draggedUnitData=null;return;}
+  if(!action){draggedUnitData=null;return;}
+  if(!name){alert("No hay persona asignada para esta acción.");draggedUnitData=null;return;}
+  const movedUnit=draggedUnitData.unit;
+  updateLocalUnitStatus(movedUnit,columnName);renderDispatchBoard();updateStats();
+  const ok=await masterAction(action,encodeURIComponent(movedUnit),encodeURIComponent(name),role,true);
+  if(!ok){await loadMaster();alert("No se pudo actualizar en Notion. Se regresó al estado anterior.");}
+  draggedUnitData=null;
+}
+
+loadMaster();
+setInterval(loadMaster,10000);
+
+if(typeof io==="function"){
+  const socket=io();
+  socket.on("ops-update",()=>{loadMaster();});
+}
+</script>
+
+</body>
+</html>
